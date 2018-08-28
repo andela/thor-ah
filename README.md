@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/andela/thor-ah/badge.svg?branch=develop)](https://coveralls.io/github/andela/thor-ah?branch=develop)
 Authors Haven - A Social platform for the creative at heart.
 =======
 
