@@ -1,5 +1,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela/thor-ah/badge.svg?branch=develop)](https://coveralls.io/github/andela/thor-ah?branch=develop)
 
+
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed%20By-Hound-yellowgreen.svg)](https://houndci.com)
+
 Authors Haven - A Social platform for the creative at heart.
 =======
 
