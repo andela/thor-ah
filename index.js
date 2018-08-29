@@ -7,8 +7,7 @@ const fs = require("fs"),
     session = require("express-session"),
     cors = require("cors"),
     passport = require("passport"),
-    errorhandler = require("errorhandler"),
-    mongoose = require("mongoose");
+    errorhandler = require("errorhandler");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -37,19 +36,6 @@ app.use(
 if (!isProduction) {
     app.use(errorhandler());
 }
-
-if (isProduction) {
-  mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true
-  });
-} else {
-  mongoose.connect("mongodb://localhost/conduit", {
-    useNewUrlParser: true
-  });
-  mongoose.set("debug", true);
-}
-
-require("./models/User");
 
 app.use(require("./routes"));
 
