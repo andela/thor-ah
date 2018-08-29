@@ -6,7 +6,8 @@
   "scripts": {
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./**/*.js --fix"
+    "lint": "eslint ./**/*.js --fix",
+    "start": "node index.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
