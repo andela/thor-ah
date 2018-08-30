@@ -1,57 +1,33 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-const crypto = require('crypto');
-const secret = require('../config').secret;
 
-const UserSchema = new mongoose.Schema(
-  {
+const bcrypt = require('bcrypt');
+
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
     username: {
-      type: String,
-      lowercase: true,
+      type: DataTypes.STRING,
       unique: true,
-      required: [true, "can't be blank"],
-      match: [/^[a-zA-Z0-9]+$/, 'is invalid'],
-      index: true
+      allowNull: false,
     },
     email: {
-      type: String,
-      lowercase: true,
+      type: DataTypes.STRING,
       unique: true,
-      required: [true, "can't be blank"],
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-      index: true
+      allowNull: false,
     },
-    bio: String,
-    image: String,
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    hash: String,
-    salt: String
-  },
-  { timestamps: true }
-);
-
-UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
-
-UserSchema.methods.validPassword = function (password) {
-  const hash = crypto
-    .pbkdf2Sync(password, this.salt, 10000, 512, 'sha512')
-    .toString('hex');
-  return this.hash === hash;
-};
-
-UserSchema.methods.setPassword = function (password) {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto
-    .pbkdf2Sync(password, this.salt, 10000, 512, 'sha512')
-    .toString('hex');
-};
-
-UserSchema.methods.toAuthJSON = function () {
-  return {
-    username: this.username,
-    email: this.email
+    bio: DataTypes.STRING,
+    image: DataTypes.STRING,
+    hash: DataTypes.STRING,
+  }, {
+    hooks: {
+      beforeCreate: (userSignupData) => {
+        // hash and reassign password using bcrypt
+        userSignupData.hash = bcrypt.hashSync(userSignupData.hash, 10);
+      }
+    }
+  });
+  User.associate = function () { // eslint-disable-line func-names
+    // associations can be defined here
+    // TODO: add table associations to "Article" for favorites column
+    // TODO: add table associations to "User" for following column
   };
+  return User;
 };
-
-mongoose.model('User', UserSchema);
