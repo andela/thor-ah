@@ -6,6 +6,7 @@
   "scripts": {
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "lint": "eslint ./ --fix",
+    "migrate": "sequelize db:migrate",
     "test": "mocha --compilers js:babel-register ./server/test --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js"
