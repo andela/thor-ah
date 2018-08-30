@@ -8,7 +8,7 @@
     "lint": "eslint ./ --fix",
     "test": "mocha --compilers js:babel-register ./server/test --exit --no-deprecation",
     "start": "node index.js",
-    "start:dev": "nodemon --watch server --exec babel-node ./server/index.js"
+    "start:dev": "nodemon --watch server --exec babel-node ./index.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
