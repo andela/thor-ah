@@ -6,7 +6,7 @@
   "scripts": {
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "lint": "eslint ./ --fix",
-    "test": "mocha --compilers js:babel-register ./test --exit --no-deprecation",
+    "test": "mocha --compilers js:babel-register ./server/test --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./server/index.js"
   },
