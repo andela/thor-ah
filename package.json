@@ -7,7 +7,7 @@
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "lint": "eslint ./ --fix",
     "migrate": "sequelize db:migrate",
-    "test": "mocha --compilers js:babel-register ./server/test --exit --no-deprecation",
+    "test": "mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js"
   },
@@ -36,6 +36,7 @@
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.1.1",
     "slug": "^0.9.1",
+    "swagger-ui-express": "^4.0.0",
     "underscore": "^1.9.1"
   },
   "devDependencies": {
