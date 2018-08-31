@@ -1,11 +1,12 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+import { use } from 'passport';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as LocalStrategy } from 'passport-local';
 
-const db = require('../models');
+import db from '../models';
 
 const { User } = db;
 
-passport.use(
+use(
   new LocalStrategy(
     {
       usernameField: 'user[email]',
@@ -26,3 +27,17 @@ passport.use(
     })
   )
 );
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: "http://localhost:30/auth/facebook/callback",
+  profileFields: ['id', 'displayName', 'photos', 'email']
+},
+function(accessToken, refreshToken, profile, done) {
+  db.findOrCreate(..., function(err, user) {
+    if (err) { return done(err); }
+    done(null, user);
+  });
+}
+));
