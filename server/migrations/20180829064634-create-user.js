@@ -21,6 +21,10 @@ module.exports = {
     image: Sequelize.STRING,
     hash: Sequelize.STRING,
     salt: Sequelize.STRING,
+    emailVerified: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE
@@ -28,7 +32,7 @@ module.exports = {
     updatedAt: {
       allowNull: false,
       type: Sequelize.DATE
-    }
+    },
   }),
   down: queryInterface => queryInterface.dropTable('Users')
 };

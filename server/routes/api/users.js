@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const passport = require('passport');
 const db = require('../../models');
+import EmailVerificationController from '../../controllers/emailVerificationController';
 
 const { User } = db;
 
@@ -78,5 +79,9 @@ router.post('/users', (req, res, next) => {
     }))
     .catch(next);
 });
+
+router.get('/verify-email/:id', EmailVerificationController.sendVerificationEmail);
+
+router.get('/confirmation/:token', EmailVerificationController.confirmEmail);
 
 module.exports = router;
