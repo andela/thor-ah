@@ -1,6 +1,9 @@
-const router = require('express').Router();
-const passport = require('passport');
-const db = require('../../models');
+import express from 'express';
+import passport from 'passport';
+import Users from '../../controllers/users';
+import db from '../../models';
+
+const router = express.Router();
 
 const { User } = db;
 
@@ -78,5 +81,8 @@ router.post('/users', (req, res, next) => {
     }))
     .catch(next);
 });
+
+router.post('/users/password/recover', Users.recoverPassword);
+router.post('/users/password/reset/:token', Users.resetPassword);
 
 module.exports = router;

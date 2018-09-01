@@ -3,6 +3,7 @@ logs
 *.log
 .DS_Store
 .env
+*.lock
 
 npm-debug.log*
 
@@ -35,6 +36,7 @@ node_modules
 # Optional REPL history
 .node_repl_history
 package-lock.json
+yar.lock
 
 #Local environment
 .env

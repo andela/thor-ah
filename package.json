@@ -7,15 +7,18 @@
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "lint": "eslint ./ --fix",
     "migrate": "sequelize db:migrate",
-    "test": "mocha --compilers js:babel-register ./server/test --exit --no-deprecation",
+    "test": "mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "ejs": "^2.6.1",
@@ -41,8 +44,6 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "chai": "^4.1.2",
-    "chai-http": "^4.0.0",
     "coveralls": "^3.0.2",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.1.0",
