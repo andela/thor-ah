@@ -6,6 +6,7 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     dialect: process.env.DB_DIALECT,
   },
   test: {
@@ -13,13 +14,15 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     dialect: process.env.DB_DIALECT,
   },
   production: {
-    username: 'postgres',
-    password: null,
-    database: 'database_production',
+    username: 'thorjude',
+    password: 'mypassword',
+    database: 'newThorDB',
     host: '127.0.0.1',
+    port: 5433,
     dialect: 'postgres'
   }
 };
