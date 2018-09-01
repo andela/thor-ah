@@ -6,6 +6,8 @@
     "es6": true,
     "mocha": true
   },
+  "esversion": 6,
+  "laxbreak": true,
   "rules": {
     "one-var": 0,
     "one-var-declaration-per-line": 0,
