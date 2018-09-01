@@ -3,19 +3,45 @@ const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     username: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
+      unique: true,
     },
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
+    },
+    bio: {
+      type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.ENUM('admin', 'user', 'author'),
+      allowNull: false,
+      defaultValue: 'user',
+    },
+    image: {
+      type: DataTypes.STRING,
+    },
+    twitter: {
+      type: DataTypes.STRING,
+    },
+    linkedin: {
+      type: DataTypes.STRING,
+    },
+    hash: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    bio: DataTypes.STRING,
-    image: DataTypes.STRING,
-    hash: DataTypes.STRING,
   }, {
     hooks: {
       beforeCreate: (userSignupData) => {
