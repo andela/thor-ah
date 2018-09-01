@@ -3,7 +3,9 @@ const express = require('express'),
   session = require('express-session'),
   cors = require('cors'),
   errorhandler = require('errorhandler'),
-  log = require('fancy-log');
+  log = require('fancy-log'),
+  swaggerUi = require('swagger-ui-express'),
+  swaggerDocument = require('./server/docs/swagger.json');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -11,6 +13,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 const app = express();
 
 app.use(cors());
+
+// swagger api documentation setup
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Normal express config defaults
 app.use(require('morgan')('dev'));

@@ -1,0 +1,297 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Authors Haven",
+        "description": "API documentation for Authors Haven application"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api-docs",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/api/users": {
+            "post": {
+                "summary": "create a new user",
+                "description": "This endpoints create a new user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "New user created",
+                        "schema": {
+                            "$ref": "#/definitions/users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "user created successfully"
+                    }
+                }
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "summary": "Login existing user",
+                "description": "This endpoints logs in an existing user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User sign in successful",
+                        "schema": {
+                            "$ref": "#/definitions/users_login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": {
+                        "description": "can't be blank"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "put": {
+                "summary": "update a user details",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User details update successful",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ]
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": "can't be blank"
+                }
+        },
+        "/api/user/:username": {
+            "get": {
+                "summary": "get a user by username",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User details created successful",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ]
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": "can't be blank"
+                }
+        },
+        "/api/user/:userId": {
+            "get": {
+                "summary": "get a user by id",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User details created successful",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ]
+                },
+            "put": {
+                "summary": "update a user profile details",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User details created successful",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ]
+            },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "422": "can't be blank"
+                }
+        },
+        "/api/articles": {
+            "post": {
+                "summary": "create an article",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "body",
+                        "description": "article created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "get": {
+                "summary": "get all articles",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/articles/:slug": {
+            "get": {
+                "summary": "get a single article",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "summary": "update a single article",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "body",
+                        "description": "article updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "delete an article",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "users": {
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_login": {
+            "properties": {
+                "email":{
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "user": {
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "bio": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "twitter": {
+                    "type": "string"
+                },
+                "linkedin": {
+                    "type": "string"
+                }
+            }
+
+        },
+        "article": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
