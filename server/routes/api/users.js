@@ -16,4 +16,8 @@ userRoutes.get('/:username', authenticateUser, UserController.getProfileByUserna
 
 userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
 
+userRoutes.post('/password/recover', UserController.recoverPassword);
+
+userRoutes.post('/password/reset/:token', UserController.resetPassword);
+
 export default userRoutes;
