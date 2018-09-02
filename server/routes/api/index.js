@@ -1,8 +1,11 @@
-const router = require('express').Router();
+import { Router } from 'express';
 
-router.use('/', require('./users'));
+import userRoutes from './users';
+import welcomeRoute from './welcome';
 
-router.use((err, req, res, next) => {
+const routes = Router();
+
+routes.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(422).json({
       errors: Object.keys(err.errors).reduce((errors, key) => {
@@ -11,8 +14,10 @@ router.use((err, req, res, next) => {
       }, {})
     });
   }
-
   return next(err);
 });
 
-module.exports = router;
+routes.use('/users', userRoutes);
+routes.use('/', welcomeRoute);
+
+export default routes;
