@@ -1,82 +1,81 @@
-const router = require('express').Router();
-const passport = require('passport');
-const db = require('../../models');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
-const { User } = db;
+const router = express.Router();
 
-router.get('/user', (req, res, next) => {
-  User.findById(req.payload.id)
-    .then((user) => {
-      if (!user) {
-        return res.sendStatus(401);
-      }
-      return res.json({ user: user.toAuthJSON() });
-    })
-    .catch(next);
-});
+// for facebook login
+// this redirects users to facebook for authentication
+router.get('/auth/facebook',
+  passport.authenticate('facebook', { scope: ['profile', 'image', 'email'] }));
 
-router.put('/user', (req, res, next) => {
-  User.findById(req.payload.id)
-    .then((user) => {
-      if (!user) {
-        return res.sendStatus(401);
-      }
-
-      // only update fields that were actually passed...
-      if (typeof req.body.user.username !== 'undefined') {
-        user.username = req.body.user.username;
-      }
-      if (typeof req.body.user.email !== 'undefined') {
-        user.email = req.body.user.email;
-      }
-      if (typeof req.body.user.bio !== 'undefined') {
-        user.bio = req.body.user.bio;
-      }
-      if (typeof req.body.user.image !== 'undefined') {
-        user.image = req.body.user.image;
-      }
-      if (typeof req.body.user.password !== 'undefined') {
-        user.setPassword(req.body.user.password);
-      }
-
-      return user.save().then(() => res.json({ user: user.toAuthJSON() }));
-    })
-    .catch(next);
-});
-
-router.post('/users/login', (req, res, next) => {
-  if (!req.body.user.email) {
-    return res.status(422).json({ errors: { email: "can't be blank" } });
-  }
-
-  if (!req.body.user.password) {
-    return res.status(422).json({ errors: { password: "can't be blank" } });
-  }
-  passport.authenticate('local', { session: false }, (
-    err,
-    user,
-    info
-  ) => {
-    if (err) {
-      return next(err);
+// This redirects the user to this URL after approval
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook'), { session: false }, (err, req, res, user, info) => {
+    if (err || !user) {
+      return res.status(400).send({
+        message: info ? info.message : 'Login attempt failed',
+        user
+      });
     }
+    req(user, { session: false }, (err) => {
+      if (err) {
+        res.send(err);
+      }
 
-    if (user) {
-      return res.json({ user: user.toAuthJSON() });
+      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
+      res.status(200).send({ message: 'You are logged in!', token, user });
+    });
+  });
+
+// for google login
+// this redirects users to google for authentication
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'image', 'email'] }));
+
+// This redirects the user to this URL after approval
+router.get('/auth/google/callback',
+  passport.authenticate('google'), { session: false }, (err, req, res, user, info) => {
+    if (err || !user) {
+      return res.status(400).send({
+        message: info ? info.message : 'Login attempt failed',
+        user
+      });
     }
-    return res.status(422).json(info);
-  })(req, res, next);
-});
+    req(user, { session: false }, (err) => {
+      if (err) {
+        res.send(err);
+      }
 
-router.post('/users', (req, res, next) => {
-  const { username, email, password } = req.body.user;
-  User
-    .create({ username, email, hash: password })
-    .then(user => res.json({
-      username: user.username,
-      email: user.email,
-    }))
-    .catch(next);
-});
+      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
+      res.status(200).send({ message: 'You are logged in!', token, user });
+    });
+  });
 
-module.exports = router;
+
+// for twitter login
+// this redirects users to twitter for authentication
+router.get('/auth/twitter',
+  passport.authenticate('twitter', { scope: ['profile', 'image', 'email'] }));
+
+// This redirects the user to this URL after approval
+router.get('/auth/twitter/callback',
+  passport.authenticate('twitter'), { session: false }, (err, req, res, user, info) => {
+    if (err || !user) {
+      return res.status(400).send({
+        message: info ? info.message : 'Login attempt failed',
+        user
+      });
+    }
+    req(user, { session: false }, (err) => {
+      if (err) {
+        res.send(err);
+      }
+
+      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
+      res.status(200).send({ message: 'You are logged in!', token, user });
+    });
+  });
+
+
+export default router;

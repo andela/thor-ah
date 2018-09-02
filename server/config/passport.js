@@ -14,8 +14,15 @@ passport.use(new FacebookStrategy({
   callbackURL: 'http://localhost:3000/auth/facebook/callback'
 },
   ((accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ facebookId: profile.id }, (err, user) => {
-      if (err) { return done(err); }
+    User.findOrCreate({
+      where: {
+        id: profile.id,
+        username: profile.name,
+        email: profile.name,
+        image: profile.image
+      }
+    }, (err, res, user) => {
+      if (err) { return done(res.status(401).send({ message: 'You are not logged in on facebook' })); }
       done(null, user);
     });
   })));
@@ -26,8 +33,15 @@ passport.use(new TwitterStrategy({
   callbackURL: 'http://localhost:3000/auth/twitter/callback'
 },
   ((accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ twitterId: profile.id }, (err, user) => {
-      if (err) { return done(err); }
+    User.findOrCreate({
+      where: {
+        id: profile.id,
+        username: profile.name,
+        email: profile.name,
+        image: profile.image
+      }
+    }, (err, res, user) => {
+      if (err) { return done(res.status(401).send({ message: 'You are not logged in on twitter' })); }
       done(null, user);
     });
   })));
@@ -38,8 +52,15 @@ passport.use(new GoogleStrategy({
   callbackURL: 'http://localhost:3000/auth/google/callback'
 },
   ((accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ googleId: profile.id }, (err, user) => {
-      if (err) { return done(err); }
+    User.findOrCreate({
+      where: {
+        id: profile.id,
+        username: profile.name,
+        email: profile.name,
+        image: profile.image
+      }
+    }, (err, res, user) => {
+      if (err) { return done(res.status(401).send({ message: 'You are not logged in on google' })); }
       done(null, user);
     });
   })));
