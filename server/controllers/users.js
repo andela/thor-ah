@@ -4,6 +4,7 @@ import db from '../models';
 import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../validation/users';
 import trimInput from '../utils/trim_input';
+import TokenHelper from '../utils/TokenHelper';
 
 const { User } = db;
 
@@ -38,7 +39,19 @@ class UsersController {
         }).then((userEmail) => {
           if (!userEmail) {
             return User.create(newUser)
-              .then(userDetails => res.status(201).json({ userDetails }))
+              .then((createdUser) => {
+                const { dataValues } = createdUser;
+                // remove hash from user data values
+                const { hash, id, ...rest } = dataValues;
+                const token = TokenHelper.generateToken(createdUser);
+                // return remaining user data and generated token
+                return res.status(201).json({
+                  user: {
+                    ...rest,
+                    token
+                  }
+                });
+              })
               .catch(next);
           }
           return res.status(400).json({
@@ -83,9 +96,17 @@ class UsersController {
         }
         bcrypt.compare(password, user.hash).then((isMatch) => {
           if (isMatch) {
+            const { dataValues } = user;
+            // remove hash from user data values
+            const { hash, id, ...rest } = dataValues;
+            const token = TokenHelper.generateToken(user);
+            // return remaining user data and generated token
             return res.status(200).json({
               message: 'Login successful',
-              user,
+              user: {
+                ...rest,
+                token
+              }
             });
           }
           return res.status(400).json({

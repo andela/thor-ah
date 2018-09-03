@@ -44,11 +44,8 @@ describe('Users Controllers', () => {
         .post('/api/users')
         .send(user)
         .end((error, res) => {
-          const { userDetails } = res.body;
           expect(res).to.have.status(201);
-          userDetails.should.have.property('firstName');
-          userDetails.should.have.property('lastName');
-          userDetails.should.have.property('email');
+          res.body.should.have.property('user');
           done();
         });
     });
