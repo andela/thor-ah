@@ -1,6 +1,5 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import jwt from 'jsonwebtoken';
 import env from 'dotenv';
 import app from '../../..';
 

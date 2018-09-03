@@ -1,16 +1,19 @@
 import { Router } from 'express';
 import UserController from '../../controllers/users';
+import auth from '../../middleware/auth';
 
 const userRoutes = Router();
+// get authenticatUser method
+const { authenticateUser } = auth;
 
 userRoutes.post('/', UserController.userSignup);
 
 userRoutes.post('/login', UserController.userLogin);
 
-userRoutes.get('/', UserController.getProfiles);
+userRoutes.get('/', authenticateUser, UserController.getProfiles);
 
-userRoutes.get('/:username', UserController.getProfileByUsername);
+userRoutes.get('/:username', authenticateUser, UserController.getProfileByUsername);
 
-userRoutes.put('/:userId', UserController.updateUserProfile);
+userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
 
 export default userRoutes;

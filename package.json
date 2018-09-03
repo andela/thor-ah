@@ -7,7 +7,8 @@
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "lint": "eslint ./ --fix",
     "migrate": "sequelize db:migrate:undo:all && sequelize db:migrate",
-    "test": "NODE_ENV=test npm run migrate && mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
+    "pretest": "NODE_ENV=test npm run migrate",
+    "test": "NODE_ENV=test mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
     "seed": "sequelize db:seed:all"
