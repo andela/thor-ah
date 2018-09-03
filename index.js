@@ -1,11 +1,14 @@
-const express = require('express'),
-  bodyParser = require('body-parser'),
-  session = require('express-session'),
-  cors = require('cors'),
-  errorhandler = require('errorhandler'),
-  log = require('fancy-log'),
-  swaggerUi = require('swagger-ui-express'),
-  swaggerDocument = require('./server/docs/swagger.json');
+import express from 'express';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import cors from 'cors';
+import errorhandler from 'errorhandler';
+import log from 'fancy-log';
+import swaggerUi from 'swagger-ui-express';
+
+import router from './server/routes';
+import swaggerDocument from './server/docs/swagger.json';
+
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -39,8 +42,7 @@ app.use(
 if (!isProduction) {
   app.use(errorhandler());
 }
-
-app.use(require('./server/routes'));
+app.use(router);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -72,7 +74,7 @@ if (!isProduction) {
 // no stacktraces leaked to user
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(err.status || 500);
-  res.json({
+  return res.json({
     errors: {
       message: err.message,
       error: {}
@@ -84,3 +86,5 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 const server = app.listen(process.env.PORT || 3000, () => {
   log(`Listening on port ${server.address().port}`);
 });
+
+export default app;
