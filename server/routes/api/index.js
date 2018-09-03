@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import userRoutes from './users';
 import welcomeRoute from './welcome';
+import socialAuth from './socialAuth';
 
 const routes = Router();
 
@@ -19,5 +20,6 @@ routes.use((err, req, res, next) => {
 
 routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
+routes.use('/', socialAuth);
 
 export default routes;

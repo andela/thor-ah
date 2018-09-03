@@ -12,6 +12,8 @@ import swaggerDocument from './server/docs/swagger.json';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+require('./server/config/passport')(passport); // pass passport for configuration
+
 // Create global app object
 const app = express();
 
@@ -34,6 +36,9 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 app.use(router);
+
+// loads the social auth routes and pass in our app and fully configured passport
+app.use('/', socialAuth);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
