@@ -1,5 +1,7 @@
-import { Router } from 'express';
-import UserController from '../../controllers/users';
+const router = require('express').Router();
+const passport = require('passport');
+const db = require('../../models');
+import EmailVerificationController from '../../controllers/emailVerificationController';
 
 const userRoutes = Router();
 
@@ -13,4 +15,8 @@ userRoutes.get('/:username', UserController.getProfileByUsername);
 
 userRoutes.put('/:userId', UserController.updateUserProfile);
 
-export default userRoutes;
+router.get('/verify-email/:id', EmailVerificationController.sendVerificationEmail);
+
+router.get('/confirmation/:token', EmailVerificationController.confirmEmail);
+
+module.exports = router;
