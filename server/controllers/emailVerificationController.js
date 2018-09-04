@@ -93,7 +93,7 @@ class EmailVerificationController {
    * @memberof EmailVerificationController
    */
   static resendVerificationEmail(req, res) {
-    const { email } = req.body.user;
+    const { email } = req.body;
     email.trim();
 
     return User.findOne({ where: { email } })
