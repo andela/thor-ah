@@ -4,7 +4,7 @@ import { spy } from 'sinon';
 import auth from '../../middleware/auth';
 import TokenHelper from '../../utils/TokenHelper';
 
-const { authenticateUser } = auth;
+const { authenticateUser, authorizeAdmin, authorizeAuthor } = auth;
 
 describe('auth middleware', () => {
   it('should exist', () => {
@@ -17,7 +17,7 @@ describe('auth middleware', () => {
     );
   });
 
-  describe('authenticateUser()', () => {
+  describe('authenticateUser', () => {
     const req = {
       headers: {}
     };
@@ -75,6 +75,72 @@ describe('auth middleware', () => {
       expect(nextSpy.called).to.equal(true);
       expect(req.userId).to.equal(1);
       done();
+    });
+  });
+
+  describe('authorizeAuthor', () => {
+    const req = {
+      headers: {}
+    };
+    const res = {};
+
+    it('should always call next()', () => {
+      const nextSpy = spy();
+      authorizeAuthor(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+    });
+
+    it('should call next with an error if user is not an author', () => {
+      req.userRole = 'user';
+      const nextSpy = spy();
+      authorizeAuthor(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0].message).to.equal('you are not an Author');
+    });
+
+    it('should call next middleware if user is author', () => {
+      req.userRole = 'author';
+      const nextSpy = spy();
+      authorizeAuthor(req, res, nextSpy);
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0]).to.equal(undefined);
+    });
+  });
+
+  describe('authorizeAdmin', () => {
+    const req = {
+      headers: {}
+    };
+    const res = {};
+
+    it('should always call next()', () => {
+      const nextSpy = spy();
+      authorizeAdmin(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+    });
+
+    it('should call next with an error if user is not an admin', () => {
+      req.userRole = 'user';
+      const nextSpy = spy();
+      authorizeAdmin(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0].message).to.equal('you are not an Admin');
+    });
+
+    it('should call next middleware if user is admin', () => {
+      req.userRole = 'admin';
+      const nextSpy = spy();
+      authorizeAdmin(req, res, nextSpy);
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0]).to.equal(undefined);
     });
   });
 });

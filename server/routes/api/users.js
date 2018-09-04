@@ -3,7 +3,7 @@ import UserController from '../../controllers/users';
 import auth from '../../middleware/auth';
 
 const userRoutes = Router();
-// get authenticatUser method
+// get authenticateUser method
 const { authenticateUser } = auth;
 
 userRoutes.post('/', UserController.userSignup);
