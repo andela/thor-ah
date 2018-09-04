@@ -9,7 +9,8 @@
     "migrate": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "pretest": "NODE_ENV=test npm run migrate",
     "test": "NODE_ENV=test mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
-    "start": "node index.js",
+    "build": "rimraf dist/ && babel ./ -d dist/ --ignore node_modules --copy-files",
+    "start": "npm run build && node dist/index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
     "seed": "sequelize db:seed:all"
   },
@@ -37,6 +38,7 @@
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "request": "^2.87.0",
+    "rimraf": "^2.6.2",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.1.1",
     "sinon": "^6.1.5",
