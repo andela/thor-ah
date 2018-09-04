@@ -23,6 +23,16 @@ module.exports = {
         hash: bcrypt.hashSync(process.env.USER_PASSWORD, 10),
         createdAt: new Date(),
         updatedAt: new Date(),
+      },
+      {
+        firstName: 'author1',
+        lastName: 'Author',
+        username: 'randomAuthor1',
+        email: 'author1@mail.com',
+        role: 'author',
+        hash: bcrypt.hashSync(process.env.AUTHOR_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     ], {}),
 

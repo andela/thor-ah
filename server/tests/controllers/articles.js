@@ -1,49 +1,24 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {
-  sequelize,
-  dataTypes,
-  checkModelName,
-  checkPropertyExists
-} from 'sequelize-test-helpers';
-import server from '../../index';
+import server from '../../..';
 
-import articleModel from '../models/article';
+require('dotenv').config();
 
 chai.should();
 
 chai.use(chaiHttp);
 
-
-describe('Articles model', () => {
-
-});
-
-
-describe('article model', () => {
-  const Article = articleModel(sequelize, dataTypes);
-  const article = new Article();
-
-  checkModelName(Article)('Article');
-
-  // test user model properties
-  context('article model properties', () => {
-    [
-      'title',
-      'slug',
-      'description',
-      'authorId',
-      'likeDislikeId'
-    ].forEach(checkPropertyExists(article));
-  });
-});
+// user expected to have been created by tests.controllers.users
+const author1Login = {
+  email: 'author1@mail.com',
+  password: process.env.AUTHOR_PASSWORD
+};
 
 // tem test article
 const Article = {
   title: 'jbjkka2 kbviu buibi',
   body: 'ibin',
   description: 'kvilbulibvi',
-  authorId: 1
 };
 
 // tem test article
@@ -53,50 +28,41 @@ const updateArticle = {
   description: 'updfated kvilbulibvi',
 };
 
-/**
- * @static
- * @param {object} User
- * @return {response} res
- * @description to create a user to enable test run (create article needs an author for article).
-*/
-function signupTestUser(User) {
-  chai.request(server)
-    .post('/api/articles')
-    .set('Accept', 'application/json')
-    .set('Content-Type', 'application/json')
-    .send(User);
-}
-
-// signup test user
-signupTestUser({
-  username: 'laura2',
-  email: 'me@me.com',
-  password: '0000000000p'
-});
-
-
 let testSlug = '';
+let token = '';
 
 describe('Articles controller', () => {
   describe('createArticle()', () => {
-    it('should rcreate and return the created article object', (done) => {
+    // get token to use for article route testing
+    it('', (done) => {
+      chai.request(server).post('/api/users/login').set('Accept', 'application/json').send(author1Login)
+        .end((err, resp) => {
+          const userToken = resp.body.user.token;
+          token = userToken;
+          done();
+        });
+    });
+
+    it('should create and return the created article object', (done) => {
       chai.request(server)
         .post('/api/articles')
         .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .send(Article)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a('object');
-          res.body.article.should.be.an('object');
-          res.body.article.should.have.property('slug');
-          res.body.article.should.have.property('title');
-          res.body.article.should.have.property('description');
-          res.body.article.should.have.property('body');
-          res.body.article.should.have.property('createdAt');
-          res.body.article.should.have.property('updatedAt');
-          res.body.article.author.should.be.a('object');
-          testSlug = res.body.article.slug;
+          const { article } = res.body;
+          article.should.be.an('object');
+          article.should.have.property('slug');
+          article.should.have.property('title');
+          article.should.have.property('description');
+          article.should.have.property('body');
+          article.should.have.property('createdAt');
+          article.should.have.property('updatedAt');
+          article.author.should.be.a('object');
+          testSlug = article.slug;
           done();
         });
     });
@@ -106,6 +72,7 @@ describe('Articles controller', () => {
         .post('/api/articles')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .send({ description: 'goodies in a box', body: 'full gist' })
         .end((err, res) => {
           res.should.have.status(400);
@@ -118,6 +85,7 @@ describe('Articles controller', () => {
         .post('/api/articles')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .send({ description: 'goodies in a box', title: 'imaginary tail' })
         .end((err, res) => {
           res.should.have.status(400);
@@ -130,6 +98,7 @@ describe('Articles controller', () => {
         .post('/api/articles')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .send({ title: 'the free goodies', body: 'ended before it began, no such thing' })
         .end((err, res) => {
           res.should.have.status(400);
@@ -142,17 +111,19 @@ describe('Articles controller', () => {
     it('should return the article with given slug', (done) => {
       chai.request(server)
         .get(`/api/articles/${testSlug}`)
+        .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.article.should.be.an('object');
-          res.body.article.should.have.property('slug');
-          res.body.article.should.have.property('title');
-          res.body.article.should.have.property('description');
-          res.body.article.should.have.property('body');
-          res.body.article.should.have.property('createdAt');
-          res.body.article.should.have.property('updatedAt');
-          res.body.article.author.should.be.a('object');
+          const { article } = res.body;
+          article.should.be.an('object');
+          article.should.have.property('slug');
+          article.should.have.property('title');
+          article.should.have.property('description');
+          article.should.have.property('body');
+          article.should.have.property('createdAt');
+          article.should.have.property('updatedAt');
+          article.author.should.be.a('object');
           done();
         });
     });
@@ -162,6 +133,7 @@ describe('Articles controller', () => {
     it('should return a list of articles', (done) => {
       chai.request(server)
         .get('/api/articles')
+        .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.articles.should.be.an('array');
@@ -176,19 +148,21 @@ describe('Articles controller', () => {
         .put(`/api/articles/${testSlug}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .send(updateArticle)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.article.should.be.an('object');
-          res.body.article.should.have.property('slug');
-          res.body.article.should.have.property('title');
-          res.body.article.should.have.property('description');
-          res.body.article.should.have.property('body');
-          res.body.article.should.have.property('createdAt');
-          res.body.article.should.have.property('updatedAt');
-          res.body.article.author.should.be.a('object');
-          testSlug = res.body.article.slug;
+          const { article } = res.body;
+          article.should.be.an('object');
+          article.should.have.property('slug');
+          article.should.have.property('title');
+          article.should.have.property('description');
+          article.should.have.property('body');
+          article.should.have.property('createdAt');
+          article.should.have.property('updatedAt');
+          article.author.should.be.a('object');
+          testSlug = article.slug;
           done();
         });
     });
@@ -198,6 +172,7 @@ describe('Articles controller', () => {
         .put('/api/articles/some_wrong_slug')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
         .send(updateArticle)
         .end((err, res) => {
           res.should.have.status(404);
