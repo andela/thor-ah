@@ -10,7 +10,9 @@ const { authenticateUser } = auth;
 
 userRoutes.post('/', UserController.userSignup);
 
-userRoutes.put('/confirmation/:token', EmailVerificationController.confirmEmail);
+userRoutes.get('/confirmation/:token', EmailVerificationController.confirmEmail);
+
+userRoutes.post('/verify/resend-email', EmailVerificationController.resendVerificationEmail);
 
 userRoutes.post('/login', UserController.userLogin);
 
