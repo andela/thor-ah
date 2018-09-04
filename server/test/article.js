@@ -1,10 +1,42 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import {
+  sequelize,
+  dataTypes,
+  checkModelName,
+  checkPropertyExists
+} from 'sequelize-test-helpers';
 import server from '../../index';
+
+import articleModel from '../models/article';
 
 chai.should();
 
 chai.use(chaiHttp);
+
+
+describe('Articles model', () => {
+
+});
+
+
+describe('article model', () => {
+  const Article = articleModel(sequelize, dataTypes);
+  const article = new Article();
+
+  checkModelName(Article)('Article');
+
+  // test user model properties
+  context('article model properties', () => {
+    [
+      'title',
+      'slug',
+      'description',
+      'authorId',
+      'likeDislikeId'
+    ].forEach(checkPropertyExists(article));
+  });
+});
 
 // tem test article
 const Article = {
@@ -21,11 +53,33 @@ const updateArticle = {
   description: 'updfated kvilbulibvi',
 };
 
+/**
+ * @static
+ * @param {object} User
+ * @return {response} res
+ * @description to create a user to enable test run (create article needs an author for article).
+*/
+function signupTestUser(User) {
+  chai.request(server)
+    .post('/api/articles')
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/json')
+    .send(User);
+}
+
+// signup test user
+signupTestUser({
+  username: 'laura2',
+  email: 'me@me.com',
+  password: '0000000000p'
+});
+
+
 let testSlug = '';
 
-describe('API Article endpoints test', () => {
-  describe('POST create new article /api/articles', () => {
-    it('should retrun a status code 201 with the created article object', (done) => {
+describe('Articles controller', () => {
+  describe('createArticle()', () => {
+    it('should rcreate and return the created article object', (done) => {
       chai.request(server)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -47,7 +101,7 @@ describe('API Article endpoints test', () => {
         });
     });
 
-    it('should return error code 400 if article title is missing', (done) => {
+    it('should return error if article title is missing', (done) => {
       chai.request(server)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -59,7 +113,7 @@ describe('API Article endpoints test', () => {
       done();
     });
 
-    it('should return error code 400 if article body is missing', (done) => {
+    it('should return error if article body is missing', (done) => {
       chai.request(server)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -71,7 +125,7 @@ describe('API Article endpoints test', () => {
       done();
     });
 
-    it('should return error code 400 if article description missing', (done) => {
+    it('should return error if article description missing', (done) => {
       chai.request(server)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -84,8 +138,8 @@ describe('API Article endpoints test', () => {
     });
   });
 
-  describe('Get specific article /api/articles/article_slug', () => {
-    it('should return an article with given slug', (done) => {
+  describe('getSpecificArticle()', () => {
+    it('should return the article with given slug', (done) => {
       chai.request(server)
         .get(`/api/articles/${testSlug}`)
         .end((err, res) => {
@@ -104,7 +158,7 @@ describe('API Article endpoints test', () => {
     });
   });
 
-  describe('Get all articles /api/articles', () => {
+  describe('getAllArticle()', () => {
     it('should return a list of articles', (done) => {
       chai.request(server)
         .get('/api/articles')
@@ -116,7 +170,7 @@ describe('API Article endpoints test', () => {
     });
   });
 
-  describe('PUT update to article /articles/arti_slug ', () => {
+  describe('updateArticle()', () => {
     it('shouuld uppdate article with the given slug', (done) => {
       chai.request(server)
         .put(`/api/articles/${testSlug}`)
@@ -139,7 +193,7 @@ describe('API Article endpoints test', () => {
         });
     });
 
-    it('shouuld uppdate article with the given slug', (done) => {
+    it('shouuld return error erroe if slug not found', (done) => {
       chai.request(server)
         .put('/api/articles/some_wrong_slug')
         .set('Accept', 'application/json')

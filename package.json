@@ -22,7 +22,7 @@
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "chai": "^4.1.2",
-    "chai-http": "^4.2.0",
+    "chai-http": "^4.0.0",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "ejs": "^2.6.1",
@@ -48,11 +48,10 @@
     "request": "^2.87.0",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.1.1",
+    "sequelize-test-helpers": "^1.0.4",
     "sinon": "^6.1.5",
     "slug": "^0.9.1",
-    "swagger-ui-express": "^4.0.1",
-    "underscore": "^1.9.1",
-    "validator": "^10.7.0"
+    "underscore": "^1.9.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
