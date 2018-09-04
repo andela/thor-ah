@@ -19,9 +19,9 @@ export default class TokenHelper {
    * @memberof Token
    */
   static generateToken(user) {
-    const { id, username } = user;
+    const { id, username, role } = user;
     const token = jwt.sign({
-      id, username
+      id, username, role
     }, process.env.SECRET, {
       expiresIn: '24h',
     });
