@@ -25,8 +25,8 @@ class EmailVerificationController {
    */
   static sendVerificationEmail(user) {
     try {
-      const { id } = user;
-      const emailToken = jwt.sign({ id }, secret, { expiresIn: '1h' });
+      const { id, email } = user;
+      const emailToken = jwt.sign({ email, id }, secret, { expiresIn: '1h' }); 
 
       const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
 
@@ -57,7 +57,7 @@ class EmailVerificationController {
     User.findById(id)
       .then((user) => {
         if (!user) {
-          res.status(404).json({
+          return res.status(404).json({
             status: 'failed',
             message: 'User does not exist in the database'
           });
@@ -68,6 +68,12 @@ class EmailVerificationController {
             message: 'Email has already been confirmed',
           });
         }
+        if (!token) {
+          return res.status(400).json({
+            status: 'success',
+            message: 'Token is invalid'
+          });
+        }
         user.emailVerified = true;
         user.save();
         return res.status(200).json({
@@ -76,6 +82,52 @@ class EmailVerificationController {
         });
       })
       .catch(error => res.status(400).send(error));
+  }
+
+  /**
+   * @description Resend verification email if requested by user
+   * @param  {object} req body of the user's request
+   * @param  {object} res  body of the response message
+   * @param  {function} next next function to be called
+   * @returns {object} The body of the resposne message
+   * @memberof EmailVerificationController
+   */
+  static resendVerificationEmail(req, res) {
+    const { email } = req.body.user;
+    email.trim();
+
+    return User.findOne({ where: { email } })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({
+            status: 'failed',
+            message: 'User does not exist in database'
+          });
+        }
+        if (user.emailVerified) {
+          return res.status(409).json({
+            status: 'failed',
+            message: 'Your account had already been verified'
+          });
+        }
+
+        const emailToken = jwt.sign({ id: user.id }, secret, { expiresIn: '1h' });
+        const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: email,
+          from: 'noreply@authorshaven.com',
+          subject: 'Authors Haven Email Verification',
+          html: emailTemplate.verficationEmailTemplate(url),
+        };
+        return sgMail.send(msg)
+          .then(() => {
+            res.status(200).json({
+              status: 'success',
+              message: 'Verification email has been resent'
+            });
+          });
+      });
   }
 }
 
