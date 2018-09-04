@@ -22,4 +22,5 @@ routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
 
+
 export default routes;

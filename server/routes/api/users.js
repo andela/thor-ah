@@ -10,6 +10,8 @@ const { authenticateUser } = auth;
 
 userRoutes.post('/', UserController.userSignup);
 
+userRoutes.put('/confirmation/:token', EmailVerificationController.confirmEmail);
+
 userRoutes.post('/login', UserController.userLogin);
 
 userRoutes.get('/', authenticateUser, UserController.getProfiles);
