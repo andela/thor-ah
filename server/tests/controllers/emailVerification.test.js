@@ -17,16 +17,36 @@ const newUser = {
   "password": "danieldev"
 };
 
+const newUser2 = {
+  "firstName": "ayo",
+  "lastName": "david",
+  "username": "ayodavid",
+  "email": "ayodavid@gmail.com",
+  "password": "ayodaviddev"
+};
 
 let user1Id;
+let user2Id;
 
-describe.only('Verify User\'s email address after signup', () => {
+describe('Verify User\'s email address after signup', () => {
   before((done) => {
     chai.request(app)
       .post('/api/users')
       .send(newUser)
       .end((err, res) => {
         user1Id = res.body.userDetails.id;
+        done();
+      });
+  });
+
+  it('Registers a new user', (done) => {
+    chai.request(app)
+      .post('/api/users')
+      .send(newUser2)
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.body.status).to.equal('success');
+        expect(res.body.message).to.equal('Signup was successful. Please check your email to verify your account');
         done();
       });
   });
@@ -66,5 +86,33 @@ describe.only('Verify User\'s email address after signup', () => {
         expect(res.body.message).to.equal('Email has already been confirmed');
         done();
       });
+  });
+
+  describe('Resend verification email to user', () => {
+
+    it('Resends verification email if requested by the user', (done) => {
+      const token = jwt.sign({ id: user2Id }, process.env.SECRET_KEY || 'secret');
+      chai.request(app)
+        .post('/api/users/verify/resend-email')
+        .send({ email: "ayodavid@gmail.com" })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal('success');
+          expect(res.body.message).to.equal('Verification email has been resent');
+          done();
+        });
+    });
+
+    it('Returns and error if user has already', (done) => {
+      chai.request(app)
+        .post('/api/users/verify/resend-email')
+        .send({ email: "danieladek@gmail.com" })
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal('failed');
+          expect(res.body.message).to.equal('Your account had already been verified');
+          done();
+        });
+    });
   });
 });
