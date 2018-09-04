@@ -5,7 +5,7 @@ import cors from 'cors';
 import errorhandler from 'errorhandler';
 import log from 'fancy-log';
 import swaggerUi from 'swagger-ui-express';
-
+import passport from 'passport';
 import router from './server/routes';
 import swaggerDocument from './server/docs/swagger.json';
 
@@ -36,9 +36,6 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 app.use(router);
-
-// loads the social auth routes and pass in our app and fully configured passport
-app.use('/', socialAuth);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import userRoutes from './users';
 import welcomeRoute from './welcome';
-import socialAuth from './socialAuth';
+import socialAuth from './socialauth';
 
 const routes = Router();
 
