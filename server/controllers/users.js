@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import db from '../models';
 import isValidNumber from '../utils/is_valid_number';
-import UserValidation from '../validation/users';
+import UserValidation from '../utils/validation';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
 
