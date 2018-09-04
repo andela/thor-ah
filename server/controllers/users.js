@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import db from '../models';
+import EmailVerificationController from '../controllers/emailVerificationController';
 import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../validation/users';
 import trimInput from '../utils/trim_input';
@@ -10,7 +11,7 @@ const { User } = db;
 /**
  *
  * @description controller class with methods for user endpoints
- *  @class UserController
+ * @class UserController
  */
 class UsersController {
   /**
@@ -42,7 +43,14 @@ class UsersController {
         }).then((userEmail) => {
           if (!userEmail) {
             return User.create(newUser)
-              .then(userDetails => res.status(201).json({ userDetails }))
+              .then((user) => {
+                EmailVerificationController.sendVerificationEmail(user);
+                return res.status(201).json({
+                  status: 'success',
+                  message: 'Signup was successful. Please check your email to verify your account',
+                  userDetails: user
+                });
+              })
               .catch(next);
           }
           return res.status(400).json({
