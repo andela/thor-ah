@@ -42,10 +42,6 @@ module.exports = {
       allowNull: false,
     },
     salt: Sequelize.STRING,
-    emailVerified: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false
-    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
