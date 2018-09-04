@@ -18,9 +18,13 @@ class UsersController {
    * @param  {object} req body of the user's request
    * @param  {object} res  body of the response message
    * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
+   * @returns {object} The body of the response message
    */
   static userSignup(req, res, next) {
+    const { errors, isValid } = UserValidation.validateSignUpInput(req.body);
+    if (!isValid) {
+      return res.status(400).json({ errors });
+    }
     const newUser = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
