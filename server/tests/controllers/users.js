@@ -32,6 +32,20 @@ const existingEmail = {
   password: 'emeka'
 };
 
+const invalidEmail = {
+  username: 'andelane',
+  firstName: 'Emeka',
+  lastName: 'Chinedu',
+  email: 'emekagcom',
+  password: 'emeka'
+};
+ const invalidPassword = {
+  username: 'andelae',
+  firstName: 'Emeka',
+  lastName: 'Chinedu',
+  email: 'emeka1@gmail.com',
+  password: 'sdfghgfdkjshfbjbsfjb'
+};
 const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
 const emptyEmailField = { email: '', password: 'emeka' };
@@ -69,6 +83,26 @@ describe('Users Controllers', () => {
         .end((error, res) => {
           expect(res).to.have.status(400);
           res.body.errors.email.should.equal('This email has already been registered');
+          done();
+        });
+    });
+    it('should return error if email is invalid', (done) => {
+      chai.request(app)
+        .post('/api/users')
+        .send(invalidEmail)
+        .end((error, res) => {
+          expect(res).to.have.status(400);
+          res.body.errors.email.should.equal('Please enter a valid email');
+          done();
+        });
+    });
+    it('should return error if password exceeds 8 characters', (done) => {
+      chai.request(app)
+        .post('/api/users')
+        .send(invalidPassword)
+        .end((error, res) => {
+          expect(res).to.have.status(400);
+          res.body.errors.password.should.equal('Password should not exceed 8 characters');
           done();
         });
     });

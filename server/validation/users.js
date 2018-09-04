@@ -8,6 +8,40 @@ import isEmpty from '../utils/is_empty';
  */
 class UserValidation {
   /**
+   *  @description method for validation of signup input
+   *  @param {object} data body of the user's request
+   *  @returns {object} The body of  the response message
+   */
+  static validateSignUpInput(data) {
+    const errors = {};
+    data.firstName = data.firstName ? data.firstName : '';
+    data.lastName = data.lastName ? data.lastName : '';
+    data.username = data.username ? data.username : '';
+    data.email = data.email ? data.email : '';
+    data.password = data.password ? data.password : '';
+    if (!(data.firstName)) {
+      errors.firstName = 'Please enter a valid first name';
+    }
+    if (!(data.lastName)) {
+      errors.lastName = 'Please enter a valid last name';
+    }
+    if (!(data.username)) {
+      errors.username = 'Please enter a valid username';
+    }
+    if (!(data.email) || !validator.isEmail(data.email)) {
+      errors.email = 'Please enter a valid email';
+    }
+    if (!(data.password) || !validator.isAlphanumeric(data.password)
+    || !validator.isLength(data.password, { max: 8 })) {
+      errors.password = 'Password should not exceed 8 characters';
+    }
+    return {
+      errors,
+      isValid: isEmpty(errors)
+    };
+  }
+
+  /**
    * @description method for validation of login input
    * @param  {object} data  body of the user's request
    * @returns {object} The body of the response message
