@@ -1,5 +1,6 @@
 
-const db = require('../models');
+import db from '../models';
+import articleValidation from '../validation/articles';
 
 const { Article, User } = db;
 
@@ -21,36 +22,24 @@ class ArticleController {
    * @static
    * @param {reuest} req
    * @param {response} res
-   * @return {response} res
+   * @return {json} res
    * @description creates article.
    */
   static create(req, res) {
+    // validation file :(to be moved to validations file)
+    const { errors, isValid } = articleValidation.validateArticle(req.body);
+    if (!isValid) {
+      return res.status(400).json({ errors });
+    }
+
     // get parameters from request
     const {
       title, description, body,
     } = req.body;
 
-    // validation file :(to be moved to validations file)
-    let missingFieldErrorMsg = '';
-    if (!description) {
-      missingFieldErrorMsg = 'article description missing';
-    } else if (!title) {
-      missingFieldErrorMsg = 'article title missing';
-    } else if (!body) {
-      missingFieldErrorMsg = 'article body missing';
-    }
-    if (missingFieldErrorMsg) {
-      return res.status(400).json({
-        status: 'fail',
-        message: missingFieldErrorMsg,
-      });
-    }
 
-
-    // currentUserId to be gotten from req.frofile
-    const currentUserId = 1;
-
-    const authorId = currentUserId;
+    // set author id to current user id
+    const authorId = req.userId;
 
     // generate slug
     const slug = ArticleController.slugify(title);
@@ -80,7 +69,7 @@ class ArticleController {
    * @static
    * @param {reuest} req
    * @param {response} res
-   * @return {response} res
+   * @return {json} res
    * @description returns all article.
   */
   static getAll(req, res) {
@@ -104,7 +93,7 @@ class ArticleController {
    * @static
    * @param {reuest} req
    * @param {response} res
-   * @return {response} res
+   * @return {json} res
    * @description returns specific article that has the slug passes as req param (article_slug).
   */
   static getSpecific(req, res) {
@@ -127,7 +116,7 @@ class ArticleController {
    * @static
    * @param {reuest} req
    * @param {response} res
-   * @return {response} res
+   * @return {json} res
    * @description returns specific article with given slug.
   */
   static update(req, res) {
@@ -140,11 +129,20 @@ class ArticleController {
       }],
     })
       .then((article) => {
+        // return 404 if article not found
         if (!article) {
           return res.status(404).json({
-            message: 'article not found'
+            errors: { message: 'article not found' }
           });
         }
+
+        // check if article belongs to current user
+        if (parseInt(article.authorId, 10) !== parseInt(req.userId, 10)) {
+          return res.status(403).json({
+            errors: { message: 'forbidden from editing another user\'s article' }
+          });
+        }
+
         return article.update({
           title: req.body.title || article.title,
           slug: ArticleController.slugify(req.body.title) || article.slug,
@@ -166,7 +164,7 @@ class ArticleController {
    * @static
    * @param {reuest} req
    * @param {response} res
-   * @return {response} res
+   * @return {json} res
    * @description deletes an article object with given slug in param.
   */
   static delete(req, res) {
@@ -177,6 +175,14 @@ class ArticleController {
             message: 'article not found',
           });
         }
+
+        // check if article belongs to current user
+        if (parseInt(article.authorId, 10) !== parseInt(req.userId, 10)) {
+          return res.status(403).json({
+            errors: { message: 'forbidden from deleting another user\'s article' }
+          });
+        }
+
         return article.destroy()
           .then(() => res.status(200).json({
             message: 'article successfully deleted',
