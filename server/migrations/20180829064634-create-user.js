@@ -35,11 +35,19 @@ module.exports = {
       defaultValue: 'user',
     },
     image: Sequelize.STRING,
+<<<<<<< HEAD
     twitter: Sequelize.STRING,
     linkedin: Sequelize.STRING,
     hash: {
       type: Sequelize.STRING,
       allowNull: false,
+=======
+    hash: Sequelize.STRING,
+    salt: Sequelize.STRING,
+    emailVerified: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+>>>>>>> 3abec737d5c9cf4e9e271bed04f8e4c075e72ef1
     },
     createdAt: {
       allowNull: false,
@@ -47,7 +55,11 @@ module.exports = {
     },
     updatedAt: {
       allowNull: false,
+<<<<<<< HEAD
       type: Sequelize.DATE,
+=======
+      type: Sequelize.DATE
+>>>>>>> 3abec737d5c9cf4e9e271bed04f8e4c075e72ef1
     },
   }),
   down: queryInterface => queryInterface.dropTable('Users'),
