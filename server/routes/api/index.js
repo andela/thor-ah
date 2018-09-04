@@ -1,12 +1,7 @@
 import { Router } from 'express';
 
-<<<<<<< HEAD
 import userRoutes from './users';
 import welcomeRoute from './welcome';
-=======
-
-router.use('/', require('./users'));
->>>>>>> 3abec737d5c9cf4e9e271bed04f8e4c075e72ef1
 
 const routes = Router();
 

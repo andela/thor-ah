@@ -46,16 +46,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-<<<<<<< HEAD
-=======
-    bio: DataTypes.STRING,
-    image: DataTypes.STRING,
-    hash: DataTypes.STRING,
-    emailVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
->>>>>>> 3abec737d5c9cf4e9e271bed04f8e4c075e72ef1
   }, {
     hooks: {
       beforeCreate: (userSignupData) => {

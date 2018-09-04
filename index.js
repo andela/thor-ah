@@ -87,8 +87,4 @@ const server = app.listen(process.env.PORT || 3000, () => {
   log(`Listening on port ${server.address().port}`);
 });
 
-<<<<<<< HEAD
 export default app;
-=======
-module.exports = app;
->>>>>>> 3abec737d5c9cf4e9e271bed04f8e4c075e72ef1
