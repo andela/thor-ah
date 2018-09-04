@@ -18,6 +18,6 @@ userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
 
 userRoutes.post('/password/recover', UserController.recoverPassword);
 
-userRoutes.post('/password/reset/:token', UserController.resetPassword);
+userRoutes.post('/password/reset', UserController.resetPassword);
 
 export default userRoutes;

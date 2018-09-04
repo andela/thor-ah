@@ -84,6 +84,7 @@ describe('Users Controllers', () => {
           done();
         });
     });
+<<<<<<< HEAD
     it('should return error if email is invalid', (done) => {
       chai.request(app)
         .post('/api/users')
@@ -104,6 +105,8 @@ describe('Users Controllers', () => {
           done();
         });
     });
+=======
+>>>>>>> feat(recoverPassword): add recover password feature
   });
   describe('userLogin', () => {
     it('should successfully login a registered user', (done) => {
