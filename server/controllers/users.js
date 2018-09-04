@@ -258,7 +258,7 @@ class UsersController {
         message: 'Please provide a new password.',
       });
     }
-    jwt.verify(reset, process.env.JWT_SECRET_TOKEN, (error, user) => {
+    jwt.verify(reset, process.env.SECRET, (error, user) => {
       if (error) {
         return res.status(400).json({
           status: 'error',
@@ -323,7 +323,7 @@ class UsersController {
           });
         }
 
-        const token = jwt.sign({ email }, process.env.JWT_SECRET_TOKEN, { expiresIn: '2h' });
+        const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '2h' });
         const resetLink = `${reset}/${token}`;
 
         const msg = `
@@ -355,7 +355,7 @@ class UsersController {
           })
           .catch(() => {
             res.status(500).json({
-              status: 'danger',
+              status: 'error',
               message: 'Error occurred while trying to send mail. Please try again later.'
             });
           });

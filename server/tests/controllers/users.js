@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import env from 'dotenv';
+import jwt from 'jsonwebtoken';
 import app from '../../..';
 
 chai.use(chaiHttp);
@@ -49,7 +50,7 @@ const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
 const emptyEmailField = { email: '', password: 'emeka' };
 const emptyPasswordField = { email: 'emekag@gmail.com', password: '' };
-const token = jwt.sign({ user: { email: user.email }, links: { reset: 'http://localhost:5000' } }, process.env.JWT_SECRET_TOKEN, { expiresIn: '2h' });
+const token = jwt.sign({ user: { email: user.email }, links: { reset: process.env.RESET_URL } }, process.env.SECRET, { expiresIn: '2h' });
 const wrongToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlhbXVjaGVqdWRlQGdtYWlsLmNvbSIsImlhdCI6MTUzNTczMTgyNSwiZXhwIjoxNTM1NzM5MDI1fQ.BBwKljkzNFTKVuCE4VRHTv8GF4Q6uuA6_KZ8MMLdvR4';
 
 describe('Users Controllers', () => {
@@ -156,7 +157,7 @@ describe('Users Controllers', () => {
             email: user.email,
           },
           links: {
-            reset: 'https://localhost:5500',
+            reset: process.env.RESET_URL,
           }
         })
         .end((err, res) => {
@@ -174,13 +175,31 @@ describe('Users Controllers', () => {
             email: '',
           },
           links: {
-            reset: 'https://localhost:5500',
+            reset: process.env.RESET_URL,
           }
         })
         .end((err, res) => {
           res.body.should.be.an('object');
           res.body.status.should.equal('error');
           res.body.message.should.equal('Please provide a valid email.');
+          done();
+        });
+    });
+    it('should return error if email is not registered', (done) => {
+      chai.request(app)
+        .post('/api/users/password/recover')
+        .send({
+          user: {
+            email: 'emailnot@registered.com',
+          },
+          links: {
+            reset: process.env.RESET_URL,
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('The email you provided is not registered.');
           done();
         });
     });
@@ -199,24 +218,6 @@ describe('Users Controllers', () => {
           res.body.should.be.an('object');
           res.body.status.should.equal('error');
           res.body.message.should.equal('Please provide a valid reset url.');
-          done();
-        });
-    });
-    it('should return error if email is not registered', (done) => {
-      chai.request(app)
-        .post('/api/users/password/recover')
-        .send({
-          user: {
-            email: 'emailnot@registered.com',
-          },
-          links: {
-            reset: 'https://localhost:5500',
-          }
-        })
-        .end((err, res) => {
-          res.body.should.be.an('object');
-          res.body.status.should.equal('error');
-          res.body.message.should.equal('The email you provided is not registered.');
           done();
         });
     });
