@@ -33,6 +33,19 @@ module.exports = {
         hash: bcrypt.hashSync(process.env.AUTHOR_PASSWORD, 10),
         createdAt: new Date(),
         updatedAt: new Date(),
+<<<<<<< HEAD
+=======
+      },
+      {
+        firstName: 'author2',
+        lastName: 'Author2',
+        username: 'randomAuthor2',
+        email: 'author2@mail.com',
+        role: 'author',
+        hash: bcrypt.hashSync(process.env.AUTHOR_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+>>>>>>> feat(API): add Article CRUD features
       }
     ], {}),
 
