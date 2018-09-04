@@ -95,7 +95,7 @@ describe('Users Controllers', () => {
           done();
         });
     });
-    it('should return error if password exceeds 8 characters', (done) => {
+    it('should return error if password exceeds 20 characters', (done) => {
       chai.request(app)
         .post('/api/users')
         .send(invalidPassword)
