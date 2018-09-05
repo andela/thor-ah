@@ -32,7 +32,6 @@ describe('Verify User\'s email address after signup', () => {
       .post('/api/users')
       .send(newUser)
       .end((err, res) => {
-        console.log(res.body);
         user1Email = res.body.user.email;
         done();
       });
