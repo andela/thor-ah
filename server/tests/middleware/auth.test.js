@@ -83,6 +83,7 @@ describe('auth middleware', () => {
       headers: {}
     };
     const res = {};
+    const userRole = 'author';
 
     it('should always call next()', () => {
       const nextSpy = spy();
@@ -102,7 +103,7 @@ describe('auth middleware', () => {
     });
 
     it('should call next middleware if user is author', () => {
-      req.userRole = 'author';
+      req.userRole = userRole;
       const nextSpy = spy();
       authorizeAuthor(req, res, nextSpy);
       const { args } = nextSpy.getCalls()[0];
