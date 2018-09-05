@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Article.associate = (models) => {
+    const { Comment } = models;
     // 1:m relationship
     Article.belongsTo(models.User, {
       as: 'author', foreignKey: 'authorId'
@@ -32,6 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       as: 'tags',
       foreignKey: 'articleId',
     });
+
+    Article.hasMany(Comment);
   };
   return Article;
 };
