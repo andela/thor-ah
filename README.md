@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/andela/thor-ah/badge.svg?branch=develop)](https://coveralls.io/github/andela/thor-ah?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/andela/thor-ah/badge.svg?branch=ft-social-login-integration-159987698)](https://coveralls.io/github/andela/thor-ah?branch=ft-social-login-integration-159987698)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed%20By-Hound-yellowgreen.svg)](https://houndci.com)
 [![Build Status](https://travis-ci.org/andela/thor-ah.svg?branch=develop)](https://travis-ci.org/andela/thor-ah)
 
