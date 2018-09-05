@@ -50,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
   User.associate = function () { // eslint-disable-line func-names
     // associations can be defined here
     // TODO: add table associations to "Article" for favorites column

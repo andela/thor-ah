@@ -1,10 +1,16 @@
 import bcrypt from 'bcrypt';
+import sendgrid from '@sendgrid/mail';
+import env from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 import db from '../models';
 import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../validation/users';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+env.config();
 
 const { User } = db;
 
@@ -227,6 +233,134 @@ class UsersController {
             }).catch(next);
           }).catch(next);
       }).catch(next);
+  }
+
+  /**
+  * @description Send recovery mail to user's email
+  * @param {obj} req response body
+  * @param {obj} res request body
+  * @param {obj} next next method to be called
+  * @returns {json} reset user password
+  * @memberof Users
+  */
+  static resetPassword(req, res, next) {
+    const { reset } = req.body.tokens;
+    const { password } = req.body.user;
+    if (!reset || reset.trim().length < 1) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Please provide a reset token.',
+      });
+    }
+    if (!password || password.trim().length < 1) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a new password.',
+      });
+    }
+    jwt.verify(reset, process.env.SECRET, (error, user) => {
+      if (error) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Reset link is expired. Please restart the recovery process.',
+        });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Password should be at least 6 characters.',
+        });
+      }
+
+      const hash = bcrypt.hashSync(password, 10);
+
+      User
+        .update({ hash }, { where: { email: user.email } })
+        .then((users) => {
+          if (users) {
+            res.status(200).json({
+              status: 'success',
+              message: 'Password changed successfully.',
+            });
+          }
+        }).catch(next);
+    });
+  }
+
+  /**
+  * @description Reset user's password
+  * @param {obj} req response body
+  * @param {obj} res request body
+  * @param {obj} next next method to be called
+  * @returns {json} send reset link via email to user
+  * @memberof Users
+  */
+  static recoverPassword(req, res, next) {
+    const { email } = req.body.user;
+    const { reset } = req.body.links;
+
+    if (!email || email.trim().length < 1) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a valid email.',
+      });
+    }
+
+    if (!reset || reset.trim().length < 1) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a valid reset url.',
+      });
+    }
+
+    User
+      .findOne({ where: { email } })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'The email you provided is not registered.',
+          });
+        }
+
+        const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '2h' });
+        const resetLink = `${reset}/${token}`;
+
+        const msg = `
+          <div style="font-size: 17px">
+            <p>Hello,</p>
+            <p>There was a recent request to change the password on your account.</p>
+            <p>If you requested this password change, click the reset link below to set a new password:</p>
+            <a href="${resetLink}">${resetLink}</a>
+            <p>If you don’t want to change your password, just ignore this message.</p>
+            <p>Kindly note that reset link expires in 2 hours.</p>
+            <p>
+              Thank you.<br>
+              <b>The Thor Authors' Haven Team</b>
+            </p>
+          </div>
+        `;
+        const mail = {
+          to: email,
+          from: 'noreply@authorshaven.com',
+          subject: 'Authors\' Haven Password Reset',
+          html: msg,
+        };
+        sendgrid.send(mail)
+          .then(() => {
+            res.status(200).json({
+              status: 'success',
+              message: 'Please follow the instructions in the email that has been sent to your address.',
+            });
+          })
+          .catch(() => {
+            res.status(500).json({
+              status: 'error',
+              message: 'Error occurred while trying to send mail. Please try again later.'
+            });
+          });
+      })
+      .catch(next);
   }
 }
 

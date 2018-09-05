@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import env from 'dotenv';
+import jwt from 'jsonwebtoken';
 import app from '../../..';
 
 chai.use(chaiHttp);
@@ -38,7 +39,7 @@ const invalidEmail = {
   email: 'emekagcom',
   password: 'emeka'
 };
- const invalidPassword = {
+const invalidPassword = {
   username: 'andelae',
   firstName: 'Emeka',
   lastName: 'Chinedu',
@@ -49,9 +50,11 @@ const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
 const emptyEmailField = { email: '', password: 'emeka' };
 const emptyPasswordField = { email: 'emekag@gmail.com', password: '' };
+const token = jwt.sign({ user: { email: user.email }, links: { reset: process.env.RESET_URL } }, process.env.SECRET, { expiresIn: '2h' });
+const wrongToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlhbXVjaGVqdWRlQGdtYWlsLmNvbSIsImlhdCI6MTUzNTczMTgyNSwiZXhwIjoxNTM1NzM5MDI1fQ.BBwKljkzNFTKVuCE4VRHTv8GF4Q6uuA6_KZ8MMLdvR4';
 
 describe('Users Controllers', () => {
-  describe('userSignup()', () => {
+  describe('userSignup', () => {
     it('should successfully register a new user', (done) => {
       chai.request(app)
         .post('/api/users')
@@ -103,7 +106,7 @@ describe('Users Controllers', () => {
         });
     });
   });
-  describe('userLogin()', () => {
+  describe('userLogin', () => {
     it('should successfully login a registered user', (done) => {
       chai.request(app)
         .post('/api/users/login')
@@ -141,6 +144,172 @@ describe('Users Controllers', () => {
         .end((error, res) => {
           expect(res).to.have.status(400);
           res.body.errors.password.should.equal('Please enter your password');
+          done();
+        });
+    });
+  });
+  describe('recover password', () => {
+    it('should take a payload and send a mail to the email provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/recover')
+        .send({
+          user: {
+            email: user.email,
+          },
+          links: {
+            reset: process.env.RESET_URL,
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('success');
+          res.body.message.should.equal('Please follow the instructions in the email that has been sent to your address.');
+          done();
+        });
+    });
+    it('should return error if email is not provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/recover')
+        .send({
+          user: {
+            email: '',
+          },
+          links: {
+            reset: process.env.RESET_URL,
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Please provide a valid email.');
+          done();
+        });
+    });
+    it('should return error if email is not registered', (done) => {
+      chai.request(app)
+        .post('/api/users/password/recover')
+        .send({
+          user: {
+            email: 'emailnot@registered.com',
+          },
+          links: {
+            reset: process.env.RESET_URL,
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('The email you provided is not registered.');
+          done();
+        });
+    });
+    it('should return error if reset url is not provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/recover')
+        .send({
+          user: {
+            email: user.email,
+          },
+          links: {
+            reset: '',
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Please provide a valid reset url.');
+          done();
+        });
+    });
+  });
+  describe('reset password', () => {
+    it('should reset user\'s password if valid token and password are provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          tokens: {
+            reset: token
+          },
+          user: {
+            password: 'newPassword',
+          },
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('success');
+          res.body.message.should.equal('Password changed successfully.');
+          done();
+        });
+    });
+    it('should return error if reset token is not provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          tokens: {
+            reset: '',
+          },
+          user: {
+            password: 'newPassword',
+          },
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Please provide a reset token.');
+          done();
+        });
+    });
+    it('should return error if reset token is expired or invalid', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          tokens: {
+            reset: wrongToken,
+          },
+          user: {
+            password: 'newPassword',
+          }
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Reset link is expired. Please restart the recovery process.');
+          done();
+        });
+    });
+    it('should return error if new password is not provided', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          tokens: {
+            reset: token,
+          },
+          user: {
+            password: '',
+          },
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Please provide a new password.');
+          done();
+        });
+    });
+    it('should return error if password is less than 6 characters', (done) => {
+      chai.request(app)
+        .post('/api/users/password/reset')
+        .send({
+          tokens: {
+            reset: token,
+          },
+          user: {
+            password: 'pass',
+          },
+        })
+        .end((err, res) => {
+          res.body.should.be.an('object');
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('Password should be at least 6 characters.');
           done();
         });
     });
