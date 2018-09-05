@@ -7,7 +7,7 @@
     "lint": "eslint ./ --fix",
     "migrate": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "pretest": "NODE_ENV=test npm run migrate",
-    "test": "NODE_ENV=test mocha --compilers js:babel-register ./server/tests/* --exit --no-deprecation",
+    "test": "NODE_ENV=test nyc mocha --compilers js:babel-register ./server/tests/* --timeout 5000ms --exit --no-deprecation",
     "start": "node index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
     "seed": "sequelize db:seed:all",
