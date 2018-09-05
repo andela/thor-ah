@@ -47,10 +47,12 @@ class SocialAuthController {
       firstName: req.user.firstName,
       image: req.user.image
     };
+    const { email } = user;
+    user.token = jwt.sign({ email }, secretKey, { expiresIn: '24h' });
     if (req.user.created) {
-      return res.status(201).send({ user });
+      return res.status(201).send({ message: 'you have successfully signed up', user });
     }
-    return res.status(200).send({ user });
+    return res.status(200).send({ message: 'you are logged in', user });
   }
 
   /**
@@ -73,7 +75,6 @@ class SocialAuthController {
       image: profile.photos[0].value,
       hash: 'any password'
     };
-    userProfile.token = jwt.sign({ userId: profile.id }, secretKey, { expiresIn: '24h' });
     SocialAuthController.modelQuery(userProfile, done);
   }
 }

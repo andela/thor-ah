@@ -18,4 +18,6 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 router.get('/auth/google/callback',
   passport.authenticate('google', { session: false }), SocialAuthController.response);
 
+router.post('/auth/response', SocialAuthController.response);
+
 export default router;
