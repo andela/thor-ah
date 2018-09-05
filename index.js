@@ -8,14 +8,14 @@ import swaggerUi from 'swagger-ui-express';
 import passport from 'passport';
 import router from './server/routes';
 import swaggerDocument from './server/docs/swagger.json';
-
+import './server/config/passport';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-require('./server/config/passport')(passport); // pass passport for configuration
-
 // Create global app object
 const app = express();
+
+app.use(passport.initialize());
 
 app.use(cors());
 
@@ -36,6 +36,7 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 app.use(router);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

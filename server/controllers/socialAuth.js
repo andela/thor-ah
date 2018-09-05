@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
-import db from '../models';
+import { User } from '../models';
 
 const secretKey = process.env.SECRET;
-const { User } = db;
 
 
 /**
@@ -17,8 +16,6 @@ class SocialAuthController {
    * @memberof SocialAuthController
    */
   static modelQuery(user, done) {
-    /* eslint-disable no-console */
-    console.log('user', user);
     User.findOrCreate({
       where: {
         email: user.email
@@ -68,13 +65,13 @@ class SocialAuthController {
    * @memberof SocialAuthController
    */
   static passportCallback(accessToken, refreshToken, profile, done) {
-    console.log('\nprofile', profile);
     const userProfile = {
-      firstname: profile.name.familyName,
-      lastname: profile.name.givenName,
+      firstName: profile.name.familyName,
+      lastName: profile.name.givenName,
       username: profile.displayName,
       email: profile.emails[0].value,
-      image: profile.photos[0].value
+      image: profile.photos[0].value,
+      hash: 'any password'
     };
     userProfile.token = jwt.sign({ userId: profile.id }, secretKey, { expiresIn: '24h' });
     SocialAuthController.modelQuery(userProfile, done);
