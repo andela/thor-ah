@@ -53,8 +53,8 @@ class EmailVerificationController {
    */
   static confirmEmail(req, res) {
     const { token } = req.params;
-    const { id } = jwt.verify(token, secret);
-    User.findById(id)
+    const { email } = jwt.verify(token, secret);
+    User.findOne({ where: { email } })
       .then((user) => {
         if (!user) {
           return res.status(404).json({

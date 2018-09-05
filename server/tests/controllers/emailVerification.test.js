@@ -13,7 +13,7 @@ const newUser = {
   lastName: 'adek',
   username: 'danieladek',
   email: 'danieladek@gmail.com',
-  password: 'danieldev'
+  password: 'adek'
 };
 
 const newUser2 = {
@@ -21,10 +21,10 @@ const newUser2 = {
   lastName: 'david',
   username: 'ayodavid',
   email: 'ayodavid@gmail.com',
-  password: 'ayodaviddev'
+  password: 'ayodavid'
 };
 
-let user1Id;
+let user1Email;
 
 describe('Verify User\'s email address after signup', () => {
   before((done) => {
@@ -32,7 +32,8 @@ describe('Verify User\'s email address after signup', () => {
       .post('/api/users')
       .send(newUser)
       .end((err, res) => {
-        user1Id = res.body.user.id;
+        console.log(res.body);
+        user1Email = res.body.user.email;
         done();
       });
   });
@@ -43,7 +44,6 @@ describe('Verify User\'s email address after signup', () => {
       .send(newUser2)
       .end((err, res) => {
         expect(res).to.have.status(201);
-        expect(res.body.status).to.equal('success');
         expect(res.body.message).to.equal('Signup was successful. Please check your email to verify your account');
         done();
       });
@@ -51,7 +51,7 @@ describe('Verify User\'s email address after signup', () => {
 
 
   it('Confirms user\'s email address', (done) => {
-    const token = jwt.sign({ id: user1Id }, process.env.SECRET_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, process.env.SECRET_KEY || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -75,7 +75,7 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   it('Returns an error if user has been verified', (done) => {
-    const token = jwt.sign({ id: user1Id }, process.env.SECRET_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, process.env.SECRET_KEY || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
