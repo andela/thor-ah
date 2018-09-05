@@ -2,11 +2,17 @@ import { Router } from 'express';
 import UserController from '../../controllers/users';
 import auth from '../../middleware/auth';
 
+import EmailVerificationController from '../../controllers/emailVerificationController';
+
 const userRoutes = Router();
 // get authenticateUser method
 const { authenticateUser } = auth;
 
 userRoutes.post('/', UserController.userSignup);
+
+userRoutes.get('/confirmation/:token', EmailVerificationController.confirmEmail);
+
+userRoutes.post('/verify/resend-email', EmailVerificationController.resendVerificationEmail);
 
 userRoutes.post('/login', UserController.userLogin);
 
@@ -19,5 +25,6 @@ userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
 userRoutes.post('/password/recover', UserController.recoverPassword);
 
 userRoutes.post('/password/reset', UserController.resetPassword);
+
 
 export default userRoutes;

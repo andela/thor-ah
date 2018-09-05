@@ -24,6 +24,10 @@ module.exports = {
       allowNull: false,
       unique: true,
     },
+    emailVerified: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    },
     bio: Sequelize.STRING,
     role: {
       type: Sequelize.ENUM('admin', 'user', 'author'),
@@ -37,6 +41,7 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    salt: Sequelize.STRING,
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

@@ -3,21 +3,21 @@ import sendgrid from '@sendgrid/mail';
 import env from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-import db from '../models';
+import EmailVerificationController from './emailVerificationController';
 import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../validation/users';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
+import { User } from '../models';
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 env.config();
 
-const { User } = db;
 
 /**
  *
  * @description controller class with methods for user endpoints
- *  @class UserController
+ * @class UserController
  */
 class UsersController {
   /**
@@ -54,12 +54,14 @@ class UsersController {
                 // remove hash from user data values
                 const { hash, id, ...rest } = dataValues;
                 const token = TokenHelper.generateToken(createdUser);
+                EmailVerificationController.sendVerificationEmail(user);
                 // return remaining user data and generated token
                 return res.status(201).json({
                   user: {
                     ...rest,
                     token
-                  }
+                  },
+                  message: 'Signup was successful. Please check your email to verify your account'
                 });
               })
               .catch(next);
