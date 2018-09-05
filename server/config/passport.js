@@ -1,28 +1,26 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+import passport from 'passport';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import configAuth from './socialConfig';
+import SocialAuthController from '../controllers/socialAuth';
 
-const db = require('../models');
 
-const { User } = db;
+// the strategies for getting the user's facebook, twitter and google id
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: 'user[email]',
-      passwordField: 'user[password]'
-    },
-    ((email, password, done) => {
-      User.findOne({ email })
-        .then((user) => {
-          if (!user || !user.validPassword(password)) {
-            return done(null, false, {
-              errors: { 'email or password': 'is invalid' }
-            });
-          }
+// pull in our app id and secret from our social config file
+passport.use(new FacebookStrategy({
 
-          return done(null, user);
-        })
-        .catch(done);
-    })
-  )
-);
+  clientID: configAuth.facebookAuth.clientID,
+  clientSecret: configAuth.facebookAuth.clientSecret,
+  callbackURL: configAuth.facebookAuth.callbackURL,
+  profileFields: configAuth.facebookAuth.profileFields
+}, SocialAuthController.passportCallback));
+
+// pull in our app id and secret from our social config file
+passport.use(new GoogleStrategy({
+
+  clientID: configAuth.googleAuth.clientID,
+  clientSecret: configAuth.googleAuth.clientSecret,
+  callbackURL: configAuth.googleAuth.callbackURL,
+  proxy: true
+}, SocialAuthController.passportCallback));

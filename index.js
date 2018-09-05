@@ -5,15 +5,17 @@ import cors from 'cors';
 import errorhandler from 'errorhandler';
 import log from 'fancy-log';
 import swaggerUi from 'swagger-ui-express';
-
+import passport from 'passport';
 import router from './server/routes';
 import swaggerDocument from './server/docs/swagger.json';
-
+import './server/config/passport';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Create global app object
 const app = express();
+
+app.use(passport.initialize());
 
 app.use(cors());
 
@@ -30,19 +32,11 @@ app.use(require('method-override')());
 
 app.use(express.static(`${__dirname}/public`));
 
-app.use(
-  session({
-    secret: 'authorshaven',
-    cookie: { maxAge: 60000 },
-    resave: false,
-    saveUninitialized: false
-  })
-);
-
 if (!isProduction) {
   app.use(errorhandler());
 }
 app.use(router);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
