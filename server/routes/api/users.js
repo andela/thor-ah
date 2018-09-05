@@ -26,8 +26,5 @@ userRoutes.post('/password/recover', UserController.recoverPassword);
 
 userRoutes.post('/password/reset', UserController.resetPassword);
 
-userRoutes.get('/verify-email/:email', EmailVerificationController.sendVerificationEmail);
-
-userRoutes.get('/confirmation/:token', EmailVerificationController.confirmEmail);
 
 export default userRoutes;
