@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import jwt from 'jsonwebtoken';
+import log from 'fancy-log';
 
 import TokenHelper from '../../utils/TokenHelper';
 
@@ -41,6 +42,7 @@ describe('token utility', () => {
 
     before(() => {
       generatedToken = TokenHelper.generateToken(payload);
+      log(generatedToken);
     });
 
     it('should take a token and return it decoded', () => {
