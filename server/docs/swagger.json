@@ -5,11 +5,7 @@
         "title": "Authors Haven",
         "description": "API documentation for Authors Haven application"
     },
-    "host": "localhost:3000",
-    "basePath": "/api-docs",
-    "schemes": [
-        "https"
-    ],
+    "basePath": "/",
     "consumes": [
         "application/json"
     ],

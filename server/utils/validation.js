@@ -1,5 +1,5 @@
 import validator from 'validator';
-import isEmpty from '../utils/is_empty';
+import isEmpty from './is_empty';
 
 /**
  *
@@ -32,8 +32,8 @@ class UserValidation {
       errors.email = 'Please enter a valid email';
     }
     if (!(data.password) || !validator.isAlphanumeric(data.password)
-    || !validator.isLength(data.password, { max: 8 })) {
-      errors.password = 'Password should not exceed 8 characters';
+    || !validator.isLength(data.password, { max: 20 })) {
+      errors.password = 'Password should not exceed 20 characters';
     }
     return {
       errors,
