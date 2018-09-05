@@ -44,7 +44,7 @@ const invalidPassword = {
   firstName: 'Emeka',
   lastName: 'Chinedu',
   email: 'emeka1@gmail.com',
-  password: 'sdfghgfdkjshfbjbsfjb'
+  password: 'sdfghgfdkjshfbjbsfjbdmnbdkjfgeugfuefguefge'
 };
 const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
@@ -101,7 +101,7 @@ describe('Users Controllers', () => {
         .send(invalidPassword)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.password.should.equal('Password should not exceed 8 characters');
+          res.body.errors.password.should.equal('Password should not exceed 20 characters');
           done();
         });
     });
