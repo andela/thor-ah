@@ -60,7 +60,8 @@ class UsersController {
                   user: {
                     ...rest,
                     token
-                  }
+                  },
+                  message: 'Signup was successful. Please check your email to verify your account'
                 });
               })
               .catch(next);
