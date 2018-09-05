@@ -12,7 +12,8 @@
     "build": "rimraf dist/ && babel ./ -d dist/ --ignore node_modules --copy-files",
     "start": "npm run build && node dist/index.js",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
-    "seed": "sequelize db:seed:all"
+    "seed": "sequelize db:seed:all",
+    "heroku-postbuild": "sequelize db:migrate && sequelize db:seed:all"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
