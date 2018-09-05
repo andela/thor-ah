@@ -3,8 +3,16 @@
     "info": {
         "version": "1.0.0",
         "title": "Authors Haven",
-        "description": "API documentation for Authors Haven application"
+        "description": "API documentation for Authors Haven application",
+        "license" : {
+            "name" : "MIT 2.0.0",
+            "url" : "https://thor-ah-staging.herokuapp.com"
+        }
     },
+    "schemes": [
+        "https",
+        "http"
+    ],
     "basePath": "/",
     "consumes": [
         "application/json"
@@ -12,16 +20,29 @@
     "produces": [
         "application/json"
     ],
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Access all endpoints associated with users."
+        },
+        {
+        "name": "Article",
+        "description": "Access all endpoints associated with articles"
+        }
+    ],
     "paths": {
         "/api/users": {
             "post": {
+                "tags": [
+                    "Users"
+                ],
                 "summary": "create a new user",
                 "description": "This endpoints create a new user",
                 "parameters": [
                     {
                         "name": "user",
                         "in": "body",
-                        "description": "New user created",
+                        "description": "Create a new User",
                         "schema": {
                             "$ref": "#/definitions/users"
                         }
@@ -30,13 +51,43 @@
                 "responses": {
                     "201": {
                         "description": "user created successfully"
+                    },
+                    "400": {
+                        "description": "This email has already been registered"
                     }
                 }
+            },
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get a user profile details",
+                "description": "Returns a list of all user profiles",
+                "parameters": [],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                  ],
+                  "responses": {
+                      "200": {
+                          "description": "user details retrieved successfully"
+                      },
+                      "403": {
+                          "description": "no token provided"
+                      },
+                      "401": {
+                          "description": "Invalid authorization format"
+                      }
+                  }
             }
         },
         "/api/users/login": {
             "post": {
-                "summary": "Login existing user",
+                "tags": [
+                    "Users"
+                ],
+                "summary": "login existing user",
                 "description": "This endpoints logs in an existing user",
                 "parameters": [
                     {
@@ -50,92 +101,100 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "login successfully"
                     },
-                    "422": {
-                        "description": "can't be blank"
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "400": {
+                        "description": "Incorrect Password"
                     }
                 }
             }
         },
-        "/api/user": {
-            "put": {
-                "summary": "update a user details",
-                "parameters": [
-                    {
-                        "name": "user",
-                        "in": "body",
-                        "description": "User details update successful",
-                        "schema": {
-                            "$ref": "#/definitions/user"
-                        }
-                    }
-                ]
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "422": "can't be blank"
-                }
-        },
-        "/api/user/:username": {
+        "/api/users/{username}": {
             "get": {
+                "tags": [
+                    "Users"
+                ],
                 "summary": "get a user by username",
                 "parameters": [
                     {
-                        "name": "user",
-                        "in": "body",
-                        "description": "User details created successful",
-                        "schema": {
-                            "$ref": "#/definitions/user"
-                        }
+                        "name": "username",
+                        "in": "path",
+                        "description": "username to be return",
+                        "required": true,
+                        "type": "string"
                     }
-                ]
-                },
+                ],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "422": "can't be blank"
-                }
-        },
-        "/api/user/:userId": {
-            "get": {
-                "summary": "get a user by id",
-                "parameters": [
-                    {
-                        "name": "user",
-                        "in": "body",
-                        "description": "User details created successful",
+                        "description": "User retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/user"
+                            "$ref": "#/definitions/users"
                         }
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
-                ]
-                },
+                }
+            }
+        },
+        "/api/users/{userId}": {
             "put": {
+                "tags": [
+                    "Users"
+                ],
                 "summary": "update a user profile details",
                 "parameters": [
                     {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of user that needs to be updated",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
                         "name": "user",
                         "in": "body",
-                        "description": "User details created successful",
+                        "description": "body of user data",
                         "schema": {
                             "$ref": "#/definitions/user"
                         }
                     }
-                ]
-            },
+                ],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "user details updated successfully"
                     },
-                    "422": "can't be blank"
+                    "400": {
+                        "description": "Invalid data"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "Username already exists"
+                    }
                 }
+            }
         },
         "/api/articles": {
             "post": {
+                "tags": [
+                    "Article"
+                ],
                 "summary": "create an article",
                 "parameters": [
                     {
@@ -154,6 +213,9 @@
                 }
             },
             "get": {
+                "tags": [
+                    "Article"
+                ],
                 "summary": "get all articles",
                 "parameters": [],
                 "responses": {
@@ -165,6 +227,9 @@
         },
         "/api/articles/:slug": {
             "get": {
+                "tags": [
+                    "Article"
+                ],
                 "summary": "get a single article",
                 "parameters": [],
                 "responses": {
@@ -174,6 +239,9 @@
                 }
             },
             "put": {
+                "tags": [
+                    "Article"
+                ],
                 "summary": "update a single article",
                 "parameters": [
                     {
@@ -192,6 +260,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Article"
+                ],
                 "summary": "delete an article",
                 "parameters": [],
                 "responses": {
@@ -200,6 +271,14 @@
                     }
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+        "description": "For accessing the API a valid JWT token must be passed in all the queries in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the API and returned as answer of a call\nto the route /api/users/login giving a valid user & password.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n",
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
         }
     },
     "definitions": {
@@ -222,7 +301,7 @@
                 }
             }
         },
-        "user_login": {
+        "users_login": {
             "properties": {
                 "email":{
                     "type": "string"
