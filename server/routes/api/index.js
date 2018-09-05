@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import articlesRouter from './articles';
 
 import userRoutes from './users';
 import welcomeRoute from './welcome';
@@ -22,6 +23,7 @@ routes.use((err, req, res, next) => {
 routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
+routes.use('/articles', articlesRouter);
 
 
 export default routes;
