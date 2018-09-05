@@ -3,17 +3,16 @@ import sendgrid from '@sendgrid/mail';
 import env from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-import db from '../models';
 import EmailVerificationController from './emailVerificationController';
 import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../validation/users';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
+import { User } from '../models';
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 env.config();
 
-const { User } = db;
 
 /**
  *

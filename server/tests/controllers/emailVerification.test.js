@@ -3,30 +3,28 @@ import chaiHttp from 'chai-http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import app from '../../..';
-import { User } from '../../models/User';
 
 dotenv.config();
 
 chai.use(chaiHttp);
 
 const newUser = {
-  "firstName": "daniel",
-  "lastName": "adek",
-  "username": "danieladek",
-  "email": "danieladek@gmail.com",
-  "password": "danieldev"
+  firstName: 'daniel',
+  lastName: 'adek',
+  username: 'danieladek',
+  email: 'danieladek@gmail.com',
+  password: 'danieldev'
 };
 
 const newUser2 = {
-  "firstName": "ayo",
-  "lastName": "david",
-  "username": "ayodavid",
-  "email": "ayodavid@gmail.com",
-  "password": "ayodaviddev"
+  firstName: 'ayo',
+  lastName: 'david',
+  username: 'ayodavid',
+  email: 'ayodavid@gmail.com',
+  password: 'ayodaviddev'
 };
 
 let user1Id;
-let user2Id;
 
 describe('Verify User\'s email address after signup', () => {
   before((done) => {
@@ -89,12 +87,10 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   describe('Resend verification email to user', () => {
-
     it('Resends verification email if requested by the user', (done) => {
-      const token = jwt.sign({ id: user2Id }, process.env.SECRET_KEY || 'secret');
       chai.request(app)
         .post('/api/users/verify/resend-email')
-        .send({ email: "ayodavid@gmail.com" })
+        .send({ email: 'ayodavid@gmail.com' })
         .end((err, res) => {
           expect(res).to.have.status(200);
           expect(res.body.status).to.equal('success');
@@ -106,7 +102,7 @@ describe('Verify User\'s email address after signup', () => {
     it('Returns and error if user has already', (done) => {
       chai.request(app)
         .post('/api/users/verify/resend-email')
-        .send({ email: "danieladek@gmail.com" })
+        .send({ email: 'danieladek@gmail.com' })
         .end((err, res) => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal('failed');

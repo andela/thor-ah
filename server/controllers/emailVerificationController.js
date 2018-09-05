@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken';
 import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import { User } from '../models';
 
-import db from '../models';
 import emailTemplate from '../utils/services/emailTemplate';
 
 dotenv.config();
 
-const { User } = db;
 const secret = process.env.SECRET_KEY;
+const baseURL = process.env.BASE_URL;
 
 /**
  *
@@ -26,15 +26,16 @@ class EmailVerificationController {
   static sendVerificationEmail(user) {
     try {
       const { id, email } = user;
-      const emailToken = jwt.sign({ email, id }, secret, { expiresIn: '1h' }); 
+      const emailToken = jwt.sign({ email, id }, secret, { expiresIn: '1h' });
 
-      const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
+      // const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
+      const url = `${baseURL}/api/users/confirmation/${emailToken}`;
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
         to: user.email,
         from: 'noreply@authorshaven.com',
-        subject: 'Authors Haven Email Verification',
+        subject: 'Authors\' Haven Email Verification',
         html: emailTemplate.verficationEmailTemplate(url),
       };
       return sgMail.send(msg);
@@ -101,7 +102,7 @@ class EmailVerificationController {
         if (!user) {
           return res.status(404).json({
             status: 'failed',
-            message: 'User does not exist in database'
+            message: 'User does not exist'
           });
         }
         if (user.emailVerified) {
@@ -112,7 +113,7 @@ class EmailVerificationController {
         }
 
         const emailToken = jwt.sign({ id: user.id }, secret, { expiresIn: '1h' });
-        const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
+        const url = `${baseURL}/api/users/confirmation/${emailToken}`;
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {
           to: email,
