@@ -6,6 +6,10 @@
     "es6": true,
     "mocha": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
   "rules": {
     "one-var": 0,
     "one-var-declaration-per-line": 0,
