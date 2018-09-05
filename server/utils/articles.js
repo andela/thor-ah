@@ -1,4 +1,4 @@
-import isEmpty from '../utils/is_empty';
+import isEmpty from './is_empty';
 
 /**
  *

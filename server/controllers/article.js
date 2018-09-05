@@ -1,6 +1,6 @@
 
 import db from '../models';
-import articleValidation from '../validation/articles';
+import articleValidation from '../utils/articles';
 
 const { Article, User } = db;
 
