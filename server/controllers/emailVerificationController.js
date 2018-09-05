@@ -28,7 +28,6 @@ class EmailVerificationController {
       const { id, email } = user;
       const emailToken = jwt.sign({ email, id }, secret, { expiresIn: '1h' });
 
-      // const url = `http://localhost:3000/api/users/confirmation/${emailToken}`;
       const url = `${baseURL}/api/users/confirmation/${emailToken}`;
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
