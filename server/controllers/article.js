@@ -1,6 +1,7 @@
 
 import db from '../models';
 import articleValidation from '../utils/articles';
+import paginateArticle from '../utils/articlesPaginate';
 
 const { Article, User, Tag } = db;
 
@@ -111,6 +112,10 @@ class ArticleController {
    * @description returns all article.
   */
   static getAll(req, res) {
+    const limit = 2;
+    const currentPage = 1;
+    const offset = (currentPage - 1) * limit;
+
     return Article.findAll({
       include: [{
         model: User,
@@ -124,10 +129,14 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
+      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt'],
+      limit,
+      offset
     })
       .then((article) => {
+        const pagination = paginateArticle(article, currentPage, limit);
         res.status(200).json({
+          pagination,
           articles: article
         });
       })

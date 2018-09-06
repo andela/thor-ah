@@ -221,7 +221,7 @@ describe('Articles controller', () => {
   });
 
   describe('getAllArticle()', () => {
-    it('should return a list of articles', (done) => {
+    it('should return a list of articles, not more than 2 per page', (done) => {
       chai.request(server)
         .get('/api/articles')
         .set('Authorization', `Bearer ${token1}`)
