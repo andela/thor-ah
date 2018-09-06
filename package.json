@@ -8,7 +8,7 @@
     "migrate": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all",
     "pretest": "NODE_ENV=test npm run migrate",
     "test": "NODE_ENV=test nyc mocha --compilers js:babel-register ./server/tests/ --timeout 5000ms --exit --no-deprecation",
-    "start": "NODE_ENV=production npm run build && node dist/index.js",
+    "start": "npm run build && node dist/index.js",
     "build": "rimraf dist/ && babel ./ -d dist/ --ignore node_modules --copy-files",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
+    "babel-cli": "^6.26.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "chai": "^4.1.2",
@@ -57,7 +58,6 @@
     "validator": "^10.7.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "coveralls": "^3.0.2",
