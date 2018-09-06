@@ -1,4 +1,6 @@
+import validator from 'validator';
 import isEmpty from './is_empty';
+
 
 /**
  *
@@ -24,6 +26,24 @@ class articleValidation {
     }
     if (!(data.body)) {
       errors.body = 'Please supply article body';
+    }
+    return {
+      errors,
+      isValid: isEmpty(errors)
+    };
+  }
+
+  /**
+   *  @description method for validation of tag input
+   *  @param {object} data
+   *  @returns {object} response message
+   */
+  static validateTag(data) {
+    const errors = {};
+    data.name = data.name ? data.name : '';
+
+    if (!data.name) {
+      errors.name = 'Tag name is required';
     }
     return {
       errors,

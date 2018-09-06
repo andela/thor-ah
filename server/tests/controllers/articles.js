@@ -25,12 +25,29 @@ const Article = {
   description: 'kvilbulibvi',
 };
 
-// article to update with
+const Article2 = {
+  title: 'A short story',
+  body: 'This story is ssooooo short',
+  description: 'short',
+  tags: [1]
+};
+
+const Article3 = {
+  title: 'A short story',
+  body: 'This story is ssooooo short',
+  description: 'short',
+  tags: [1, 2, 3, 4, 5, 6]
+};
+
+// tem test article
 const updateArticle = {
   title: 'jbjkka2 kbviu buibi updated',
   body: 'ibin update1 cc',
   description: 'updfated kvilbulibvi',
 };
+
+const tag = { name: 'andela' };
+const emptyTag = { name: '' };
 
 let testSlug = '';
 let { token1, token2 } = '';
@@ -55,6 +72,34 @@ describe('Articles controller', () => {
         });
     });
 
+    it('should be able to create article tags', (done) => {
+      chai.request(server)
+        .post('/api/articles/tags')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token1}`)
+        .set('Content-Type', 'application/json')
+        .send(tag)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body[0].name.should.equal('andela');
+          done();
+        });
+    });
+
+    it('should return error if tag name field is empty', (done) => {
+      chai.request(server)
+        .post('/api/articles/tags')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token1}`)
+        .set('Content-Type', 'application/json')
+        .send(emptyTag)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.errors.name.should.equal('Tag name is required');
+          done();
+        });
+    });
+
     it('should create and return the created article object', (done) => {
       chai.request(server)
         .post('/api/articles')
@@ -63,18 +108,52 @@ describe('Articles controller', () => {
         .set('Content-Type', 'application/json')
         .send(Article)
         .end((err, res) => {
-          res.should.have.status(201);
-          res.body.should.be.a('object');
-          const { article } = res.body;
-          article.should.be.an('object');
-          article.should.have.property('slug');
-          article.should.have.property('title');
-          article.should.have.property('description');
-          article.should.have.property('body');
-          article.should.have.property('createdAt');
-          article.should.have.property('updatedAt');
-          article.author.should.be.a('object');
-          testSlug = article.slug;
+          res.should.have.status(200);
+          const { newArticleAlert } = res.body;
+          newArticleAlert.should.be.a('object');
+          newArticleAlert.createdArticle.should.be.an('object');
+          newArticleAlert.createdArticle.should.have.property('slug');
+          newArticleAlert.createdArticle.should.have.property('title');
+          newArticleAlert.createdArticle.should.have.property('description');
+          newArticleAlert.createdArticle.should.have.property('body');
+          newArticleAlert.createdArticle.should.have.property('tags');
+          newArticleAlert.createdArticle.should.have.property('createdAt');
+          newArticleAlert.createdArticle.should.have.property('updatedAt');
+          newArticleAlert.author.should.be.a('object');
+          testSlug = newArticleAlert.createdArticle.slug;
+          done();
+        });
+    });
+
+    it('should be able to create articles with tags', (done) => {
+      chai.request(server)
+        .post('/api/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token1}`)
+        .set('Content-Type', 'application/json')
+        .send(Article2)
+        .end((err, res) => {
+          res.should.have.status(200);
+          const { newArticleAlert } = res.body;
+          newArticleAlert.should.be.a('object');
+          newArticleAlert.createdArticle.should.be.an('object');
+          newArticleAlert.createdArticle.should.have.property('slug');
+          newArticleAlert.createdArticle.should.have.property('title');
+          newArticleAlert.createdArticle.should.have.property('description');
+          done();
+        });
+    });
+
+    it('should return error if tag is more than 5', (done) => {
+      chai.request(server)
+        .post('/api/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token1}`)
+        .set('Content-Type', 'application/json')
+        .send(Article3)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.errors.message.should.equal('Article tags must not exceed 5');
           done();
         });
     });
@@ -155,7 +234,7 @@ describe('Articles controller', () => {
   });
 
   describe('updateArticle()', () => {
-    it('should uppdate article with the given slug', (done) => {
+    it('shouuld update article with the given slug', (done) => {
       chai.request(server)
         .put(`/api/articles/${testSlug}`)
         .set('Accept', 'application/json')
@@ -179,7 +258,7 @@ describe('Articles controller', () => {
         });
     });
 
-    it('should return error if slug not found', (done) => {
+    it('shouuld return error if slug not found', (done) => {
       chai.request(server)
         .put('/api/articles/some_wrong_slug')
         .set('Accept', 'application/json')
