@@ -1,4 +1,3 @@
-import validator from 'validator';
 import isEmpty from './is_empty';
 
 
