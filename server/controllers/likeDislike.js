@@ -174,6 +174,7 @@ class likesDislikesController {
         message: 'No valid article ID provided.',
       });
     }
+
     Article.findOne({
       where: {
         id: articleId,

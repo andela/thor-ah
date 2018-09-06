@@ -23,7 +23,7 @@ const articleAuthor = {
 };
 const secondArticleAuthor = {
   email: 'su@mail.com',
-  password: process.env.AUTHOR_PASSWORD,
+  password: process.env.USER_PASSWORD,
 };
 
 describe('likeDislike Controller', () => {
