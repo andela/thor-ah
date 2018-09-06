@@ -185,6 +185,7 @@ class likesDislikesController {
         },
       });
     }
+
     Article.findOne({
       where: {
         id: articleId,

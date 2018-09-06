@@ -343,7 +343,7 @@ class UsersController {
           });
         }
 
-        const token = jwt.sign({ email }, process.env.JWT_KEY, { expiresIn: '2h' });
+        const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '2h' });
         const resetLink = `https://thor-ah.com/password/reset/${token}`;
 
         const msg = `

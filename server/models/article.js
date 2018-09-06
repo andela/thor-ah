@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         articleData.timeToRead = calculateTimeToRead(articleData);
       }
     }
-  });
+  }, {});
 
   Article.associate = (models) => {
     const {
@@ -43,15 +43,12 @@ module.exports = (sequelize, DataTypes) => {
       as: 'tags',
       foreignKey: 'articleId',
     });
+
     Article.hasMany(Comment, {
       foreignKey: 'articleId'
     });
-    Article.belongsToMany(models.Category, {
-      through: {
-        model: models.ArticleCategory,
-      },
+    Article.hasMany(models.LikesDislikes, {
       foreignKey: 'articleId',
-      as: 'article'
     });
     Article.hasMany(models.LikesDislikes, {
       foreignKey: 'articleId',
