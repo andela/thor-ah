@@ -15,14 +15,16 @@ const paginateArticle = ({
 }, currentPage, limit) => {
   const totalRecords = count;
   const totalPages = Math.ceil(totalRecords / limit);
-  const newArticles = Object.assign({
-  },
-  {
-    currentPage,
-    currentPageSize: rows.length,
-    totalPages,
-    totalRecords
-  });
+  const newArticles = Object.assign(
+    {
+    },
+    {
+      currentPage,
+      currentPageSize: rows.length,
+      totalPages,
+      totalRecords
+    }
+  );
   return newArticles;
 };
 
