@@ -1,6 +1,7 @@
 
 module.exports = {
-  up: queryInterface => queryInterface.bulkInsert('Articles',
+  up: queryInterface => queryInterface.bulkInsert(
+    'Articles',
     [
       {
         authorId: 1,
@@ -29,7 +30,10 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       }
-    ], {}),
+    ], {}
+  ),
 
-  down: queryInterface => queryInterface.bulkDelete('Articles', null, {})
+  down: queryInterface => queryInterface.bulkDelete(
+    'Articles', null, {}
+  )
 };
