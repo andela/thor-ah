@@ -32,14 +32,6 @@ module.exports = {
         as: 'authorId',
       },
     },
-    likeDislikeId: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'Users',
-        key: 'id',
-        as: 'authorId',
-      }
-    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE

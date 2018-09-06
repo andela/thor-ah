@@ -153,12 +153,7 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/recover')
         .send({
-          user: {
-            email: user.email,
-          },
-          links: {
-            reset: 'https://thor-ah.com',
-          }
+          email: user.email,
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -171,12 +166,7 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/recover')
         .send({
-          user: {
-            email: '',
-          },
-          links: {
-            reset: 'https://thor-ah.com',
-          }
+          email: '',
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -189,35 +179,12 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/recover')
         .send({
-          user: {
-            email: 'emailnot@registered.com',
-          },
-          links: {
-            reset: 'https://thor-ah.com',
-          }
+          email: 'emailnot@registered.com',
         })
         .end((err, res) => {
           res.body.should.be.an('object');
           res.body.status.should.equal('error');
           res.body.message.should.equal('The email you provided is not registered.');
-          done();
-        });
-    });
-    it('should return error if reset url is not provided', (done) => {
-      chai.request(app)
-        .post('/api/users/password/recover')
-        .send({
-          user: {
-            email: user.email,
-          },
-          links: {
-            reset: '',
-          }
-        })
-        .end((err, res) => {
-          res.body.should.be.an('object');
-          res.body.status.should.equal('error');
-          res.body.message.should.equal('Please provide a valid reset url.');
           done();
         });
     });
