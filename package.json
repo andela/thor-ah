@@ -8,7 +8,7 @@
     "migrate": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all",
     "pretest": "NODE_ENV=test npm run migrate",
     "test": "NODE_ENV=test nyc mocha --compilers js:babel-register ./server/tests/ --timeout 5000ms --exit --no-deprecation",
-    "start": "npm run build && node dist/index.js",
+    "start": "NODE_ENV=production npm run build && node dist/index.js",
     "build": "rimraf dist/ && babel ./ -d dist/ --ignore node_modules --copy-files",
     "start:dev": "nodemon --watch server --exec babel-node ./index.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
