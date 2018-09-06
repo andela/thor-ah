@@ -15,7 +15,7 @@ const paginateArticle = ({
 }, currentPage, limit) => {
   const totalRecords = count;
   const totalPages = Math.ceil(totalRecords / limit);
-  const newRecipes = Object.assign({
+  const newArticles = Object.assign({
   },
   {
     currentPage,
@@ -23,7 +23,7 @@ const paginateArticle = ({
     totalPages,
     totalRecords
   });
-  return newRecipes;
+  return newArticles;
 };
 
 export default paginateArticle;
