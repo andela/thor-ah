@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'commenterId'
     });
     User.hasMany(models.Reply, {
-      foreignKey: 'userId',
+      foreignKey: 'commenterId',
       // as: 'replies',
     });
   };

@@ -8,9 +8,16 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Reply.associate = (models) => {
     const { Comment, User } = models;
-    Reply.belongsTo(Comment);
+    Reply.belongsTo(Comment, {
+      onDelete: 'CASCADE',
+      foreignKey: 'commentId',
+      as: 'comment'
+    });
 
-    Reply.belongsTo(User);
+    Reply.belongsTo(User, {
+      as: 'commenter',
+      onDelete: 'CASCADE',
+    });
   };
   return Reply;
 };

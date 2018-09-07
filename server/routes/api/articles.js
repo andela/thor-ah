@@ -9,6 +9,7 @@ const router = require('express').Router();
 
 router.post('/', authenticateUser, authorizeAuthor, ArticleController.create);
 router.post('/:article_slug/comments', authenticateUser, CommentsController.createComment);
+router.post('/:article_slug/comments/:commentId', authenticateUser, CommentsController.createCommentReply);
 router.get('/', authenticateUser, ArticleController.getAll);
 router.get('/:article_slug', authenticateUser, ArticleController.getSpecific);
 router.put('/:article_slug', authenticateUser, ArticleController.update);

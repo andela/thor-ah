@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       as: 'article'
     });
 
-    Comment.hasMany(Reply);
+    Comment.hasMany(Reply, {
+      foreignKey: 'commentId',
+      // as: 'commentReply'
+    });
   };
   return Comment;
 };
