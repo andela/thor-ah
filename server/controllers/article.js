@@ -26,14 +26,14 @@ class ArticleController {
    * @returns {string} slug
   */
   static createTags(req, res) {
-    const { name } = req.body;
+    const { tag } = req.body;
 
     const { errors, isValid } = articleValidation.validateTag(req.body);
     if (!isValid) {
       return res.status(400).json({ errors });
     }
 
-    Tag.findOrCreate({ where: { name } })
+    Tag.findOrCreate({ where: { tag } })
       .then(newTag => res.status(200).json(newTag))
       .catch(error => res.status(400).json(error));
   }
@@ -87,7 +87,7 @@ class ArticleController {
             include: [{
               model: Tag,
               as: 'tags',
-              attributes: ['name'],
+              attributes: ['tag'],
               through: {
                 attributes: [],
               },
@@ -119,7 +119,7 @@ class ArticleController {
       }, {
         model: Tag,
         as: 'tags',
-        attributes: ['name'],
+        attributes: ['tag'],
         through: {
           attributes: [],
         },
@@ -151,7 +151,7 @@ class ArticleController {
       }, {
         model: Tag,
         as: 'tags',
-        attributes: ['name'],
+        attributes: ['tag'],
         through: {
           attributes: [],
         },

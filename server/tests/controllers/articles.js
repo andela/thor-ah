@@ -46,8 +46,8 @@ const updateArticle = {
   description: 'updfated kvilbulibvi',
 };
 
-const tag = { name: 'andela' };
-const emptyTag = { name: '' };
+const tag = { tag: 'andela' };
+const emptyTag = { tag: '' };
 
 let testSlug = '';
 let { token1, token2 } = '';
@@ -81,7 +81,7 @@ describe('Articles controller', () => {
         .send(tag)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body[0].name.should.equal('andela');
+          res.body[0].tag.should.equal('andela');
           done();
         });
     });
@@ -95,7 +95,7 @@ describe('Articles controller', () => {
         .send(emptyTag)
         .end((err, res) => {
           res.should.have.status(400);
-          res.body.errors.name.should.equal('Tag name is required');
+          res.body.errors.tag.should.equal('Tag name is required');
           done();
         });
     });

@@ -39,10 +39,10 @@ class articleValidation {
    */
   static validateTag(data) {
     const errors = {};
-    data.name = data.name ? data.name : '';
+    data.tag = data.tag ? data.tag : '';
 
-    if (!data.name) {
-      errors.name = 'Tag name is required';
+    if (!data.tag) {
+      errors.tag = 'Tag name is required';
     }
     return {
       errors,
