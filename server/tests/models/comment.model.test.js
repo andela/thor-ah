@@ -16,7 +16,7 @@ describe('comment model', () => {
   // test comment model properties
   context('comment model properties', () => {
     [
-      'comment'
+      'body'
     ].forEach(checkPropertyExists(comment));
   });
 

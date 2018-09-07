@@ -34,7 +34,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'articleId',
     });
 
-    Article.hasMany(Comment);
+    Article.hasMany(Comment, {
+      foreignKey: 'articleId'
+    });
   };
   return Article;
 };

@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Comment.belongsTo(Article, {
       onDelete: 'CASCADE',
-      foreignKey: 'articleId'
+      foreignKey: 'articleId',
+      as: 'article'
     });
 
     Comment.hasMany(Reply);
