@@ -26,5 +26,4 @@ userRoutes.post('/password/recover', UserController.recoverPassword);
 
 userRoutes.post('/password/reset', UserController.resetPassword);
 
-
 export default userRoutes;
