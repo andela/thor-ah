@@ -50,7 +50,7 @@ describe('Verify User\'s email address after signup', () => {
 
 
   it('Confirms user\'s email address', (done) => {
-    const token = jwt.sign({ email: user1Email }, process.env.SECRET_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, process.env.JWT_KEY || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -62,7 +62,7 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   it('Returns an error if user does not exitst in the database', (done) => {
-    const token = jwt.sign({ id: 10 }, process.env.SECRET_KEY || 'secret');
+    const token = jwt.sign({ id: 10 }, process.env.JWT_KEY || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -74,7 +74,7 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   it('Returns an error if user has been verified', (done) => {
-    const token = jwt.sign({ email: user1Email }, process.env.SECRET_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, process.env.JWT_KEY || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {

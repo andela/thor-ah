@@ -8,22 +8,22 @@ const { UserFollow, User } = db;
  */
 class FollowsController {
   /**
-   * @static
-   * @param {reuest} req
-   * @param {response} res
-   * @param {response} next
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
    * @return {json} res
    * @description follows a given user .
    */
   static follow(req, res, next) {
-    const { email } = req.body;
+    const { username } = req.body;
 
     User.findOne({
-      where: { email }
+      where: { username }
     }).then((user) => {
       // check user exists
       if (!user) {
         return res.status(404).json({
+          status: 'error',
           errors: {
             message: 'User you are trying to follow is missing',
           }
@@ -40,15 +40,15 @@ class FollowsController {
         // if created
         if (created) {
           return res.status(201).json({
-            success: {
-              message: `now following ${email}`
-            }
+            status: 'success',
+            message: `now following ${username}`
           });
         }
         // already exists
         return res.status(400).json({
+          status: 'error',
           errors: {
-            message: 'you are already following user'
+            message: 'you are already following this user'
           }
         });
       })
@@ -58,9 +58,9 @@ class FollowsController {
   }
 
   /**
-   * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
    * @return {json} res
    * @description gets all users following current user.
    */
@@ -69,22 +69,26 @@ class FollowsController {
       include: [{
         model: User,
         as: 'following',
-        attributes: ['email']
+        attributes: { exclude: ['email', 'emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
       },
       {
         model: User,
         as: 'followers',
-        attributes: ['email']
+        attributes: { exclude: ['email', 'emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
       }],
     }).then((users) => {
-      res.status(200).json({ followers: users.followers });
+      res.status(200).json({
+        status: 'success',
+        message: 'successful',
+        followers: users.followers
+      });
     });
   }
 
   /**
-   * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
    * @return {json} res
    * @description return users current user is following .
    */
@@ -93,15 +97,19 @@ class FollowsController {
       include: [{
         model: User,
         as: 'following',
-        attributes: ['email']
+        attributes: { exclude: ['email', 'emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
       },
       {
         model: User,
         as: 'followers',
-        attributes: ['email']
+        attributes: { exclude: ['email', 'emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
       }],
     }).then((users) => {
-      res.status(200).json({ following: users.following });
+      res.status(200).json({
+        status: 'success',
+        message: 'successful',
+        following: users.following
+      });
     });
   }
 
@@ -114,16 +122,16 @@ class FollowsController {
    * @description return users current user is following .
    */
   static unfollow(req, res, next) {
-    const { email } = req.body;
+    const { username } = req.body;
 
     User.findOne({
-      where: { email }
+      where: { username }
     }).then((user) => {
       // check user exists
       if (!user) {
         return res.status(404).json({
           errors: {
-            message: 'User you are not following this user',
+            message: 'You are not following this user',
           }
         });
       }
@@ -135,15 +143,17 @@ class FollowsController {
         where: { followerId, userId }
       }).then((userFollow) => {
         if (userFollow == null) {
-          return res.json({
+          return res.status(404).json({
+            status: 'error',
             errors: {
-              error: { message: `you are not following  ${email}` }
+              message: `you are not following ${username}`,
             }
           });
         }
         userFollow.destroy()
           .then(() => res.status(200).json({
-            message: 'article successfully deleted',
+            status: 'success',
+            message: 'unfllow successful',
           }))
           .catch(next);
       })

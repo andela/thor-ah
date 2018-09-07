@@ -50,7 +50,7 @@ const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
 const emptyEmailField = { email: '', password: 'emeka' };
 const emptyPasswordField = { email: 'emekag@gmail.com', password: '' };
-const token = jwt.sign({ user: { email: user.email }, links: { reset: 'https://thor-ah.com' } }, process.env.SECRET, { expiresIn: '2h' });
+const token = jwt.sign({ user: { email: user.email }, links: { reset: 'https://thor-ah.com' } }, process.env.JWT_KEY, { expiresIn: '2h' });
 const wrongToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlhbXVjaGVqdWRlQGdtYWlsLmNvbSIsImlhdCI6MTUzNTczMTgyNSwiZXhwIjoxNTM1NzM5MDI1fQ.BBwKljkzNFTKVuCE4VRHTv8GF4Q6uuA6_KZ8MMLdvR4';
 
 describe('Users Controllers', () => {

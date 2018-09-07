@@ -7,7 +7,7 @@ import emailTemplate from '../utils/services/emailTemplate';
 
 dotenv.config();
 
-const secret = process.env.SECRET_KEY;
+const secret = process.env.JWT_KEY;
 const baseURL = process.env.BASE_URL;
 
 /**

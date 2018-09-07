@@ -22,7 +22,7 @@ export default class TokenHelper {
     const { id, username, role } = user;
     const token = jwt.sign({
       id, username, role
-    }, process.env.SECRET, {
+    }, process.env.JWT_KEY, {
       expiresIn: '24h',
     });
 
@@ -38,7 +38,7 @@ export default class TokenHelper {
    * @memberof Token
    */
   static decodeToken(token) {
-    return jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    return jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
       if (err) {
         const error = new Error(err);
         error.status = 401;
