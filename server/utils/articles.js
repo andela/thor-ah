@@ -1,5 +1,6 @@
 import isEmpty from './is_empty';
 
+
 /**
  *
  * @description controller class for article validation
@@ -24,6 +25,24 @@ class articleValidation {
     }
     if (!(data.body)) {
       errors.body = 'Please supply article body';
+    }
+    return {
+      errors,
+      isValid: isEmpty(errors)
+    };
+  }
+
+  /**
+   *  @description method for validation of tag input
+   *  @param {object} data
+   *  @returns {object} response message
+   */
+  static validateTag(data) {
+    const errors = {};
+    data.tag = data.tag ? data.tag : '';
+
+    if (!data.tag) {
+      errors.tag = 'Tag name is required';
     }
     return {
       errors,

@@ -2,7 +2,7 @@
 import db from '../models';
 import articleValidation from '../utils/articles';
 
-const { Article, User } = db;
+const { Article, User, Tag } = db;
 
 /**
  * Article controller function
@@ -20,8 +20,28 @@ class ArticleController {
 
   /**
    * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @description static method to find or create tag.
+   * @param {object} req
+   * @param {object} res
+   * @returns {string} slug
+  */
+  static createTags(req, res) {
+    const { tag } = req.body;
+
+    const { errors, isValid } = articleValidation.validateTag(req.body);
+    if (!isValid) {
+      return res.status(400).json({ errors });
+    }
+
+    Tag.findOrCreate({ where: { tag } })
+      .then(newTag => res.status(200).json(newTag))
+      .catch(error => res.status(400).json(error));
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description creates article.
    */
@@ -37,6 +57,15 @@ class ArticleController {
       title, description, body,
     } = req.body;
 
+    const tags = req.body.tags || [];
+
+    if (tags.length > 5) {
+      return res.status(400).json({
+        errors: {
+          message: 'Article tags must not exceed 5',
+        }
+      });
+    }
 
     // set author id to current user id
     const authorId = req.userId;
@@ -51,24 +80,33 @@ class ArticleController {
       Article.create({
         title, description, body, authorId, slug
       })
-        .then(article => res.status(201).json({
-          article: {
-            slug: article.slug,
-            title: article.title,
-            description: article.description,
-            body: article.body,
-            author: user,
-            createdAt: article.createdAt,
-            updatedAt: article.updatedAt,
-          }
-        }));
+        .then(newArticle => newArticle.addTags(tags))
+        .then(() => {
+          Article.findOne({
+            where: { slug },
+            include: [{
+              model: Tag,
+              as: 'tags',
+              attributes: ['tag'],
+              through: {
+                attributes: [],
+              },
+            }],
+          })
+            .then(createdArticle => res.status(200).json({
+              newArticleAlert: {
+                createdArticle,
+                author: user,
+              },
+            }));
+        });
     });
   }
 
   /**
    * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description returns all article.
   */
@@ -78,6 +116,13 @@ class ArticleController {
         model: User,
         as: 'author',
         attributes: ['username', 'email', 'bio', 'image']
+      }, {
+        model: Tag,
+        as: 'tags',
+        attributes: ['tag'],
+        through: {
+          attributes: [],
+        },
       }],
       attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
@@ -91,8 +136,8 @@ class ArticleController {
 
   /**
    * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description returns specific article that has the slug passes as req param (article_slug).
   */
@@ -103,6 +148,13 @@ class ArticleController {
         model: User,
         as: 'author',
         attributes: ['username', 'email', 'bio', 'image']
+      }, {
+        model: Tag,
+        as: 'tags',
+        attributes: ['tag'],
+        through: {
+          attributes: [],
+        },
       }],
       attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
@@ -114,8 +166,8 @@ class ArticleController {
 
   /**
    * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description returns specific article with given slug.
   */
@@ -162,8 +214,8 @@ class ArticleController {
 
   /**
    * @static
-   * @param {reuest} req
-   * @param {response} res
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description deletes an article object with given slug in param.
   */
