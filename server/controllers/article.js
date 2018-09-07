@@ -111,12 +111,12 @@ class ArticleController {
    * @return {json} res
    * @description returns all article.
   */
-  static getAll(req, res) {
-    const limit = 2;
-    const currentPage = 1;
+  static getAll({ query }, res) {
+    const limit = Number(query.limit) || 2;
+    const currentPage = Number(query.page) || 1;
     const offset = (currentPage - 1) * limit;
 
-    return Article.findAll({
+    return Article.findAndCountAll({
       include: [{
         model: User,
         as: 'author',
@@ -137,7 +137,7 @@ class ArticleController {
         const pagination = paginateArticle(article, currentPage, limit);
         res.status(200).json({
           pagination,
-          articles: article
+          articles: article.rows
         });
       })
       .catch(error => res.status(500).json(error));

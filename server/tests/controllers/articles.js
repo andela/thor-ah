@@ -227,7 +227,17 @@ describe('Articles controller', () => {
         .set('Authorization', `Bearer ${token1}`)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.articles.should.be.an('array');
+          res.body.articles.should.be.an('Array');
+          done();
+        });
+    });
+    it('should return a list of articles on the next page given a page limit', (done) => {
+      chai.request(server)
+        .get('/api/articles/?page=2&limit=2')
+        .set('Authorization', `Bearer ${token1}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.articles.should.be.an('Array');
           done();
         });
     });
