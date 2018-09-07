@@ -46,6 +46,7 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE,
     },
+    userFollowId: Sequelize.INTEGER,
     updatedAt: {
       allowNull: false,
       type: Sequelize.DATE,
