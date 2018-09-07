@@ -220,8 +220,8 @@ describe('Articles controller', () => {
     });
   });
 
-  describe('getAllArticle()', () => {
-    it('should return a list of articles, not more than 2 per page', (done) => {
+  describe('getAllArticle(s)', () => {
+    it('should return a list of articles, 4 per page when no limit is specified', (done) => {
       chai.request(server)
         .get('/api/articles')
         .set('Authorization', `Bearer ${token1}`)
@@ -233,7 +233,7 @@ describe('Articles controller', () => {
     });
     it('should return a list of articles on the next page given a page limit', (done) => {
       chai.request(server)
-        .get('/api/articles/?page=2&limit=2')
+        .get('/api/articles/?page=2&limit=4')
         .set('Authorization', `Bearer ${token1}`)
         .end((err, res) => {
           res.should.have.status(200);
