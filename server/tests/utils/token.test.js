@@ -25,7 +25,7 @@ describe('token utility', () => {
     });
 
     it('should take a payload and return a jwt token', () => {
-      const verifiedToken = jwt.verify(generatedToken, process.env.SECRET);
+      const verifiedToken = jwt.verify(generatedToken, process.env.JWT_KEY);
       const { exp, iat, ...actual } = verifiedToken;
       expect(actual).to.deep.equal(payload);
     });

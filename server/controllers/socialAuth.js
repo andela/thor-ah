@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models';
 
-const secretKey = process.env.SECRET;
+const secretKey = process.env.JWT_KEY;
 
 
 /**

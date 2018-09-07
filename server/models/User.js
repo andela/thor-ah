@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    userFollowId: DataTypes.INTEGER
   }, {
     hooks: {
       beforeCreate: (userSignupData) => {
@@ -55,10 +56,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  User.associate = function () { // eslint-disable-line func-names
-    // associations can be defined here
-    // TODO: add table associations to "Article" for favorites column
-    // TODO: add table associations to "User" for following column
+  User.associate = (models) => {
+    User.belongsToMany(models.User, {
+      through: {
+        model: models.UserFollow,
+      },
+      as: 'followers',
+      foreignKey: 'userId',
+    });
+
+    User.belongsToMany(models.User, {
+      through: {
+        model: models.UserFollow,
+      },
+      as: 'following',
+      foreignKey: 'followerId',
+    });
   };
+  // TODO: add table associations to "Article" for favorites column
+  // TODO: add table associations to "User" for following column
   return User;
 };

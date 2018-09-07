@@ -260,7 +260,7 @@ class UsersController {
         message: 'Please provide a new password.',
       });
     }
-    jwt.verify(reset, process.env.SECRET, (error, user) => {
+    jwt.verify(reset, process.env.JWT_KEY, (error, user) => {
       if (error) {
         return res.status(400).json({
           status: 'error',
@@ -325,7 +325,7 @@ class UsersController {
           });
         }
 
-        const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '2h' });
+        const token = jwt.sign({ email }, process.env.JWT_KEY, { expiresIn: '2h' });
         const resetLink = `${reset}/${token}`;
 
         const msg = `
