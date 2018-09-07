@@ -109,18 +109,18 @@ describe('Articles controller', () => {
         .send(Article)
         .end((err, res) => {
           res.should.have.status(200);
-          const { newArticleAlert } = res.body;
-          newArticleAlert.should.be.a('object');
-          newArticleAlert.createdArticle.should.be.an('object');
-          newArticleAlert.createdArticle.should.have.property('slug');
-          newArticleAlert.createdArticle.should.have.property('title');
-          newArticleAlert.createdArticle.should.have.property('description');
-          newArticleAlert.createdArticle.should.have.property('body');
-          newArticleAlert.createdArticle.should.have.property('tags');
-          newArticleAlert.createdArticle.should.have.property('createdAt');
-          newArticleAlert.createdArticle.should.have.property('updatedAt');
-          newArticleAlert.author.should.be.a('object');
-          testSlug = newArticleAlert.createdArticle.slug;
+          const { createdArticle, author } = res.body.newArticleAlert;
+          createdArticle.should.be.a('object');
+          createdArticle.should.be.an('object');
+          createdArticle.should.have.property('slug');
+          createdArticle.should.have.property('title');
+          createdArticle.should.have.property('description');
+          createdArticle.should.have.property('body');
+          createdArticle.should.have.property('tags');
+          createdArticle.should.have.property('createdAt');
+          createdArticle.should.have.property('updatedAt');
+          author.should.be.a('object');
+          testSlug = createdArticle.slug;
           done();
         });
     });
@@ -134,12 +134,12 @@ describe('Articles controller', () => {
         .send(Article2)
         .end((err, res) => {
           res.should.have.status(200);
-          const { newArticleAlert } = res.body;
-          newArticleAlert.should.be.a('object');
-          newArticleAlert.createdArticle.should.be.an('object');
-          newArticleAlert.createdArticle.should.have.property('slug');
-          newArticleAlert.createdArticle.should.have.property('title');
-          newArticleAlert.createdArticle.should.have.property('description');
+          const { createdArticle } = res.body.newArticleAlert;
+          createdArticle.should.be.a('object');
+          createdArticle.should.be.an('object');
+          createdArticle.should.have.property('slug');
+          createdArticle.should.have.property('title');
+          createdArticle.should.have.property('description');
           done();
         });
     });
@@ -234,7 +234,7 @@ describe('Articles controller', () => {
   });
 
   describe('updateArticle()', () => {
-    it('shouuld update article with the given slug', (done) => {
+    it('should update article with the given slug', (done) => {
       chai.request(server)
         .put(`/api/articles/${testSlug}`)
         .set('Accept', 'application/json')
@@ -258,7 +258,7 @@ describe('Articles controller', () => {
         });
     });
 
-    it('shouuld return error if slug not found', (done) => {
+    it('should return error if slug not found', (done) => {
       chai.request(server)
         .put('/api/articles/some_wrong_slug')
         .set('Accept', 'application/json')
