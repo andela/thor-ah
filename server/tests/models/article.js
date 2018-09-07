@@ -24,8 +24,7 @@ describe('article model', () => {
       'title',
       'slug',
       'description',
-      'authorId',
-      'likeDislikeId'
+      'authorId'
     ].forEach(checkPropertyExists(article));
   });
 });
