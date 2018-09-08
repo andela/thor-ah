@@ -72,8 +72,17 @@ module.exports = (sequelize, DataTypes) => {
       as: 'following',
       foreignKey: 'followerId',
     });
+
+    User.hasMany(models.Article, {
+      foreignKey: 'authorId',
+    });
+    User.hasMany(models.Comment, {
+      foreignKey: 'commenterId'
+    });
+    User.hasMany(models.Reply, {
+      foreignKey: 'commenterId',
+      // as: 'replies',
+    });
   };
-  // TODO: add table associations to "Article" for favorites column
-  // TODO: add table associations to "User" for following column
   return User;
 };
