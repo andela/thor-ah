@@ -22,7 +22,7 @@ const author2Login = {
 const Article = {
   title: 'jbjkka2 kbviu buibi',
   body: 'ibin',
-  description: 'kvilbulibvi',
+  description: 'kvilbulibvi'
 };
 
 const Article2 = {
@@ -220,14 +220,24 @@ describe('Articles controller', () => {
     });
   });
 
-  describe('getAllArticle()', () => {
-    it('should return a list of articles', (done) => {
+  describe('getAllArticle(s)', () => {
+    it('should return a list of articles, 4 per page when no limit is specified', (done) => {
       chai.request(server)
         .get('/api/articles')
         .set('Authorization', `Bearer ${token1}`)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.articles.should.be.an('array');
+          res.body.articles.should.be.an('Array');
+          done();
+        });
+    });
+    it('should return a list of articles on the next page given a page limit', (done) => {
+      chai.request(server)
+        .get('/api/articles/?page=2&limit=4')
+        .set('Authorization', `Bearer ${token1}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.articles.should.be.an('Array');
           done();
         });
     });

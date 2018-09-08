@@ -1,6 +1,7 @@
 
 import db from '../models';
 import articleValidation from '../utils/articles';
+import paginateArticle from '../utils/articlesPaginate';
 
 const { Article, User, Tag } = db;
 
@@ -110,8 +111,12 @@ class ArticleController {
    * @return {json} res
    * @description returns all article.
   */
-  static getAll(req, res) {
-    return Article.findAll({
+  static getAll({ query }, res) {
+    const limit = Number(query.limit) || 4;
+    const currentPage = Number(query.page) || 1;
+    const offset = (currentPage - 1) * limit;
+
+    return Article.findAndCountAll({
       include: [{
         model: User,
         as: 'author',
@@ -124,11 +129,15 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
+      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'authorId'],
+      limit,
+      offset
     })
       .then((article) => {
+        const pagination = paginateArticle(article, currentPage, limit);
         res.status(200).json({
-          articles: article
+          pagination,
+          articles: article.rows
         });
       })
       .catch(error => res.status(500).json(error));

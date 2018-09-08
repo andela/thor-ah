@@ -1,7 +1,5 @@
-import jwt from 'jsonwebtoken';
 import { User } from '../models';
-
-const secretKey = process.env.JWT_KEY;
+import TokenHelper from '../utils/TokenHelper';
 
 
 /**
@@ -47,8 +45,7 @@ class SocialAuthController {
       firstName: req.user.firstName,
       image: req.user.image
     };
-    const { email } = user;
-    user.token = jwt.sign({ email }, secretKey, { expiresIn: '24h' });
+    user.token = TokenHelper.generateToken(user);
     if (req.user.created) {
       return res.status(201).send({ message: 'you have successfully signed up', user });
     }
