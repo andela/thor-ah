@@ -1,10 +1,5 @@
 import { User } from '../models';
-<<<<<<< HEAD
-
-const secretKey = process.env.JWT_KEY;
-=======
 import TokenHelper from '../utils/TokenHelper';
->>>>>>> feat: implement pagination in the get all articles table
 
 
 /**

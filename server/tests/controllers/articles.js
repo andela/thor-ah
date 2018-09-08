@@ -22,7 +22,7 @@ const author2Login = {
 const Article = {
   title: 'jbjkka2 kbviu buibi',
   body: 'ibin',
-  description: 'kvilbulibvi',
+  description: 'kvilbulibvi'
 };
 
 const Article2 = {
