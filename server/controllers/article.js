@@ -129,7 +129,7 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt'],
+      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'authorId'],
       limit,
       offset
     })
