@@ -30,6 +30,7 @@ describe.only('Categorize articles', () => {
       .end((req, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('status');
+        expect(res.body.status).to.equal.property('success');
         expect(res.body).to.have.property('categories');
         done();
       });
