@@ -44,32 +44,41 @@ class CategoryController {
         error: 'Name field cannot be empty'
       });
     }
-    Category.findOne({
-      where: { name: newCategory }
-    })
-      .then((category) => {
-        if (category) {
-          return res.status(409).json({
+    return Category.all()
+      .then((allCategories) => {
+        if (allCategories.length === 10) {
+          return res.status(400).json({
             status: 'error',
-            error: 'Category already exists'
+            error: 'You cannot have more that 10 article categories'
           });
         }
-        Category.create({
-          name: newCategory,
+        return Category.findOne({
+          where: { name: newCategory }
         })
-          .then(category => (
-            res.status(201).json({
-              status: 'success',
-              category
+          .then((category) => {
+            if (category) {
+              return res.status(409).json({
+                status: 'error',
+                error: 'Article category already exists'
+              });
+            }
+            return Category.create({
+              name: newCategory,
+            })
+              .then(category => (
+                res.status(201).json({
+                  status: 'success',
+                  category
+                })
+              ));
+          })
+          .catch(error => (
+            res.status(400).json({
+              status: 'error',
+              error
             })
           ));
-      })
-      .catch(error => (
-        res.status(400).json({
-          status: 'error',
-          error
-        })
-      ));
+      });
   }
 
   /**
@@ -81,6 +90,13 @@ class CategoryController {
    */
   static updateCategory(req, res) {
     const { categoryName } = req.params;
+    const updatedCategory = req.body.name;
+    if (updatedCategory.trim() === '') {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Name value cannot be empty'
+      });
+    }
     return Category.findOne({
       where: { name: categoryName }
     })
@@ -88,7 +104,7 @@ class CategoryController {
         if (!category) {
           return res.status(404).json({
             status: 'error',
-            error: 'Category does not exist'
+            error: 'Cannot update a category that does not exist'
           });
         }
         return category.update({
@@ -131,14 +147,14 @@ class CategoryController {
         if (!category) {
           return res.status(404).json({
             status: 'error',
-            message: 'Category does not exist'
+            error: 'You cannot delete a ategory does not exist'
           });
         }
         return category.destroy()
           .then(() => (
             res.status(204).json({
               status: 'success',
-              message: 'Category deleted successfully'
+              error: 'Category deleted successfully'
             })
           ))
           .catch(error => res.status(400).json({ status: 'error', error }));

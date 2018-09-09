@@ -10,7 +10,7 @@
     "test": "NODE_ENV=test nyc mocha --compilers js:babel-register ./server/tests/ --timeout 5000ms --exit --no-deprecation",
     "start": "npm run build && node dist/index.js",
     "build": "rimraf dist/ && babel ./ -d dist/ --ignore node_modules --copy-files",
-    "start:dev": "nodemon --watch server --exec babel-node ./index.js",
+    "start:dev": "npm run migrate && nodemon --watch server --exec babel-node ./index.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test"
