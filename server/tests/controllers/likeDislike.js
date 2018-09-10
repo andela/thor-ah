@@ -48,7 +48,7 @@ describe('likeDislike Controller', () => {
           done();
         });
     });
-    it('should create article for tesrt', (done) => {
+    it('should create article for test', (done) => {
       chai.request(app)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -59,7 +59,7 @@ describe('likeDislike Controller', () => {
           done();
         });
     });
-    it('should create article for tesrt', (done) => {
+    it('should create article for test', (done) => {
       chai.request(app)
         .post('/api/articles')
         .set('Accept', 'application/json')
@@ -72,35 +72,23 @@ describe('likeDislike Controller', () => {
     });
   });
   describe('likeDislike', () => {
-    it('should return error if token is in invalid', (done) => {
+    it('should return error if token is invalid', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug}/like`)
+        .post(`/api/articles/${rightArticleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
           res.body.status.should.equal('error');
-          res.body.message.should.equal('Sorry, you are not logged in.');
-          done();
-        });
-    });
-    it('should return error if user is the author of the article', (done) => {
-      chai.request(app)
-        .post(`/api/articles/${wrongArticleSlug}/like`)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${authorToken}`)
-        .end((err, res) => {
-          res.body.status.should.equal('error');
-          res.body.message.should.equal('You cannot like or dislike your article.');
           done();
         });
     });
     it('should return error if article does not exist', (done) => {
       chai.request(app)
-        .post(`/api/articles/${wrongArticleSlug}/like`)
+        .post(`/api/articles/${wrongArticleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
+        .send({ status: 'like' })
         .end((err, res) => {
           res.body.status.should.equal('error');
           res.body.message.should.equal('Sorry, article does not exist.');
@@ -109,7 +97,7 @@ describe('likeDislike Controller', () => {
     });
     it('should successfully like an article', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug.like}/likes`)
+        .post(`/api/articles/${rightArticleSlug.like}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
