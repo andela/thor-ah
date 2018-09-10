@@ -4,6 +4,7 @@ const isValidNumber = (req, res) => {
     return res.status(400).json({
       errors: {
         message: 'Your request ID is invalid',
+        status: 'error'
       }
     });
   }

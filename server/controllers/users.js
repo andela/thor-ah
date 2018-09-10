@@ -30,7 +30,7 @@ class UsersController {
   static userSignup(req, res, next) {
     const { errors, isValid } = UserValidation.validateSignUpInput(req.body);
     if (!isValid) {
-      return res.status(400).json({ errors });
+      return res.status(400).json({ status: 'error', errors });
     }
     const newUser = {
       firstName: req.body.firstName,
@@ -57,6 +57,7 @@ class UsersController {
                 EmailVerificationController.sendVerificationEmail(user);
                 // return remaining user data and generated token
                 return res.status(201).json({
+                  status: 'success',
                   user: {
                     ...rest,
                     token
@@ -67,6 +68,7 @@ class UsersController {
               .catch(next);
           }
           return res.status(400).json({
+            status: 'error',
             errors: {
               email: 'This email has already been registered',
             }
@@ -75,6 +77,7 @@ class UsersController {
           .catch(next);
       }
       return res.status(400).json({
+        status: 'error',
         errors: {
           username: 'This username has already been registered',
         }
@@ -101,6 +104,7 @@ class UsersController {
       .then((user) => {
         if (!user) {
           return res.status(404).json({
+            status: 'error',
             errors: {
               email: 'User not found'
             }
@@ -114,6 +118,7 @@ class UsersController {
             const token = TokenHelper.generateToken(user);
             // return remaining user data and generated token
             return res.status(200).json({
+              status: 'success',
               message: 'Login successful',
               user: {
                 ...rest,
@@ -122,6 +127,7 @@ class UsersController {
             });
           }
           return res.status(400).json({
+            status: 'error',
             errors: {
               password: 'Incorrect Password'
             }
@@ -148,6 +154,7 @@ class UsersController {
     )
       .then(users => res.status(200).json({
         // add success message here.
+        status: 'success',
         profiles: users,
       }))
       .catch(next);
@@ -171,12 +178,14 @@ class UsersController {
       .then((user) => {
         if (!user) {
           return res.status(404).json({
+            status: 'error',
             errors: {
               message: 'User not found',
             }
           });
         }
         return res.status(200).json({
+          status: 'success',
           profile: user,
         });
       })
@@ -209,13 +218,14 @@ class UsersController {
     }
 
     if (!isValid) {
-      return res.status(400).json({ errors });
+      return res.status(400).json({ errors, status: 'error' });
     }
 
     User.findById(userId)
       .then((user) => {
         if (!user) {
           return res.status(404).json({
+            status: 'error',
             errors: {
               message: 'User not found',
             }
@@ -225,6 +235,7 @@ class UsersController {
           .then((userData) => {
             if (userData) {
               return res.status(409).json({
+                status: 'error',
                 errors: {
                   username: 'Username already exists',
                 }
@@ -241,7 +252,7 @@ class UsersController {
               image: image || user.image,
             }).then((updatedUser) => {
               const { dataValues } = updatedUser;
-              return res.status(200).json({ dataValues });
+              return res.status(200).json({ status: 'success', dataValues });
             }).catch(next);
           }).catch(next);
       }).catch(next);

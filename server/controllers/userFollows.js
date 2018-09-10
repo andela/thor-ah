@@ -130,6 +130,7 @@ class FollowsController {
       // check user exists
       if (!user) {
         return res.status(404).json({
+          status: 'error',
           errors: {
             message: 'You are not following this user',
           }

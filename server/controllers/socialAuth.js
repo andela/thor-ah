@@ -47,9 +47,9 @@ class SocialAuthController {
     };
     user.token = TokenHelper.generateToken(user);
     if (req.user.created) {
-      return res.status(201).send({ message: 'you have successfully signed up', user });
+      return res.status(201).send({ message: 'you have successfully signed up', user, status: 'success' });
     }
-    return res.status(200).send({ message: 'you are logged in', user });
+    return res.status(200).send({ message: 'you are logged in', user, status: 'success' });
   }
 
   /**

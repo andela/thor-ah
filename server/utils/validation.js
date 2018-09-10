@@ -37,7 +37,8 @@ class UserValidation {
     }
     return {
       errors,
-      isValid: isEmpty(errors)
+      isValid: isEmpty(errors),
+      status: 'error'
     };
   }
 
@@ -63,7 +64,8 @@ class UserValidation {
 
     return {
       errors,
-      isValid: isEmpty(errors)
+      isValid: isEmpty(errors),
+      status: 'error'
     };
   }
 
@@ -116,7 +118,8 @@ class UserValidation {
 
     return {
       errors,
-      isValid: isEmpty(errors)
+      isValid: isEmpty(errors),
+      status: 'error'
     };
   }
 }

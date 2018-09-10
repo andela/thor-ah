@@ -58,13 +58,13 @@ class EmailVerificationController {
       .then((user) => {
         if (!user) {
           return res.status(404).json({
-            status: 'failed',
+            status: 'error',
             message: 'User does not exist in the database'
           });
         }
         if (user.emailVerified) {
           return res.status(409).json({
-            status: 'failed',
+            status: 'error',
             message: 'Email has already been confirmed',
           });
         }
@@ -100,13 +100,13 @@ class EmailVerificationController {
       .then((user) => {
         if (!user) {
           return res.status(404).json({
-            status: 'failed',
+            status: 'error',
             message: 'User does not exist'
           });
         }
         if (user.emailVerified) {
           return res.status(409).json({
-            status: 'failed',
+            status: 'error',
             message: 'Your account had already been verified'
           });
         }
