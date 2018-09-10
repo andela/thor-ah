@@ -68,7 +68,7 @@ describe('Follow user controller', () => {
         .end((err, res) => {
           res.should.have.status(400);
           res.body.status.should.equal('error');
-          res.body.errors.message.should.equal('you are already following this user');
+          res.body.error.message.should.equal('you are already following this user');
           done();
         });
     });
@@ -83,7 +83,7 @@ describe('Follow user controller', () => {
         .end((err, res) => {
           res.should.have.status(404);
           res.body.status.should.equal('error');
-          res.body.errors.message.should.equal('User you are trying to follow is missing');
+          res.body.error.message.should.equal('User you are trying to follow is missing');
           done();
         });
     });
@@ -140,7 +140,7 @@ describe('Follow user controller', () => {
         .end((err, res) => {
           res.should.have.status(404);
           res.body.status.should.equal('error');
-          res.body.errors.message.should.equal(`you are not following ${author2Login.username}`);
+          res.body.error.message.should.equal(`you are not following ${author2Login.username}`);
           done();
         });
     });

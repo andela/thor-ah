@@ -67,7 +67,7 @@ describe('Verify User\'s email address after signup', () => {
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
         expect(res).to.have.status(404);
-        expect(res.body.status).to.equal('failed');
+        expect(res.body.status).to.equal('error');
         expect(res.body.message).to.equal('User does not exist in the database');
         done();
       });
@@ -79,7 +79,7 @@ describe('Verify User\'s email address after signup', () => {
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
         expect(res).to.have.status(409);
-        expect(res.body.status).to.equal('failed');
+        expect(res.body.status).to.equal('error');
         expect(res.body.message).to.equal('Email has already been confirmed');
         done();
       });
@@ -104,7 +104,7 @@ describe('Verify User\'s email address after signup', () => {
         .send({ email: 'danieladek@gmail.com' })
         .end((err, res) => {
           expect(res).to.have.status(409);
-          expect(res.body.status).to.equal('failed');
+          expect(res.body.status).to.equal('error');
           expect(res.body.message).to.equal('Your account had already been verified');
           done();
         });

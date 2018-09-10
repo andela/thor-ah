@@ -55,10 +55,11 @@ if (!isProduction) {
     res.status(err.status || 500);
 
     res.json({
-      errors: {
+      error: {
         message: err.message,
         error: err
-      }
+      },
+      status: 'error'
     });
   });
 }
@@ -68,10 +69,11 @@ if (!isProduction) {
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(err.status || 500);
   return res.json({
-    errors: {
+    error: {
       message: err.message,
       error: {}
-    }
+    },
+    status: 'error'
   });
 });
 

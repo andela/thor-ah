@@ -13,31 +13,32 @@ class UserValidation {
    *  @returns {object} The body of  the response message
    */
   static validateSignUpInput(data) {
-    const errors = {};
+    const error = {};
     data.firstName = data.firstName ? data.firstName : '';
     data.lastName = data.lastName ? data.lastName : '';
     data.username = data.username ? data.username : '';
     data.email = data.email ? data.email : '';
     data.password = data.password ? data.password : '';
     if (!(data.firstName)) {
-      errors.firstName = 'Please enter a valid first name';
+      error.firstName = 'Please enter a valid first name';
     }
     if (!(data.lastName)) {
-      errors.lastName = 'Please enter a valid last name';
+      error.lastName = 'Please enter a valid last name';
     }
     if (!(data.username)) {
-      errors.username = 'Please enter a valid username';
+      error.username = 'Please enter a valid username';
     }
     if (!(data.email) || !validator.isEmail(data.email)) {
-      errors.email = 'Please enter a valid email';
+      error.email = 'Please enter a valid email';
     }
     if (!(data.password) || !validator.isAlphanumeric(data.password)
     || !validator.isLength(data.password, { max: 20 })) {
-      errors.password = 'Password should not exceed 20 characters';
+      error.password = 'Password should not exceed 20 characters';
     }
     return {
-      errors,
-      isValid: isEmpty(errors)
+      error,
+      isValid: isEmpty(error),
+      status: 'error'
     };
   }
 
@@ -47,23 +48,24 @@ class UserValidation {
    * @returns {object} The body of the response message
    */
   static validateLoginInput(data) {
-    const errors = {};
+    const error = {};
 
     data.email = data.email ? data.email : '';
     data.password = data.password ? data.password : '';
 
 
     if (!(data.email)) {
-      errors.email = 'Please enter your registered email';
+      error.email = 'Please enter your registered email';
     }
 
     if (!(data.password)) {
-      errors.password = 'Please enter your password';
+      error.password = 'Please enter your password';
     }
 
     return {
-      errors,
-      isValid: isEmpty(errors)
+      error,
+      isValid: isEmpty(error),
+      status: 'error'
     };
   }
 
@@ -73,7 +75,7 @@ class UserValidation {
    * @returns {object} The body of the response message
    */
   static validateProfileInput(data) {
-    const errors = {};
+    const error = {};
 
     data.firstName = !isEmpty(data.firstName) ? data.firstName : '';
     data.lastName = !isEmpty(data.lastName) ? data.lastName : '';
@@ -86,37 +88,38 @@ class UserValidation {
     if (!validator.isEmpty(data.username) && !validator.isLength(data.username, {
       min: 2, max: 15
     })) {
-      errors.username = 'Username should to be between 2 and 15 characters';
+      error.username = 'Username should to be between 2 and 15 characters';
     }
 
     if (!validator.isEmpty(data.firstName) && !validator.isLength(data.firstName, {
       min: 1, max: 20
     })) {
-      errors.firstName = 'First name should not be more than 20 characters';
+      error.firstName = 'First name should not be more than 20 characters';
     }
 
     if (!validator.isEmpty(data.lastName) && !validator.isLength(data.lastName, {
       min: 1, max: 20
     })) {
-      errors.lastName = 'Last name should not be more than 20 characters';
+      error.lastName = 'Last name should not be more than 20 characters';
     }
 
     if (!isEmpty(data.twitter)) {
       if (!validator.isURL(data.twitter)) {
-        errors.twitter = 'twitter URL is not valid';
+        error.twitter = 'twitter URL is not valid';
       }
     }
 
     if (!isEmpty(data.linkedin)) {
       if (!validator.isURL(data.linkedin)) {
-        errors.linkedin = 'linkedin URL is not valid';
+        error.linkedin = 'linkedin URL is not valid';
       }
     }
 
 
     return {
-      errors,
-      isValid: isEmpty(errors)
+      error,
+      isValid: isEmpty(error),
+      status: 'error'
     };
   }
 }

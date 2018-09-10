@@ -71,7 +71,7 @@ describe('Users Controllers', () => {
         .send(existingUsername)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.username.should.equal('This username has already been registered');
+          res.body.error.username.should.equal('This username has already been registered');
           done();
         });
     });
@@ -81,7 +81,7 @@ describe('Users Controllers', () => {
         .send(existingEmail)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.email.should.equal('This email has already been registered');
+          res.body.error.email.should.equal('This email has already been registered');
           done();
         });
     });
@@ -91,7 +91,7 @@ describe('Users Controllers', () => {
         .send(invalidEmail)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.email.should.equal('Please enter a valid email');
+          res.body.error.email.should.equal('Please enter a valid email');
           done();
         });
     });
@@ -101,7 +101,7 @@ describe('Users Controllers', () => {
         .send(invalidPassword)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.password.should.equal('Password should not exceed 20 characters');
+          res.body.error.password.should.equal('Password should not exceed 20 characters');
           done();
         });
     });
@@ -123,7 +123,7 @@ describe('Users Controllers', () => {
         .send(incorrectDetails)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.password.should.equal('Incorrect Password');
+          res.body.error.password.should.equal('Incorrect Password');
           done();
         });
     });
@@ -133,7 +133,7 @@ describe('Users Controllers', () => {
         .send(emptyEmailField)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.email.should.equal('Please enter your registered email');
+          res.body.error.email.should.equal('Please enter your registered email');
           done();
         });
     });
@@ -143,7 +143,7 @@ describe('Users Controllers', () => {
         .send(emptyPasswordField)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.password.should.equal('Please enter your password');
+          res.body.error.password.should.equal('Please enter your password');
           done();
         });
     });
