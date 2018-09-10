@@ -27,7 +27,7 @@ const incorrectNameInput = {
 const token = `Bearer ${TokenHelper.generateToken({ id: 1 })}`;
 
 describe('Users Controllers', () => {
-  describe('getUsersProfiles()', () => {
+  describe('getUsersProfiles', () => {
     it('should return all users profile', (done) => {
       chai.request(app)
         .get('/api/users')
@@ -43,7 +43,7 @@ describe('Users Controllers', () => {
     });
   });
 
-  describe('getUserProfileByUsername()', () => {
+  describe('getUserProfileByUsername', () => {
     it('should return response for a single user', (done) => {
       chai.request(app)
         .get('/api/users/andelan')
@@ -70,11 +70,23 @@ describe('Users Controllers', () => {
     });
   });
 
-  describe('updateUserProfile()', () => {
+  describe('updateUserProfile', () => {
+    it('should prevent user from updating other users profiles', (done) => {
+      const unauthorizedUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
+      chai.request(app)
+        .put('/api/users/1')
+        .set('Authorization', unauthorizedUserToken)
+        .send(updateContent)
+        .end((error, res) => {
+          expect(res).to.have.status(401);
+          done();
+        });
+    });
     it('should return error for user that does not exist', (done) => {
+      const unexistingUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
       chai.request(app)
         .put('/api/users/10')
-        .set('Authorization', token)
+        .set('Authorization', unexistingUserToken)
         .send(updateContent)
         .end((error, res) => {
           expect(res).to.have.status(404);
