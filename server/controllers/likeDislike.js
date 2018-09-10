@@ -17,7 +17,6 @@ class likesDislikesController {
     const { articleSlug } = req.params;
     const { userId } = req;
     const { reaction } = req.body;
-    console.log('REACTION', reaction);
 
     if (!articleSlug || articleSlug.trim().length < 1) {
       return res.status(400).json({
@@ -33,21 +32,14 @@ class likesDislikesController {
       });
     }
 
-    console.log('LKJHSLKFJHSOIHSFOIFHJS', reaction);
-
-    // if (reaction !== 'like') {
-    //   return res.status(400).json({
-    //     status: 'error',
-    //     message: "Reaction is invalid. Reaction either should be 'like' or 'dislike'.",
-    //   });
-    // }
-
-    // if (reaction !== 'dislike') {
-    //   return res.status(400).json({
-    //     status: 'error',
-    //     message: "Reaction is invalid. Reaction either should be 'like' or 'dislike'.",
-    //   });
-    // }
+    if ((reaction === 'like') !== true) {
+      if ((reaction === 'dislike') !== true) {
+        return res.status(400).json({
+          status: 'error',
+          message: "Reaction must either be 'like' or 'dislike'",
+        });
+      }
+    }
 
     const status = reaction === 'like' ? 'liked' : 'disliked';
 
@@ -68,7 +60,7 @@ class likesDislikesController {
         if (article.authorId === req.userId) {
           return res.status(400).json({
             status: 'error',
-            message: 'You cannot like or dislike your article',
+            message: 'You cannot like or dislike your article.',
           });
         }
 
@@ -78,20 +70,29 @@ class likesDislikesController {
           }
         })
           .then((likeOrDislike) => {
-            if (likeOrDislike) {
-              if (likeOrDislike.status === status) {
-                LikesDislikes.destroy({
-                  where: {
-                    articleId,
-                    userId,
-                  }
-                })
-                  .then(() => res.status(200).json({
-                    status: 'success',
-                    message: 'Reaction removed.',
-                  })).catch(err => next(err));
-              }
-
+            if (likeOrDislike === null || likeOrDislike === undefined) {
+              LikesDislikes.create({
+                articleId,
+                userId,
+                status,
+              })
+                .then(() => res.status(200).json({
+                  status: 'success',
+                  message: `Article ${status} successfully.`,
+                }))
+                .catch(err => next(err));
+            } else if (likeOrDislike.status === status) {
+              LikesDislikes.destroy({
+                where: {
+                  articleId,
+                  userId,
+                }
+              })
+                .then(() => res.status(200).json({
+                  status: 'success',
+                  message: 'Reaction removed.',
+                })).catch(err => next(err));
+            } else {
               LikesDislikes.update({
                 status,
               }, {
@@ -106,17 +107,6 @@ class likesDislikesController {
                 }))
                 .catch(err => next(err));
             }
-
-            LikesDislikes.create({
-              articleId,
-              userId,
-              status,
-            })
-              .then(() => res.status(200).json({
-                status: 'success',
-                message: `Article ${status} successfully.`,
-              }))
-              .catch(err => next(err));
           }).catch(err => next(err));
       }).catch(err => next(err));
   }
