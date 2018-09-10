@@ -42,8 +42,8 @@ class ArticleController {
         newTag,
         status: 'success'
       }))
-      .catch(error => res.status(400).json({
-        error,
+      .catch(errors => res.status(400).json({
+        errors,
         status: 'error'
       }));
   }
