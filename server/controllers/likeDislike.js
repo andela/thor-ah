@@ -149,7 +149,7 @@ class likesDislikesController {
               });
             }
             likesDislikes.forEach((likeAndDislike) => {
-              if (likeAndDislike.status === 'likedßß') {
+              if (likeAndDislike.status === 'liked') {
                 reactions.likes += 1;
               } else if (likeAndDislike.status === 'disliked') {
                 reactions.likes += 1;
