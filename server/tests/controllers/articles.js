@@ -80,8 +80,9 @@ describe('Articles controller', () => {
         .set('Content-Type', 'application/json')
         .send(tag)
         .end((err, res) => {
+          console.log('RESPONSE', res.body);
           res.should.have.status(200);
-          res.body[0].tag.should.equal('andela');
+          res.body.newTag[0].tag.should.equal('andela');
           done();
         });
     });
