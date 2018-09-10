@@ -13,22 +13,23 @@ class articleValidation {
    *  @returns {object} The body of  the response message
    */
   static validateArticle(data) {
-    const errors = {};
+    const error = {};
     data.title = data.title ? data.title : '';
     data.description = data.description ? data.description : '';
     data.body = data.body ? data.body : '';
     if (!(data.title)) {
-      errors.title = 'Please provide article title';
+      error.title = 'Please provide article title';
     }
     if (!(data.description)) {
-      errors.description = 'Please article description';
+      error.description = 'Please article description';
     }
     if (!(data.body)) {
-      errors.body = 'Please supply article body';
+      error.body = 'Please supply article body';
     }
     return {
-      errors,
-      isValid: isEmpty(errors)
+      error,
+      isValid: isEmpty(error),
+      status: 'error'
     };
   }
 
@@ -38,15 +39,16 @@ class articleValidation {
    *  @returns {object} response message
    */
   static validateTag(data) {
-    const errors = {};
+    const error = {};
     data.tag = data.tag ? data.tag : '';
 
     if (!data.tag) {
-      errors.tag = 'Tag name is required';
+      error.tag = 'Tag name is required';
     }
     return {
-      errors,
-      isValid: isEmpty(errors)
+      error,
+      isValid: isEmpty(error),
+      status: 'error'
     };
   }
 }

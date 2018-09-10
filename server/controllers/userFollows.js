@@ -24,7 +24,7 @@ class FollowsController {
       if (!user) {
         return res.status(404).json({
           status: 'error',
-          errors: {
+          error: {
             message: 'User you are trying to follow is missing',
           }
         });
@@ -47,7 +47,7 @@ class FollowsController {
         // already exists
         return res.status(400).json({
           status: 'error',
-          errors: {
+          error: {
             message: 'you are already following this user'
           }
         });
@@ -131,7 +131,7 @@ class FollowsController {
       if (!user) {
         return res.status(404).json({
           status: 'error',
-          errors: {
+          error: {
             message: 'You are not following this user',
           }
         });
@@ -146,7 +146,7 @@ class FollowsController {
         if (userFollow == null) {
           return res.status(404).json({
             status: 'error',
-            errors: {
+            error: {
               message: `you are not following ${username}`,
             }
           });

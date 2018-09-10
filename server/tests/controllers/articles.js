@@ -96,7 +96,7 @@ describe('Articles controller', () => {
         .send(emptyTag)
         .end((err, res) => {
           res.should.have.status(400);
-          res.body.errors.tag.should.equal('Tag name is required');
+          res.body.error.tag.should.equal('Tag name is required');
           res.body.status.should.equal('error');
           done();
         });
@@ -156,7 +156,7 @@ describe('Articles controller', () => {
         .send(Article3)
         .end((err, res) => {
           res.should.have.status(400);
-          res.body.errors.message.should.equal('Article tags must not exceed 5');
+          res.body.error.message.should.equal('Article tags must not exceed 5');
           done();
         });
     });

@@ -144,12 +144,12 @@ The preferred JSON object to be returned by the API should be structured as foll
   ]
 }
 ```
-### Errors and Status Codes
-If a request fails any validations, expect errors in the following format:
+### error and Status Codes
+If a request fails any validations, expect error in the following format:
 
 ```source-json
 {
-  "errors":{
+  "error":{
     "body": [
       "can't be empty"
     ]

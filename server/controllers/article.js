@@ -29,14 +29,23 @@ class ArticleController {
   static createTags(req, res) {
     const { tag } = req.body;
 
-    const { errors, isValid } = articleValidation.validateTag(req.body);
+    const { error, isValid } = articleValidation.validateTag(req.body);
     if (!isValid) {
-      return res.status(400).json({ errors, status: 'error' });
+      return res.status(400).json({
+        error,
+        status: 'error'
+      });
     }
 
     Tag.findOrCreate({ where: { tag } })
-      .then(newTag => res.status(200).json({ newTag, status: 'success' }))
-      .catch(error => res.status(400).json({ error, status: 'error' }));
+      .then(newTag => res.status(200).json({
+        newTag,
+        status: 'success'
+      }))
+      .catch(error => res.status(400).json({
+        error,
+        status: 'error'
+      }));
   }
 
   /**
@@ -48,9 +57,12 @@ class ArticleController {
    */
   static create(req, res) {
     // validation file :(to be moved to validations file)
-    const { errors, isValid } = articleValidation.validateArticle(req.body);
+    const { error, isValid } = articleValidation.validateArticle(req.body);
     if (!isValid) {
-      return res.status(400).json({ errors, status: 'error' });
+      return res.status(400).json({
+        error,
+        status: 'error'
+      });
     }
 
     // get parameters from request
@@ -62,10 +74,10 @@ class ArticleController {
 
     if (tags.length > 5) {
       return res.status(400).json({
-        errors: {
+        error: {
           message: 'Article tags must not exceed 5',
-          status: 'error'
-        }
+        },
+        status: 'error'
       });
     }
 
@@ -143,7 +155,10 @@ class ArticleController {
           status: 'success'
         });
       })
-      .catch(error => res.status(500).json({ error, status: 'error' }));
+      .catch(error => res.status(500).json({
+        error,
+        status: 'error'
+      }));
   }
 
   /**
@@ -174,7 +189,10 @@ class ArticleController {
         article,
         status: 'success'
       }))
-      .catch(error => res.status(400).json({ error, status: 'error' }));
+      .catch(error => res.status(400).json({
+        error,
+        status: 'error'
+      }));
   }
 
   /**
@@ -197,14 +215,16 @@ class ArticleController {
         // return 404 if article not found
         if (!article) {
           return res.status(404).json({
-            errors: { message: 'article not found', status: 'error' }
+            error: { message: 'article not found' },
+            status: 'error'
           });
         }
 
         // check if article belongs to current user
         if (parseInt(article.authorId, 10) !== parseInt(req.userId, 10)) {
           return res.status(403).json({
-            errors: { message: 'forbidden from editing another user\'s article', status: 'error' }
+            error: { message: 'forbidden from editing another user\'s article' },
+            status: 'error'
           });
         }
 
@@ -218,11 +238,20 @@ class ArticleController {
             const updated = self;
             delete updated.id;
             delete updated.authorId;
-            res.status(200).json({ article: updated, status: 'success' });
+            res.status(200).json({
+              article: updated,
+              status: 'success'
+            });
           })
-          .catch(error => res.status(400).json({ error, status: 'error' }));
+          .catch(error => res.status(400).json({
+            error,
+            status: 'error'
+          }));
       })
-      .catch(error => res.status(400).json({ error, status: 'error' }));
+      .catch(error => res.status(400).json({
+        error,
+        status: 'error'
+      }));
   }
 
   /**
@@ -245,7 +274,8 @@ class ArticleController {
         // check if article belongs to current user
         if (parseInt(article.authorId, 10) !== parseInt(req.userId, 10)) {
           return res.status(403).json({
-            errors: { message: 'forbidden from deleting another user\'s article', status: 'error' }
+            error: { message: 'forbidden from deleting another user\'s article' },
+            status: 'error'
           });
         }
 
@@ -254,9 +284,15 @@ class ArticleController {
             message: 'article successfully deleted',
             status: 'success'
           }))
-          .catch(error => res.status(400).json({ error, status: 'error' }));
+          .catch(error => res.status(400).json({
+            error,
+            status: 'error'
+          }));
       })
-      .catch(error => res.status(400).json({ error, status: 'error' }));
+      .catch(error => res.status(400).json({
+        error,
+        status: 'error'
+      }));
   }
 }
 

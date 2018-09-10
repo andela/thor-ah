@@ -28,9 +28,9 @@ class UsersController {
    * @returns {object} The body of the response message
    */
   static userSignup(req, res, next) {
-    const { errors, isValid } = UserValidation.validateSignUpInput(req.body);
+    const { error, isValid } = UserValidation.validateSignUpInput(req.body);
     if (!isValid) {
-      return res.status(400).json({ status: 'error', errors });
+      return res.status(400).json({ status: 'error', error });
     }
     const newUser = {
       firstName: req.body.firstName,
@@ -69,7 +69,7 @@ class UsersController {
           }
           return res.status(400).json({
             status: 'error',
-            errors: {
+            error: {
               email: 'This email has already been registered',
             }
           });
@@ -78,7 +78,7 @@ class UsersController {
       }
       return res.status(400).json({
         status: 'error',
-        errors: {
+        error: {
           username: 'This username has already been registered',
         }
       });
@@ -93,10 +93,10 @@ class UsersController {
    * @returns {object} The body of the resposne message
    */
   static userLogin(req, res, next) {
-    const { errors, isValid } = UserValidation.validateLoginInput(req.body);
+    const { error, isValid } = UserValidation.validateLoginInput(req.body);
 
     if (!isValid) {
-      return res.status(400).json({ errors });
+      return res.status(400).json({ error });
     }
     const { email, password } = req.body;
 
@@ -105,7 +105,7 @@ class UsersController {
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            errors: {
+            error: {
               email: 'User not found'
             }
           });
@@ -128,7 +128,7 @@ class UsersController {
           }
           return res.status(400).json({
             status: 'error',
-            errors: {
+            error: {
               password: 'Incorrect Password'
             }
           });
@@ -179,7 +179,7 @@ class UsersController {
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            errors: {
+            error: {
               message: 'User not found',
             }
           });
@@ -205,7 +205,7 @@ class UsersController {
       firstName, lastName, username, bio, twitter, linkedin, facebook, image
     } = req.body;
 
-    const { errors, isValid } = UserValidation.validateProfileInput(req.body);
+    const { error, isValid } = UserValidation.validateProfileInput(req.body);
 
     isValidNumber(req, res);
 
@@ -218,7 +218,10 @@ class UsersController {
     }
 
     if (!isValid) {
-      return res.status(400).json({ errors, status: 'error' });
+      return res.status(400).json({
+        error,
+        status: 'error'
+      });
     }
 
     User.findById(userId)
@@ -226,7 +229,7 @@ class UsersController {
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            errors: {
+            error: {
               message: 'User not found',
             }
           });
@@ -236,7 +239,7 @@ class UsersController {
             if (userData) {
               return res.status(409).json({
                 status: 'error',
-                errors: {
+                error: {
                   username: 'Username already exists',
                 }
               });
@@ -252,7 +255,10 @@ class UsersController {
               image: image || user.image,
             }).then((updatedUser) => {
               const { dataValues } = updatedUser;
-              return res.status(200).json({ status: 'success', dataValues });
+              return res.status(200).json({
+                status: 'success',
+                dataValues
+              });
             }).catch(next);
           }).catch(next);
       }).catch(next);
@@ -325,14 +331,14 @@ class UsersController {
     if (!email || email.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide a valid email.',
+        message: 'Please provide a valid email.'
       });
     }
 
     if (!reset || reset.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide a valid reset url.',
+        message: 'Please provide a valid reset url.'
       });
     }
 
@@ -342,7 +348,7 @@ class UsersController {
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            message: 'The email you provided is not registered.',
+            message: 'The email you provided is not registered.'
           });
         }
 
@@ -373,7 +379,7 @@ class UsersController {
           .then(() => {
             res.status(200).json({
               status: 'success',
-              message: 'Please follow the instructions in the email that has been sent to your address.',
+              message: 'Please follow the instructions in the email that has been sent to your address.'
             });
           })
           .catch(() => {

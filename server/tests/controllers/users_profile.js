@@ -63,7 +63,7 @@ describe('Users Controllers', () => {
         .set('Authorization', token)
         .end((error, res) => {
           expect(res).to.have.status(404);
-          res.body.errors.message.should.eql('User not found');
+          res.body.error.message.should.eql('User not found');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -90,7 +90,7 @@ describe('Users Controllers', () => {
         .send(updateContent)
         .end((error, res) => {
           expect(res).to.have.status(404);
-          res.body.errors.message.should.eql('User not found');
+          res.body.error.message.should.eql('User not found');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -102,7 +102,7 @@ describe('Users Controllers', () => {
         .send(updateContent)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.message.should.eql('Your request ID is invalid');
+          res.body.error.message.should.eql('Your request ID is invalid');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -128,7 +128,7 @@ describe('Users Controllers', () => {
         .send(incorrectUrlInput)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.linkedin.should.eql('linkedin URL is not valid');
+          res.body.error.linkedin.should.eql('linkedin URL is not valid');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -140,7 +140,7 @@ describe('Users Controllers', () => {
         .send(incorrectUsernameInput)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.errors.username.should.eql('Username should to be between 2 and 15 characters');
+          res.body.error.username.should.eql('Username should to be between 2 and 15 characters');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -152,7 +152,7 @@ describe('Users Controllers', () => {
         .send(existingUsernameInput)
         .end((error, res) => {
           expect(res).to.have.status(409);
-          res.body.errors.username.should.eql('Username already exists');
+          res.body.error.username.should.eql('Username already exists');
           expect(res.body).to.be.an('object');
           done();
         });
@@ -163,7 +163,7 @@ describe('Users Controllers', () => {
         .set('Authorization', token)
         .send(incorrectNameInput)
         .end((error, res) => {
-          const { firstName, lastName } = res.body.errors;
+          const { firstName, lastName } = res.body.error;
           expect(res).to.have.status(400);
           firstName.should.eql('First name should not be more than 20 characters');
           lastName.should.eql('Last name should not be more than 20 characters');
