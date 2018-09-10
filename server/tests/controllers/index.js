@@ -4,3 +4,4 @@ import './articles';
 import './userFollows';
 import './emailVerification.test';
 import './comments';
+import './likeDislike';

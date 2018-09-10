@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     authorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    likeDislikeId: DataTypes.INTEGER
+    }
   }, {});
 
   Article.associate = (models) => {
@@ -36,6 +35,9 @@ module.exports = (sequelize, DataTypes) => {
 
     Article.hasMany(Comment, {
       foreignKey: 'articleId'
+    });
+    Article.hasMany(models.LikesDislikes, {
+      foreignKey: 'articleId',
     });
   };
   return Article;
