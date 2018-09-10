@@ -82,6 +82,7 @@ describe('Articles controller', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.newTag[0].tag.should.equal('andela');
+          res.body.status.should.equal('success');
           done();
         });
     });
@@ -96,6 +97,7 @@ describe('Articles controller', () => {
         .end((err, res) => {
           res.should.have.status(400);
           res.body.errors.tag.should.equal('Tag name is required');
+          res.body.status.should.equal('error');
           done();
         });
     });
@@ -121,6 +123,7 @@ describe('Articles controller', () => {
           createdArticle.should.have.property('updatedAt');
           author.should.be.a('object');
           testSlug = createdArticle.slug;
+          res.body.status.should.equal('success');
           done();
         });
     });
