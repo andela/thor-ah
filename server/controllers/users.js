@@ -147,6 +147,7 @@ class UsersController {
       }
     )
       .then(users => res.status(200).json({
+        // add success message here.
         profiles: users,
       }))
       .catch(next);
@@ -198,6 +199,15 @@ class UsersController {
     const { errors, isValid } = UserValidation.validateProfileInput(req.body);
 
     isValidNumber(req, res);
+
+    // check if user in current session is same with user being updated
+    // prevent user from updating another users' profile
+    if (Number(userId) !== Number(req.userId)) {
+      const error = new Error('you are not allowed to update another user\'s profile');
+      error.status = 401;
+      return next(error);
+    }
+
     if (!isValid) {
       return res.status(400).json({ errors });
     }
