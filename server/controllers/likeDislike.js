@@ -57,13 +57,6 @@ class likesDislikesController {
         }
         const articleId = article.id;
 
-        // if (article.authorId === req.userId) {
-        //   return res.status(400).json({
-        //     status: 'error',
-        //     message: 'You cannot like or dislike your article.',
-        //   });
-        // }
-
         LikesDislikes.findOne({
           where: {
             userId,
