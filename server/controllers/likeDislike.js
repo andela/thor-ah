@@ -113,7 +113,7 @@ class likesDislikesController {
    */
   static getLikesDislikes(req, res, next) {
     const { articleSlug } = req.params;
-    const reactions = {};
+    const reactions = { likes: 0, dislikes: 0 };
     if (!articleSlug || articleSlug.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
@@ -121,7 +121,7 @@ class likesDislikesController {
       });
     }
 
-    Article.findOne({
+    return Article.findOne({
       where: {
         slug: articleSlug,
       }
@@ -133,13 +133,33 @@ class likesDislikesController {
             message: 'Article was not found.',
           });
         }
-        LikesDislikes.find({
+        LikesDislikes.findAll({
           where: {
-            status: 'liked',
             articleId: article.id,
           },
         })
-          .then(c => res.status(200).json(c)).catch(err => next(err));
+          .then((likesDislikes) => {
+            if (likesDislikes === null) {
+              res.status(200).json({
+                status: 'success',
+                reaction: {
+                  likes: 0,
+                  dislikes: 0,
+                }
+              });
+            }
+            likesDislikes.forEach((likeAndDislike) => {
+              if (likeAndDislike.status === 'likedßß') {
+                reactions.likes += 1;
+              } else if (likeAndDislike.status === 'disliked') {
+                reactions.likes += 1;
+              }
+            });
+            res.status(200).json({
+              status: 'success',
+              reactions,
+            });
+          });
       }).catch(err => next(err));
   }
 }

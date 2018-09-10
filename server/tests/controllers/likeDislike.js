@@ -22,7 +22,7 @@ const articleAuthor = {
 };
 
 describe('likeDislike Controller', () => {
-  describe('likeDislike', () => {
+  describe('POST likeDislike', () => {
     it('should log author in for test', (done) => {
       chai.request(app)
         .post('/api/users/login')
@@ -40,7 +40,7 @@ describe('likeDislike Controller', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .send(article)
         .end((err, res) => {
-          articleSlug = res.body.article.slug;
+          articleSlug = res.body.newArticleAlert.createdArticle.slug;
           done();
         });
     });
@@ -104,6 +104,20 @@ describe('likeDislike Controller', () => {
         .end((err, res) => {
           res.body.status.should.equal('success');
           res.body.message.should.equal('Reaction removed.');
+          done();
+        });
+    });
+  });
+  describe('GET likeDislike', () => {
+    it('should return ratings/reactions for an article', (done) => {
+      chai.request(app)
+        .get(`/api/articles/${articleSlug}/reactions`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .end((err, res) => {
+          res.body.status.should.equal('success');
+          res.body.reactions.should.be.a('object');
           done();
         });
     });
