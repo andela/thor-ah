@@ -8,10 +8,9 @@ chai.should();
 
 chai.use(chaiHttp);
 
-const rightArticleSlug = {};
-let wrongArticleSlug;
+let articleSlug;
+const wrongArticleSlug = 'This-article-does-not-exist138493';
 let userToken;
-let authorToken;
 const article = {
   title: 'This is the title for a simple article',
   body: 'This one should be a very long that all other attributes since it is the main content of the article. I think description should be removed and it should be generated from article body',
@@ -21,28 +20,14 @@ const articleAuthor = {
   email: 'author1@mail.com',
   password: process.env.AUTHOR_PASSWORD,
 };
-const testUser = {
-  email: 'author2@mail.com',
-  password: process.env.AUTHOR_PASSWORD,
-};
 
 describe('likeDislike Controller', () => {
-  before(() => {
+  describe('likeDislike', () => {
     it('should log author in for test', (done) => {
       chai.request(app)
         .post('/api/users/login')
         .set('Accept', 'application/json')
         .send(articleAuthor)
-        .end((err, res) => {
-          authorToken = res.body.user.token;
-          done();
-        });
-    });
-    it('should log user in for test', (done) => {
-      chai.request(app)
-        .post('/api/users/login')
-        .set('Accept', 'application/json')
-        .send(testUser)
         .end((err, res) => {
           userToken = res.body.user.token;
           done();
@@ -52,33 +37,21 @@ describe('likeDislike Controller', () => {
       chai.request(app)
         .post('/api/articles')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Authorization', `Bearer ${userToken}`)
         .send(article)
         .end((err, res) => {
-          rightArticleSlug.like = res.body.article.slug;
+          articleSlug = res.body.article.slug;
           done();
         });
     });
-    it('should create article for test', (done) => {
-      chai.request(app)
-        .post('/api/articles')
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${authorToken}`)
-        .send(article)
-        .end((err, res) => {
-          rightArticleSlug.dislike = res.body.article.slug;
-          done();
-        });
-    });
-  });
-  describe('likeDislike', () => {
     it('should return error if token is invalid', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug}/reactions`)
+        .post(`/api/articles/${articleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
-          res.body.status.should.equal('error');
+          res.body.errors.should.be.a('object');
+          res.body.errors.message.should.equal('no token provided');
           done();
         });
     });
@@ -88,46 +61,49 @@ describe('likeDislike Controller', () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ status: 'like' })
+        .send({ reaction: 'like' })
         .end((err, res) => {
           res.body.status.should.equal('error');
-          res.body.message.should.equal('Sorry, article does not exist.');
+          res.body.message.should.equal('Article was not found.');
           done();
         });
     });
     it('should successfully like an article', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug.like}/reactions`)
+        .post(`/api/articles/${articleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
+        .send({ reaction: 'like' })
         .end((err, res) => {
           res.body.status.should.equal('success');
-          res.body.message.should.equal('Article liked.');
+          res.body.message.should.equal('Article liked successfully.');
           done();
         });
     });
     it('should successfully dislike an article', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug.dislike}/dislikes`)
+        .post(`/api/articles/${articleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
+        .send({ reaction: 'dislike' })
         .end((err, res) => {
           res.body.status.should.equal('success');
-          res.body.message.should.equal('Article disliked.');
+          res.body.message.should.equal('Article disliked successfully.');
           done();
         });
     });
     it('should remove like or dislike if article\'s incoming status and current status is the same', (done) => {
       chai.request(app)
-        .post(`/api/articles/${rightArticleSlug.like}/likes`)
+        .post(`/api/articles/${articleSlug}/reactions`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${userToken}`)
+        .send({ reaction: 'dislike' })
         .end((err, res) => {
           res.body.status.should.equal('success');
-          res.body.message.should.equal('Article liked.');
+          res.body.message.should.equal('Reaction removed.');
           done();
         });
     });

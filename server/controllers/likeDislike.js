@@ -103,6 +103,45 @@ class likesDislikesController {
           }).catch(err => next(err));
       }).catch(err => next(err));
   }
+
+  /**
+   * @desc Get all reaction for an article
+   * @param {obj} req request body
+   * @param {obj} res response body
+   * @param {obj} next next action
+   * @return {obj} returns an object
+   */
+  static getLikesDislikes(req, res, next) {
+    const { articleSlug } = req.params;
+    const reactions = {};
+    if (!articleSlug || articleSlug.trim().length < 1) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a valid article slug.',
+      });
+    }
+
+    Article.findOne({
+      where: {
+        slug: articleSlug,
+      }
+    })
+      .then((article) => {
+        if (!article) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'Article was not found.',
+          });
+        }
+        LikesDislikes.find({
+          where: {
+            status: 'liked',
+            articleId: article.id,
+          },
+        })
+          .then(c => res.status(200).json(c)).catch(err => next(err));
+      }).catch(err => next(err));
+  }
 }
 
 export default likesDislikesController;

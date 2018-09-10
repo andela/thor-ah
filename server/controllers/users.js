@@ -298,8 +298,7 @@ class UsersController {
   * @memberof Users
   */
   static recoverPassword(req, res, next) {
-    const { email } = req.body.user;
-    const { reset } = req.body.links;
+    const { email } = req.body;
 
     if (!email || email.trim().length < 1) {
       return res.status(400).json({
@@ -307,14 +306,6 @@ class UsersController {
         message: 'Please provide a valid email.',
       });
     }
-
-    if (!reset || reset.trim().length < 1) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Please provide a valid reset url.',
-      });
-    }
-
     User
       .findOne({ where: { email } })
       .then((user) => {
@@ -325,8 +316,8 @@ class UsersController {
           });
         }
 
-        const token = jwt.sign({ email }, process.env.JWT_KEY, { expiresIn: '2h' });
-        const resetLink = `${reset}/${token}`;
+        const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '2h' });
+        const resetLink = `https://thor-ah.com/password/reset/${token}`;
 
         const msg = `
           <div style="font-size: 17px">
