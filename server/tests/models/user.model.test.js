@@ -5,6 +5,8 @@ import {
   checkPropertyExists
 } from 'sequelize-test-helpers';
 
+import { expect } from 'chai';
+
 import UserModel from '../../models/User';
 
 describe('user model', () => {
@@ -27,5 +29,33 @@ describe('user model', () => {
       'linkedin',
       'hash'
     ].forEach(checkPropertyExists(user));
+  });
+
+  context('associations', () => {
+    const Article = 'some article';
+    const Comment = 'some comment';
+    const Reply = 'some reply';
+    const CommentLike = 'some like';
+
+    it('defined a belongsToMany association with User', () => {
+      User.associate({ User });
+      expect(User.belongsToMany.calledWith(User)).to.equal(true);
+    });
+    it('defined a hasMany association with Articles', () => {
+      User.associate({ Article });
+      expect(User.hasMany.calledWith(Article)).to.equal(true);
+    });
+    it('defined a hasMany association with Comments', () => {
+      User.associate({ Comment });
+      expect(User.hasMany.calledWith(Comment)).to.equal(true);
+    });
+    it('defined a hasMany association with Replies', () => {
+      User.associate({ Reply });
+      expect(User.hasMany.calledWith(Reply)).to.equal(true);
+    });
+    it('defined a hasMany association with CommentLikes', () => {
+      User.associate({ CommentLike });
+      expect(User.hasMany.calledWith(CommentLike)).to.equal(true);
+    });
   });
 });
