@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const LikesDislikes = sequelize.define('LikesDislikes', {
-    status: {
-      type: DataTypes.ENUM('liked', 'disliked'),
+    reaction: {
+      type: DataTypes.ENUM(0, 1),
       allowNull: false,
     },
   }, {});

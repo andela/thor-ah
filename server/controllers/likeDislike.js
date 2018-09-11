@@ -41,7 +41,7 @@ class likesDislikesController {
       }
     }
 
-    const status = reaction === 'like' ? 'liked' : 'disliked';
+    const status = reaction === 'like' ? '1' : '0';
 
     Article.findOne({
       where: {
@@ -67,14 +67,14 @@ class likesDislikesController {
               LikesDislikes.create({
                 articleId,
                 userId,
-                status,
+                reaction: status,
               })
                 .then(() => res.status(200).json({
                   status: 'success',
-                  message: `Article ${status} successfully.`,
+                  message: `Article ${reaction}d successfully.`,
                 }))
                 .catch(err => next(err));
-            } else if (likeOrDislike.status === status) {
+            } else if (likeOrDislike.reaction === status) {
               LikesDislikes.destroy({
                 where: {
                   articleId,
@@ -87,7 +87,7 @@ class likesDislikesController {
                 })).catch(err => next(err));
             } else {
               LikesDislikes.update({
-                status,
+                reaction: status,
               }, {
                 where: {
                   userId,
@@ -96,7 +96,7 @@ class likesDislikesController {
               })
                 .then(() => res.status(200).json({
                   status: 'success',
-                  message: `Article ${status} successfully.`,
+                  message: `Article ${reaction}d successfully.`,
                 }))
                 .catch(err => next(err));
             }
@@ -149,9 +149,9 @@ class likesDislikesController {
               });
             }
             likesDislikes.forEach((likeAndDislike) => {
-              if (likeAndDislike.status === 'liked') {
+              if (likeAndDislike.reaction === 1) {
                 reactions.likes += 1;
-              } else if (likeAndDislike.status === 'disliked') {
+              } else if (likeAndDislike.reaction === 0) {
                 reactions.dislikes += 1;
               }
             });

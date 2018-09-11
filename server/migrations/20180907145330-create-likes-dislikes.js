@@ -14,8 +14,8 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    status: {
-      type: Sequelize.ENUM('liked', 'disliked'),
+    reaction: {
+      type: Sequelize.ENUM(0, 1),
       allowNull: false,
     },
     createdAt: {
