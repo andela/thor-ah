@@ -1,4 +1,7 @@
-import { Category } from '../models';
+import {
+  Category, Article, ArticleCategory
+} from '../models';
+import TokenHelper from '../utils/TokenHelper';
 
 /**
  *
@@ -31,7 +34,7 @@ class CategoryController {
 
   /**
    * @description Create a new category
-   * @param  {object} req body of the user's request
+   * @param  {object} req body of the Admin's request
    * @param  {function} res response from the server
    * @returns {object} The body of the response message
    * @memberof CategoryController
@@ -65,10 +68,10 @@ class CategoryController {
             return Category.create({
               name: newCategory,
             })
-              .then(category => (
+              .then(createdCategory => (
                 res.status(201).json({
                   status: 'success',
-                  category
+                  createdCategory
                 })
               ));
           })
@@ -83,7 +86,7 @@ class CategoryController {
 
   /**
    * @description Create a new category
-   * @param  {object} req body of the user's request
+   * @param  {object} req body of the Admin's request
    * @param  {function} res response from the server
    * @returns {object} The body of the response message
    * @memberof CategoryController
@@ -133,7 +136,7 @@ class CategoryController {
 
   /**
    * @description Create a new category
-   * @param  {object} req body of the user's request
+   * @param  {object} req body of the Admin's request
    * @param  {function} res response from the server
    * @returns {object} The body of the response message
    * @memberof CategoryController
@@ -165,6 +168,200 @@ class CategoryController {
           error,
         })
       ));
+  }
+
+  /**
+   * @description Adds an article to a  category
+   * @param  {object} req body of the Author's request
+   * @param  {function} res response from the server
+   * @param  {function} next response from the server
+   * @returns {object} The body of the response message
+   * @memberof CategoryController
+   */
+  static addArticleToACategory(req, res, next) {
+    const { articleTitle } = req.body;
+    const { categoryName } = req.params;
+    // Check if category exists
+    Category.findOne({
+      where: { name: categoryName }
+    })
+      .then((category) => {
+        if (!category) {
+          return res.status(404).json({
+            status: 'error',
+            error: 'Category does not exist'
+          });
+        }
+        // If category exists, check if article exists
+        Article.findOne(({
+          where: { title: articleTitle }
+        }))
+          .then((article) => {
+            if (!article) {
+              return res.status(404).json({
+                status: 'error',
+                error: 'Article does not exist'
+              });
+            }
+            const categoryId = category.id;
+            const articleId = article.id;
+            const { userId } = req;
+            if (parseInt(article.authorId, 10) !== parseInt(userId, 10)) {
+              return res.status(403).json({
+                status: 'error',
+                error: 'You cannot modify another author\'s article'
+              });
+            }
+            return ArticleCategory.find({
+              where: { categoryId, articleId }
+            })
+              .then((articlePresent) => {
+                if (articlePresent) {
+                  return res.status(409).json({
+                    status: 'error',
+                    error: 'Article has already been added to this Category',
+                  });
+                }
+                return ArticleCategory.count({
+                  where: { articleId }
+                })
+                  .then((articleCount) => {
+                    if (parseInt(articleCount, 10) === 3) {
+                      return res.status(406).json({
+                        status: 'error',
+                        error: 'You cannot have more than 3 categories for each article'
+                      });
+                    }
+                    return ArticleCategory.create({
+                      articleId, categoryId
+                    })
+                      .then(created => (
+                        res.status(202).json({
+                          status: 'success',
+                          created
+                        })
+                      ));
+                  });
+              })
+              .catch(next);
+          })
+          .catch(error => res.status(400).json({ status: 'error', error }));
+      })
+      .catch(error => res.status(400).json({
+        status: 'error',
+        error
+      }));
+  }
+
+  /**
+   * @description Adds an article to a  category
+   * @param  {object} req body of the Author's request
+   * @param  {function} res response from the server
+   * @param  {function} next response from the server
+   * @returns {object} The body of the response message
+   * @memberof CategoryController
+   */
+  static getAllArticlesForACategory(req, res, next) {
+    const { categoryName } = req.params.categoryName;
+    Category.findOne({
+      where: { name: categoryName },
+      include: [{
+        model: Article,
+        as: 'category',
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      }],
+    })
+      .then((category) => {
+        if (!category) {
+          return res.status(404).json({
+            status: 'error',
+            error: 'Category does not exist'
+          });
+        }
+        return res.status(200).json({
+          status: 'success',
+          category
+        });
+      })
+      .catch(next);
+  }
+
+  /**
+   * @description Adds an article to a  category
+   * @param  {object} req body of the Author's request
+   * @param  {function} res response from the server
+   * @param  {function} next response from the server
+   * @returns {object} The body of the response message
+   * @memberof CategoryController
+   */
+  static removeArticleFromACategory(req, res) {
+    const { articleTitle } = req.body;
+    const { categoryName } = req.params;
+
+    // Check if category exists
+    Category.findOne({
+      where: { name: categoryName }
+    })
+      .then((category) => {
+        if (!category) {
+          return res.status(404).json({
+            status: 'error',
+            error: 'Category does not exist'
+          });
+        }
+        // If category exists, check if article exists
+        Article.findOne(({
+          where: { title: articleTitle }
+        }))
+          .then((article) => {
+            if (!article) {
+              return res.status(404).json({
+                status: 'error',
+                error: 'Article does not exist'
+              });
+            }
+            const categoryId = category.id;
+            const articleId = article.id;
+            const { authorization } = req.headers;
+            const token = authorization.split(' ')[1];
+            const decoded = TokenHelper.decodeToken(token);
+            const userId = decoded.id;
+            if (article.authorId !== userId) {
+              return res.status(403).json({
+                status: 'error',
+                error: 'You cannot remove another author\'s article from this category',
+              });
+            }
+            return ArticleCategory.findOne({
+              where: { articleId, categoryId }
+            })
+              .then((articleJoin) => {
+                if (!articleJoin) {
+                  return res.status(404).json({
+                    status: 'error',
+                    error: 'You cannot remove an article that does not exists in this category'
+                  });
+                }
+                return articleJoin.destroy()
+                  .then(() => res.status(202).json({
+                    status: 'success',
+                    message: `Your article has been removed from ${categoryName}`
+                  }))
+                  .catch(error => (
+                    res.status(400).json({
+                      status: 'error',
+                      error
+                    })
+                  ));
+              })
+              .catch(error => res.status(400).json({ status: 'error', error }));
+          })
+          .catch(error => res.status(400).json({ status: 'error', error }));
+      })
+      .catch(error => res.status(400).json({
+        status: 'error',
+        error
+      }));
   }
 }
 
