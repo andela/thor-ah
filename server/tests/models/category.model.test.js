@@ -8,7 +8,7 @@ import {
 
 import CategoryModel from '../../models/category';
 
-describe.only('Category Model', () => {
+describe('Category Model', () => {
   const Category = CategoryModel(sequelize, dataTypes);
   const category = new Category();
 

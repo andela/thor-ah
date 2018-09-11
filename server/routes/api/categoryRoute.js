@@ -16,8 +16,8 @@ categoryRouter.put('/:categoryName', authenticateUser, authorizeAdmin, CategoryC
 
 // Admin can delete a category
 categoryRouter.delete('/:categoryName', authenticateUser, authorizeAdmin, CategoryController.deleteCategory);
-// Authors can add their article(s) to a category
 
+// Authors can add their article(s) to a category
 categoryRouter.post('/:categoryName', authenticateUser, authorizeAuthor,
   CategoryController.addArticleToACategory);
 
@@ -28,6 +28,5 @@ categoryRouter.get('/:categoryName/articles', authenticateUser,
 // Authors can remove their article(s) from a category
 categoryRouter.delete('/:categoryName/articles', authenticateUser, authorizeAuthor,
   CategoryController.removeArticleFromACategory);
-
 
 export default categoryRouter;

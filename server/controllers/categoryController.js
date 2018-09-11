@@ -1,6 +1,4 @@
-import {
-  Category, Article, ArticleCategory
-} from '../models';
+import { Category, Article, ArticleCategory } from '../models';
 import TokenHelper from '../utils/TokenHelper';
 
 /**
@@ -85,7 +83,7 @@ class CategoryController {
   }
 
   /**
-   * @description Create a new category
+   * @description Updates an existing category
    * @param  {object} req body of the Admin's request
    * @param  {function} res response from the server
    * @returns {object} The body of the response message
@@ -135,7 +133,7 @@ class CategoryController {
   }
 
   /**
-   * @description Create a new category
+   * @description Delete an existing category
    * @param  {object} req body of the Admin's request
    * @param  {function} res response from the server
    * @returns {object} The body of the response message
@@ -254,7 +252,7 @@ class CategoryController {
   }
 
   /**
-   * @description Adds an article to a  category
+   * @description Get all articles in a category
    * @param  {object} req body of the Author's request
    * @param  {function} res response from the server
    * @param  {function} next response from the server
@@ -287,7 +285,7 @@ class CategoryController {
   }
 
   /**
-   * @description Adds an article to a  category
+   * @description Remove an article from a category
    * @param  {object} req body of the Author's request
    * @param  {function} res response from the server
    * @param  {function} next response from the server
