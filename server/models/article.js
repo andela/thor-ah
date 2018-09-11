@@ -42,9 +42,15 @@ module.exports = (sequelize, DataTypes) => {
       as: 'tags',
       foreignKey: 'articleId',
     });
-
     Article.hasMany(Comment, {
       foreignKey: 'articleId'
+    });
+    Article.belongsToMany(models.Category, {
+      through: {
+        model: models.ArticleCategory,
+      },
+      foreignKey: 'articleId',
+      as: 'article'
     });
   };
   return Article;

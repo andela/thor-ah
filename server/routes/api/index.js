@@ -5,6 +5,7 @@ import userRoutes from './users';
 import userFollowRoutes from './userFollows';
 import welcomeRoute from './welcome';
 import socialAuth from './socialauth';
+import categoryRouter from './categoryRoute';
 
 
 const routes = Router();
@@ -26,6 +27,7 @@ routes.use('/users/follow', userFollowRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
 routes.use('/articles', articlesRouter);
+routes.use('/article-categories', categoryRouter);
 
 
 export default routes;
