@@ -223,50 +223,6 @@ class CommentsController {
       .catch(next);
   }
 
-  /**
-   * create Comment reply
-   *
-   * @static
-   * @param {object} req express request object
-   * @param {object} res express response object
-   * @param {object} next next middleware
-   * @returns {next} next calls next
-   * @memberof CommentsController
-   */
-  static getCommentById(req, res, next) {
-    const { commentId } = req.params;
-
-
-    Comment.findOne({
-      where: {
-        id: commentId
-      },
-      include: [{
-        model: User,
-        as: 'commenter',
-        include: [],
-        attributes: {
-          exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
-        }
-      }, {
-        model: CommentLike,
-        as: 'likes',
-        where: {
-          reaction: 'liked',
-        },
-        attributes: ['userId', 'username', 'commentId', 'reaction']
-      }, {
-        model: CommentLike,
-        as: 'dislikes',
-        where: {
-          reaction: 'disliked',
-        },
-        attributes: ['userId', 'username', 'commentId', 'reaction']
-      }]
-    })
-      .then(comment => res.status(200).json(comment))
-      .catch(next);
-  }
 
   /**
    * @description query method for users to like or dislike comments made on articles
@@ -388,7 +344,7 @@ class CommentsController {
             });
           }
         }
-        CommentLikesDislike.findOne({
+        return CommentLikesDislike.findOne({
           where: { userId }
         })
           .then((likedislike) => {
