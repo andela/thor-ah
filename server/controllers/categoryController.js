@@ -68,10 +68,10 @@ class CategoryController {
             return Category.create({
               name: newCategory,
             })
-              .then(category => (
+              .then(createdCategory => (
                 res.status(201).json({
                   status: 'success',
-                  category
+                  createdCategory
                 })
               ));
           })
@@ -179,8 +179,8 @@ class CategoryController {
    * @memberof CategoryController
    */
   static addArticleToACategory(req, res, next) {
-    const articleTitle = req.body.articleTitle;
-    const categoryName = req.params.categoryName;
+    const { articleTitle } = req.body;
+    const { categoryName } = req.params;
     // Check if category exists
     Category.findOne({
       where: { name: categoryName }
@@ -205,11 +205,8 @@ class CategoryController {
             }
             const categoryId = category.id;
             const articleId = article.id;
-            const { authorization } = req.headers;
-            const token = authorization.split(' ')[1];
-            const decoded = TokenHelper.decodeToken(token);
-            const userId = decoded.id;
-            if (article.authorId !== userId) {
+            const { userId } = req;
+            if (parseInt(article.authorId, 10) !== parseInt(userId, 10)) {
               return res.status(403).json({
                 status: 'error',
                 error: 'You cannot modify another author\'s article'
@@ -225,15 +222,26 @@ class CategoryController {
                     error: 'Article has already been added to this Category',
                   });
                 }
-                return ArticleCategory.create({
-                  articleId, categoryId
+                return ArticleCategory.count({
+                  where: { articleId }
                 })
-                  .then(created => (
-                    res.status(202).json({
-                      status: 'success',
-                      created
+                  .then((articleCount) => {
+                    if (parseInt(articleCount, 10) === 3) {
+                      return res.status(406).json({
+                        status: 'error',
+                        error: 'You cannot have more than 3 categories for each article'
+                      });
+                    }
+                    return ArticleCategory.create({
+                      articleId, categoryId
                     })
-                  ));
+                      .then(created => (
+                        res.status(202).json({
+                          status: 'success',
+                          created
+                        })
+                      ));
+                  });
               })
               .catch(next);
           })
@@ -287,8 +295,8 @@ class CategoryController {
    * @memberof CategoryController
    */
   static removeArticleFromACategory(req, res) {
-    const articleTitle = req.body.articleTitle;
-    const categoryName = req.params.categoryName;
+    const { articleTitle } = req.body;
+    const { categoryName } = req.params;
 
     // Check if category exists
     Category.findOne({

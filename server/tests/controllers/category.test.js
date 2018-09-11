@@ -78,7 +78,7 @@ describe('Categorizes articles', () => {
 
 
   // Admin can do CRUD operations for categories
-  describe('Accepts CRUD operations from an Admin', () => {
+  describe.only('Accepts CRUD operations from an Admin', () => {
     it('Gets all categories for an Admin', (done) => {
       chai.request(app)
         .get('/api/article-categories')
@@ -105,8 +105,8 @@ describe('Categorizes articles', () => {
         .end((req, res) => {
           expect(res).to.have.status(201);
           expect(res.body).to.have.property('status');
-          expect(res.body).to.have.property('category');
-          expect(res.body.category.name).to.equal('Design');
+          expect(res.body).to.have.property('createdCategory');
+          expect(res.body.createdCategory.name).to.equal('Design');
           done();
         });
     });
@@ -225,7 +225,7 @@ describe('Categorizes articles', () => {
     });
   });
 
-  describe('Author can add their article to any category', () => {
+  describe.only('Author can add their article to any category', () => {
     // An author can post an article ============================
     it('Posts an article for an Author', (done) => {
       chai.request(app)
@@ -265,7 +265,66 @@ describe('Categorizes articles', () => {
         });
     });
 
-    // Author cannot add the same article twice
+
+    it('Adds an author\'s article to a category', (done) => {
+      chai.request(app)
+        .post('/api/article-categories/Business')
+        .send({ articleTitle: 'coding' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(202);
+          expect(res.body).to.have.property('status');
+          expect(res.body.status).to.equal('success');
+          expect(res.body).to.have.property('created');
+          expect(res.body.created).to.have.property('articleId');
+          expect(res.body.created).to.have.property('categoryId');
+          expect(res.body.created).to.have.property('updatedAt');
+          expect(res.body.created).to.have.property('createdAt');
+          done();
+        });
+    });
+
+    it('Adds an author\'s article to a category', (done) => {
+      chai.request(app)
+        .post('/api/article-categories/Health')
+        .send({ articleTitle: 'coding' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(202);
+          expect(res.body).to.have.property('status');
+          expect(res.body.status).to.equal('success');
+          expect(res.body).to.have.property('created');
+          expect(res.body.created).to.have.property('articleId');
+          expect(res.body.created).to.have.property('categoryId');
+          expect(res.body.created).to.have.property('updatedAt');
+          expect(res.body.created).to.have.property('createdAt');
+          done();
+        });
+    });
+
+    // Author cannot add their article(s) to more than 3 categories
+    it('Returns an error if author tries to add an article to more than 3 categories', (done) => {
+      chai.request(app)
+        .post('/api/article-categories/Politics')
+        .send({ articleTitle: 'coding' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          console.log(res.body)
+          expect(res).to.have.status(406);
+          expect(res).to.have.property('status');
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error).to.equal('You cannot have more than 3 categories for each article');
+          done();
+        });
+    });
+
+    // Author cannot add the same article twice to the same category
     it('Returns an error if author tries to add another author\'s article', (done) => {
       chai.request(app)
         .post('/api/article-categories/Technology')
@@ -316,11 +375,11 @@ describe('Categorizes articles', () => {
         });
     });
 
-    // Author cannot add another user's article to any category
+    // Author cannot add another author's article to any category
     it('Returns an error if author tries to add another author\'s article', (done) => {
       chai.request(app)
         .post('/api/article-categories/Technology')
-        .send({ articleTitle: 'test article' })
+        .send({ articleTitle: 'coding' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${author2Token}`)
         .set('Content-Type', 'application/json')
