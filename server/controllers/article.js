@@ -3,7 +3,9 @@ import db from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 
-const { Article, User, Tag } = db;
+const {
+  Article, User, Tag, Comment
+} = db;
 
 /**
  * Article controller function
@@ -182,6 +184,8 @@ class ArticleController {
         through: {
           attributes: [],
         },
+      }, {
+        model: Comment,
       }],
       attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })

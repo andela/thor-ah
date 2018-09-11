@@ -12,7 +12,7 @@ router.post('/:article_slug/comments', authenticateUser, CommentsController.crea
 router.post('/:article_slug/comments/:commentId', authenticateUser, CommentsController.createCommentReply);
 router.get('/:article_slug/comments/:commentId', authenticateUser, CommentsController.getCommentById);
 router.post('/:article_slug/comments/:commentId/:reaction', authenticateUser, CommentsController.likeOrDislikeComment);
-router.get('/:article_slug/comments/:commentId/reactions', authenticateUser, CommentsController.getCommentslikesandDislikes);
+router.get('/:article_slug/comments/:commentId/reaction_status', authenticateUser, CommentsController.checkReactionStatus);
 router.get('/', authenticateUser, ArticleController.getAll);
 router.get('/:article_slug', authenticateUser, ArticleController.getSpecific);
 router.put('/:article_slug', authenticateUser, ArticleController.update);

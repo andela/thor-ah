@@ -8,8 +8,9 @@ require('dotenv').config();
 chai.should();
 chai.use(chaiHttp);
 
-const token1 = `Bearer ${TokenHelper.generateToken({ id: 2, username: 'randomUser' })}`;
-const token2 = `Bearer ${TokenHelper.generateToken({ id: 3, username: 'randomAuthor1' })}`;
+const token1 = `Bearer ${TokenHelper.generateToken({ id: 3, username: 'randomUser' })}`;
+const token2 = `Bearer ${TokenHelper.generateToken({ id: 4, username: 'awesomeAuthor' })}`;
+const token3 = `Bearer ${TokenHelper.generateToken({ id: 6, username: 'danieladek' })}`;
 
 describe('Comment Like Controller', () => {
   describe('likeOrDislikeComment', () => {
@@ -17,9 +18,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/like')
         .set('Authorization', token1)
-        .send({
-          reaction: 'liked',
-        })
+        .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
@@ -30,9 +29,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/like')
         .set('Authorization', token1)
-        .send({
-          reaction: 'liked',
-        })
+        .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
@@ -45,9 +42,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/dislike')
         .set('Authorization', token1)
-        .send({
-          reaction: 'disliked',
-        })
+        .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
@@ -58,9 +53,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/dislike')
         .set('Authorization', token1)
-        .send({
-          reaction: 'disliked',
-        })
+        .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
@@ -73,9 +66,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/like')
         .set('Authorization', token2)
-        .send({
-          reaction: 'liked',
-        })
+        .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
@@ -86,9 +77,7 @@ describe('Comment Like Controller', () => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/dislike')
         .set('Authorization', token2)
-        .send({
-          reaction: 'disliked',
-        })
+        .send()
         .end((err, res) => {
           const { message } = res.body.error;
           expect(res.type).to.equal('application/json');
@@ -101,10 +90,8 @@ describe('Comment Like Controller', () => {
     it('should return error if comment does not exist', (done) => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/10/dislike')
-        .set('Authorization', token2)
-        .send({
-          reaction: 'disliked',
-        })
+        .set('Authorization', token3)
+        .send()
         .end((err, res) => {
           const { message } = res.body.error;
           expect(res.type).to.equal('application/json');
@@ -114,14 +101,50 @@ describe('Comment Like Controller', () => {
           done();
         });
     });
-    it('should get number of likes and dislikes on a comment', (done) => {
+    it('should be able to dislike comment after after unliking it', (done) => {
       request(app)
-        .get('/api/articles/test-article-slug12345/comments/1/reactions')
+        .post('/api/articles/test-article-slug12345/comments/1/dislike')
+        .set('Authorization', token1)
+        .send()
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          done();
+        });
+    });
+  });
+
+  describe('checkReactionStatus', () => {
+    it('should return false if logged in user disliked the comment', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1/reaction_status')
+        .set('Authorization', token1)
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.reactionStatus).to.equal(false);
+          done();
+        });
+    });
+    it('should return true if logged in user liked the comment', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1/reaction_status')
         .set('Authorization', token2)
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
-          expect(res.body.status).to.equal('success');
+          expect(res.body.reactionStatus).to.equal(true);
+          done();
+        });
+    });
+    it('should return a specific message if logged in user does not have any reaction the comment', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1/reaction_status')
+        .set('Authorization', token3)
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('you have not reacted to this comment');
           done();
         });
     });

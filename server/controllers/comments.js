@@ -124,9 +124,7 @@ class CommentsController {
   }
 
   /**
-   * create Comment reply
-   *
-   * @static
+   * @description get comment by the id
    * @param {object} req express request object
    * @param {object} res express response object
    * @param {object} next next middleware
@@ -135,7 +133,7 @@ class CommentsController {
    */
   static getCommentById(req, res, next) {
     const { commentId } = req.params;
-
+    const commentReactions = { likes: 0, dislikes: 0 };
 
     Comment.findOne({
       where: {
@@ -151,11 +149,51 @@ class CommentsController {
       },
       {
         model: CommentLikesDislike,
-        as: 'reactions',
+        as: 'likes',
+        where: {
+          reaction: '1',
+        },
+        required: false,
         attributes: ['userId', 'username', 'commentId', 'reaction']
+      },
+      {
+        model: CommentLikesDislike,
+        as: 'dislikes',
+        where: {
+          reaction: '0',
+        },
+        required: false,
+        attributes: ['userId', 'username', 'commentId', 'reaction']
+      }, {
+        model: Reply,
+        attributes: {
+          exclude: ['createdAt', 'updatedAt']
+        }
       }]
     })
-      .then(comment => res.status(200).json(comment))
+      .then((comment) => {
+        if (!comment) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'comment does not exist',
+          });
+        }
+        commentReactions.likes = comment.likes.length;
+        commentReactions.dislikes = comment.dislikes.length;
+        const { username, id } = comment.commenter;
+        return res.status(200).json({
+          status: 'success',
+          commentId: comment.id,
+          body: comment.body,
+          articleId: comment.articleId,
+          commenter: {
+            id, username
+          },
+          likesCount: commentReactions.likes,
+          dislikesCount: commentReactions.dislikes,
+          Replies: comment.Replies
+        });
+      })
       .catch(next);
   }
 
@@ -166,13 +204,14 @@ class CommentsController {
    * @param {object} res express response object
    * @param {string} reaction parameter for like or dislike
    * @param {string} processed parameter for liked or disliked
+   * @param {string} reactedOn parameter for liked or disliked
    * @param {string} reversed parameter for liked or disliked
    * @param {string} value
    * @param {object} next next middleware
    * @returns {next} next calls next
    * @memberof CommentsController
    */
-  static commentReactionQuery(req, res, reaction, processed, reversed, value, next) {
+  static commentReactionQuery(req, res, reaction, processed, reactedOn, reversed, value, next) {
     const id = req.params.commentId;
     const { userId, userName } = req;
 
@@ -190,7 +229,7 @@ class CommentsController {
             }
           });
         }
-        CommentLikesDislike.findOne({
+        return CommentLikesDislike.findOne({
           where: {
             userId
           }
@@ -221,24 +260,10 @@ class CommentsController {
               username: userName,
               reaction: `${value}`,
             })
-              .then(() => Comment.findOne({
-                where: {
-                  id,
-                },
-                include: [{
-                  model: User,
-                  as: 'commenter',
-                  attributes: {
-                    exclude: ['hash', 'emailVerified', 'email', 'role', 'bio', 'twitter', 'linkedin', 'userFollowId', 'createdAt', 'updatedAt']
-                  }
-                }, {
-                  model: CommentLikesDislike,
-                  as: 'reactions',
-                  attributes: ['userId', 'username', 'commentId', 'reaction']
-                }]
-              })
-                .then(newLike => res.status(200).json(newLike))
-                .catch(next)).catch(next);
+              .then(() => res.status(200).json({
+                status: 'success',
+                message: `comment ${reactedOn}`
+              }));
           }).catch(next);
       }).catch(next);
   }
@@ -259,15 +284,16 @@ class CommentsController {
       });
     }
     if (req.params.reaction === 'like') {
-      return CommentsController.commentReactionQuery(req, res, 'like', 'disliked', '0', '1');
+      return CommentsController.commentReactionQuery(req, res, 'like', 'disliked', 'liked', '0', '1');
     }
     if (req.params.reaction === 'dislike') {
-      return CommentsController.commentReactionQuery(req, res, 'dislike', 'liked', '1', '0');
+      return CommentsController.commentReactionQuery(req, res, 'dislike', 'liked', 'disliked', '1', '0');
     }
   }
 
+
   /**
-   * @description get number of likes and dislikes in an article
+   * @description check like status of a currently logged in user on a comment
    * @static
    * @param {object} req express request object
    * @param {object} res express response object
@@ -275,47 +301,39 @@ class CommentsController {
    * @returns {next} res object
    * @memberof CommentsController
    */
-  static getCommentslikesandDislikes(req, res, next) {
+  static checkReactionStatus(req, res, next) {
     const id = req.params.commentId;
-    const commentReactions = { likes: 0, dislikes: 0 };
+    const { userId } = req;
 
     Comment.findOne({
-      where: {
-        id,
-      }
+      where: { id }
     })
       .then((comment) => {
         if (!comment) {
-          return res.status(404).json({
-            status: 'error',
-            message: 'comment does not exist',
-          });
+          if (!comment) {
+            return res.status(404).json({
+              status: 'error',
+              message: 'comment does not exist',
+            });
+          }
         }
-        CommentLikesDislike.findAll({
-          where: {
-            commentId: comment.id,
-          },
+        return CommentLikesDislike.findOne({
+          where: { userId }
         })
-          .then((commentLikes) => {
-            if (commentLikes === null) {
-              res.status(200).json({
+          .then((likedislike) => {
+            if (!likedislike) {
+              return res.status(200).json({
                 status: 'success',
-                commentReactions: {
-                  likes: 0,
-                  dislikes: 0,
-                }
+                message: 'you have not reacted to this comment',
               });
             }
-            commentLikes.forEach((commentReaction) => {
-              if (commentReaction.reaction === '1') {
-                commentReactions.likes += 1;
-              } else if (commentReaction.reaction === '0') {
-                commentReactions.dislikes += 1;
-              }
-            });
-            res.status(200).json({
-              status: 'success',
-              commentReactions,
+            if (likedislike.reaction === '1') {
+              return res.status(200).json({
+                reactionStatus: true,
+              });
+            }
+            return res.status(200).json({
+              reactionStatus: false,
             });
           });
       }).catch(next);
