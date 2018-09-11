@@ -78,7 +78,7 @@ describe('Categorizes articles', () => {
 
 
   // Admin can do CRUD operations for categories
-  describe.only('Accepts CRUD operations from an Admin', () => {
+  describe('Accepts CRUD operations from an Admin', () => {
     it('Gets all categories for an Admin', (done) => {
       chai.request(app)
         .get('/api/article-categories')
@@ -225,7 +225,7 @@ describe('Categorizes articles', () => {
     });
   });
 
-  describe.only('Author can add their article to any category', () => {
+  describe('Author can add their article to any category', () => {
     // An author can post an article ============================
     it('Posts an article for an Author', (done) => {
       chai.request(app)
@@ -315,7 +315,6 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${authorToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
-          console.log(res.body)
           expect(res).to.have.status(406);
           expect(res).to.have.property('status');
           expect(res.body.status).to.equal('error');
