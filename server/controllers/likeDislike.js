@@ -28,7 +28,7 @@ class likesDislikesController {
     if (!reaction || reaction.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide a valid reaction .',
+        message: 'No reaction provided.',
       });
     }
 
@@ -63,7 +63,7 @@ class likesDislikesController {
           }
         })
           .then((likeOrDislike) => {
-            if (likeOrDislike === null || likeOrDislike === undefined) {
+            if (!likeOrDislike) {
               LikesDislikes.create({
                 articleId,
                 userId,

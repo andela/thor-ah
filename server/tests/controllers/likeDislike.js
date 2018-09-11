@@ -50,8 +50,8 @@ describe('likeDislike Controller', () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
-          res.body.errors.should.be.a('object');
-          res.body.errors.message.should.equal('no token provided');
+          res.body.error.should.be.a('object');
+          res.body.error.message.should.equal('no token provided');
           done();
         });
     });
@@ -65,6 +65,19 @@ describe('likeDislike Controller', () => {
         .end((err, res) => {
           res.body.status.should.equal('error');
           res.body.message.should.equal('Article was not found.');
+          done();
+        });
+    });
+    it('should return error if reaction is invalid or not provided', (done) => {
+      chai.request(app)
+        .post(`/api/articles/${articleSlug}/reactions`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({ reaction: '' })
+        .end((err, res) => {
+          res.body.status.should.equal('error');
+          res.body.message.should.equal('No reaction provided.');
           done();
         });
     });
