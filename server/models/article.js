@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         model: models.ArticleCategory,
       },
       foreignKey: 'articleId',
-      as: 'category'
+      as: 'article'
     });
   };
   return Article;
