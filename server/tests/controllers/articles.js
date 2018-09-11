@@ -55,7 +55,7 @@ let { token1, token2 } = '';
 describe('Articles controller', () => {
   describe('createArticle()', () => {
     // get token to use for article route testing
-    it('', (done) => {
+    before((done) => {
       chai.request(server).post('/api/users/login').set('Accept', 'application/json').send(author1Login)
         .end((err, resp) => {
           token1 = resp.body.user.token;
@@ -64,7 +64,7 @@ describe('Articles controller', () => {
     });
 
     // get second author token for article route testing
-    it('', (done) => {
+    before((done) => {
       chai.request(server).post('/api/users/login').set('Accept', 'application/json').send(author2Login)
         .end((err, resp) => {
           token2 = resp.body.user.token;
@@ -305,6 +305,7 @@ describe('Articles controller', () => {
         .set('Authorization', `Bearer ${token2}`)
         .end((err, res) => {
           res.should.have.status(403);
+          res.body.error.message.should.equal('forbidden from deleting another user\'s article');
           done();
         });
     });
@@ -315,6 +316,65 @@ describe('Articles controller', () => {
         .set('Authorization', `Bearer ${token1}`)
         .end((err, res) => {
           res.should.have.status(200);
+          done();
+        });
+    });
+
+    it('should return error if article does not exist', (done) => {
+      chai.request(server)
+        .delete(`/api/articles/${testSlug}e`)
+        .set('Authorization', `Bearer ${token1}`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.error.message.should.equal('article not found');
+          done();
+        });
+    });
+  });
+
+  // tests for article search
+  describe('search()', () => {
+    it('should return error if no search parameter provided', (done) => {
+      chai.request(server)
+        .get('/api/articles/search')
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.status.should.equal('error');
+          res.body.should.have.property('errors');
+          res.body.errors.message.should.equal('no search parameter supplied');
+          done();
+        });
+    });
+
+    it('should return a list of articles associated with given tag(s)', (done) => {
+      chai.request(server)
+        .get(`/api/articles/search?tag=${tag.tag}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.status.should.equal('success');
+          res.body.articles.should.be.an('Array');
+          done();
+        });
+    });
+
+    it('should return a list of articles relating to given keywords', (done) => {
+      chai.request(server)
+        .get('/api/articles/search?keywords=short')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.status.should.equal('success');
+          res.body.articles.should.be.an('Array');
+          done();
+        });
+    });
+
+    it('should return a list of articles by given authors matching supplied author', (done) => {
+      chai.request(server)
+        .get('/api/articles/search?author=autho')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.status.should.equal('success');
+          res.body.articles.should.be.an('Array');
           done();
         });
     });

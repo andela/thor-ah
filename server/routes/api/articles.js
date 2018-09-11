@@ -6,7 +6,7 @@ import auth from '../../middleware/auth';
 const { authenticateUser, authorizeAuthor } = auth;
 const router = require('express').Router();
 
-
+router.get('/search', ArticleController.search);
 router.post('/', authenticateUser, authorizeAuthor, ArticleController.create);
 router.post('/:article_slug/comments', authenticateUser, CommentsController.createComment);
 router.post('/:article_slug/comments/:commentId', authenticateUser, CommentsController.createCommentReply);

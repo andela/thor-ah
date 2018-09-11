@@ -344,6 +344,48 @@
                     }
                 }
             }
+        },
+        "/api/articles/search?": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "search articles using tag, author, keywords",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by tag"
+                    },
+                    {
+                        "name": "author",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by author"
+                    },
+                    {
+                        "name": "keywords",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by keywords"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400":{
+                        "description": "bad imput"
+                    },
+                    "500":{
+                        "description": "server error"
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {

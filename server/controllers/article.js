@@ -2,6 +2,7 @@ import db from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 import articleNotification from '../utils/articleNotify';
+import Search from './search';
 
 const {
   Article, User, Tag, Comment
@@ -291,7 +292,7 @@ class ArticleController {
       .then((article) => {
         if (!article) {
           return res.status(404).json({
-            message: 'article not found',
+            error: { message: 'article not found' },
             status: 'error'
           });
         }
@@ -319,6 +320,33 @@ class ArticleController {
         status: 'error'
       }));
   }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @return {object} jsonResponse
+  */
+  static search(req, res, next) {
+    // expects author to be author username
+    const { author, tag, keywords } = req.query;
+
+    // search by given query parameter
+    if (author) {
+      Search.byAuthor(author, res, next);
+    } else if (tag) {
+      Search.byTags(tag, res, next);
+    } else if (keywords) {
+      Search.byKeywords(keywords, res, next);
+    } else {
+      res.status(400).json({
+        status: 'error',
+        errors: { message: 'no search parameter supplied' }
+      });
+    }
+  }
 }
+
 
 export default ArticleController;
