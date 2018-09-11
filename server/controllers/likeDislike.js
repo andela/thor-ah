@@ -149,9 +149,9 @@ class likesDislikesController {
               });
             }
             likesDislikes.forEach((likeAndDislike) => {
-              if (likeAndDislike.reaction === 1) {
+              if (likeAndDislike.reaction === '1') {
                 reactions.likes += 1;
-              } else if (likeAndDislike.reaction === 0) {
+              } else if (likeAndDislike.reaction === '0') {
                 reactions.dislikes += 1;
               }
             });
