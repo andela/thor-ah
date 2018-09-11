@@ -235,11 +235,11 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${authorToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
-          expect(res).to.have.status(201);
-          expect(res.body).to.have.property('article');
-          expect(res.body.article.title).to.equal('coding');
-          expect(res.body.article.body).to.equal('coding is fun');
-          expect(res.body.article.description).to.equal('coding is fun');
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.property('newArticleAlert');
+          expect(res.body.newArticleAlert.createdArticle.title).to.equal('coding');
+          expect(res.body.newArticleAlert.createdArticle.body).to.equal('coding is fun');
+          expect(res.body.newArticleAlert.createdArticle.description).to.equal('coding is fun');
           done();
         });
     });
@@ -320,7 +320,7 @@ describe('Categorizes articles', () => {
     it('Returns an error if author tries to add another author\'s article', (done) => {
       chai.request(app)
         .post('/api/article-categories/Technology')
-        .send({ articleTitle: 'wildlife conservation' })
+        .send({ articleTitle: 'test article' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${author2Token}`)
         .set('Content-Type', 'application/json')
