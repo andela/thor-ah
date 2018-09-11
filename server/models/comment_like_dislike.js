@@ -1,25 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-  const CommentLike = sequelize.define('CommentLike', {
+  const CommentLikesDislike = sequelize.define('CommentLikesDislike', {
     userId: DataTypes.INTEGER,
     username: DataTypes.STRING,
     commentId: DataTypes.INTEGER,
     reaction: {
-      type: DataTypes.ENUM('liked', 'disliked'),
+      type: DataTypes.ENUM(0, 1),
       allowNull: false,
     },
   }, {});
-  CommentLike.associate = (models) => {
+  CommentLikesDislike.associate = (models) => {
     const { Comment, User } = models;
-    CommentLike.belongsTo(Comment, {
+    CommentLikesDislike.belongsTo(Comment, {
       onDelete: 'CASCADE',
       foreignKey: 'commentId',
       as: 'comment'
     });
 
-    CommentLike.belongsTo(User, {
+    CommentLikesDislike.belongsTo(User, {
       as: 'user',
       onDelete: 'CASCADE',
     });
   };
-  return CommentLike;
+  return CommentLikesDislike;
 };

@@ -114,5 +114,16 @@ describe('Comment Like Controller', () => {
           done();
         });
     });
+    it('should get number of likes and dislikes on a comment', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1/reactions')
+        .set('Authorization', token2)
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
   });
 });

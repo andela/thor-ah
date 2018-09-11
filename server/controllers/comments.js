@@ -1,5 +1,5 @@
 import {
-  Article, Comment, User, Reply, CommentLike
+  Article, Comment, User, Reply, CommentLikesDislike
 } from '../models';
 
 /**
@@ -148,19 +148,10 @@ class CommentsController {
         attributes: {
           exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
         }
-      }, {
-        model: CommentLike,
-        as: 'likes',
-        where: {
-          reaction: 'liked',
-        },
-        attributes: ['userId', 'username', 'commentId', 'reaction']
-      }, {
-        model: CommentLike,
-        as: 'dislikes',
-        where: {
-          reaction: 'disliked',
-        },
+      },
+      {
+        model: CommentLikesDislike,
+        as: 'reactions',
         attributes: ['userId', 'username', 'commentId', 'reaction']
       }]
     })
@@ -176,11 +167,12 @@ class CommentsController {
    * @param {string} reaction parameter for like or dislike
    * @param {string} processed parameter for liked or disliked
    * @param {string} reversed parameter for liked or disliked
+   * @param {string} value
    * @param {object} next next middleware
    * @returns {next} next calls next
    * @memberof CommentsController
    */
-  static commentReactionQuery(req, res, reaction, processed, reversed, next) {
+  static commentReactionQuery(req, res, reaction, processed, reversed, value, next) {
     const id = req.params.commentId;
     const { userId, userName } = req;
 
@@ -198,15 +190,15 @@ class CommentsController {
             }
           });
         }
-        CommentLike.findOne({
+        CommentLikesDislike.findOne({
           where: {
             userId
           }
         })
           .then((commentLike) => {
             if (commentLike) {
-              if (commentLike.reaction === `${processed}`) {
-                return CommentLike.destroy({
+              if (commentLike.reaction === `${value}`) {
+                return CommentLikesDislike.destroy({
                   where: { userId }
                 })
                   .then(() => res.status(200).json({
@@ -218,16 +210,16 @@ class CommentsController {
                 return res.status(400).json({
                   status: 'error',
                   error: {
-                    message: `You have already ${reversed} this comment`,
+                    message: `You have already ${processed} this comment`,
                   }
                 });
               }
             }
-            return CommentLike.create({
+            return CommentLikesDislike.create({
               userId,
               commentId: id,
               username: userName,
-              reaction: `${processed}`,
+              reaction: `${value}`,
             })
               .then(() => Comment.findOne({
                 where: {
@@ -240,18 +232,8 @@ class CommentsController {
                     exclude: ['hash', 'emailVerified', 'email', 'role', 'bio', 'twitter', 'linkedin', 'userFollowId', 'createdAt', 'updatedAt']
                   }
                 }, {
-                  model: CommentLike,
-                  as: 'likes',
-                  where: {
-                    reaction: 'liked',
-                  },
-                  attributes: ['userId', 'username', 'commentId', 'reaction']
-                }, {
-                  model: CommentLike,
-                  as: 'dislikes',
-                  where: {
-                    reaction: 'disliked',
-                  },
+                  model: CommentLikesDislike,
+                  as: 'reactions',
                   attributes: ['userId', 'username', 'commentId', 'reaction']
                 }]
               })
@@ -277,11 +259,66 @@ class CommentsController {
       });
     }
     if (req.params.reaction === 'like') {
-      return CommentsController.commentReactionQuery(req, res, 'like', 'liked', 'disliked');
+      return CommentsController.commentReactionQuery(req, res, 'like', 'disliked', '0', '1');
     }
     if (req.params.reaction === 'dislike') {
-      return CommentsController.commentReactionQuery(req, res, 'dislike', 'disliked', 'liked');
+      return CommentsController.commentReactionQuery(req, res, 'dislike', 'liked', '1', '0');
     }
+  }
+
+  /**
+   * @description get number of likes and dislikes in an article
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @param {object} next object
+   * @returns {next} res object
+   * @memberof CommentsController
+   */
+  static getCommentslikesandDislikes(req, res, next) {
+    const id = req.params.commentId;
+    const commentReactions = { likes: 0, dislikes: 0 };
+
+    Comment.findOne({
+      where: {
+        id,
+      }
+    })
+      .then((comment) => {
+        if (!comment) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'comment does not exist',
+          });
+        }
+        CommentLikesDislike.findAll({
+          where: {
+            commentId: comment.id,
+          },
+        })
+          .then((commentLikes) => {
+            if (commentLikes === null) {
+              res.status(200).json({
+                status: 'success',
+                commentReactions: {
+                  likes: 0,
+                  dislikes: 0,
+                }
+              });
+            }
+            commentLikes.forEach((commentReaction) => {
+              if (commentReaction.reaction === '1') {
+                commentReactions.likes += 1;
+              } else if (commentReaction.reaction === '0') {
+                commentReactions.dislikes += 1;
+              }
+            });
+            res.status(200).json({
+              status: 'success',
+              commentReactions,
+            });
+          });
+      }).catch(next);
   }
 }
 

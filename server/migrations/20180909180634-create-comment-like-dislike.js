@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('CommentLikes', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('CommentLikesDislikes', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -35,7 +35,7 @@ module.exports = {
       }
     },
     reaction: {
-      type: Sequelize.ENUM('liked', 'disliked'),
+      type: Sequelize.ENUM(0, 1),
       allowNull: false,
     },
     createdAt: {
@@ -47,5 +47,5 @@ module.exports = {
       type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('CommentLikes')
+  down: queryInterface => queryInterface.dropTable('CommentLikesDislikes')
 };

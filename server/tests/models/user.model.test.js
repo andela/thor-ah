@@ -35,7 +35,7 @@ describe('user model', () => {
     const Article = 'some article';
     const Comment = 'some comment';
     const Reply = 'some reply';
-    const CommentLike = 'some like';
+    const CommentLikesDislike = 'some like';
 
     it('defined a belongsToMany association with User', () => {
       User.associate({ User });
@@ -54,8 +54,8 @@ describe('user model', () => {
       expect(User.hasMany.calledWith(Reply)).to.equal(true);
     });
     it('defined a hasMany association with CommentLikes', () => {
-      User.associate({ CommentLike });
-      expect(User.hasMany.calledWith(CommentLike)).to.equal(true);
+      User.associate({ CommentLikesDislike });
+      expect(User.hasMany.calledWith(CommentLikesDislike)).to.equal(true);
     });
   });
 });

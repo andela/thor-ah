@@ -6,20 +6,20 @@ const {
 } = require('sequelize-test-helpers');
 const { expect } = require('chai');
 
-const CommentLikeModel = require('../../models/commentlike');
+const CommentLikesDislikeModel = require('../../models/comment_like_dislike');
 
 describe('comment model', () => {
-  const CommentLike = CommentLikeModel(sequelize, dataTypes);
-  const commentLike = new CommentLike();
+  const CommentLikesDislike = CommentLikesDislikeModel(sequelize, dataTypes);
+  const commentLikeDislike = new CommentLikesDislike();
 
-  checkModelName(CommentLike)('CommentLike');
+  checkModelName(CommentLikesDislike)('CommentLikesDislike');
   // test comment model properties
   context('commentLike model properties', () => {
     [
       'userId',
       'commentId',
       'username'
-    ].forEach(checkPropertyExists(commentLike));
+    ].forEach(checkPropertyExists(commentLikeDislike));
   });
 
   context('associations', () => {
@@ -27,13 +27,13 @@ describe('comment model', () => {
     const Comment = 'some comment';
 
     it('defined a belongsTo association with User', () => {
-      CommentLike.associate({ User });
-      expect(CommentLike.belongsTo.calledWith(User)).to.equal(true);
+      CommentLikesDislike.associate({ User });
+      expect(CommentLikesDislike.belongsTo.calledWith(User)).to.equal(true);
     });
 
     it('defined a belongsTo association with Article', () => {
-      CommentLike.associate({ Comment });
-      expect(CommentLike.belongsTo.calledWith(Comment)).to.equal(true);
+      CommentLikesDislike.associate({ Comment });
+      expect(CommentLikesDislike.belongsTo.calledWith(Comment)).to.equal(true);
     });
   });
 });
