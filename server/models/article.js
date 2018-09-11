@@ -1,3 +1,5 @@
+import calculateTimeToRead from '../utils/calculateTimeToRead';
+
 module.exports = (sequelize, DataTypes) => {
   const Article = sequelize.define('Article', {
     title: {
@@ -18,8 +20,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    likeDislikeId: DataTypes.INTEGER
-  }, {});
+    likeDislikeId: DataTypes.INTEGER,
+    timeToRead: DataTypes.INTEGER,
+  }, {
+    hooks: {
+      beforeCreate: (articleData) => {
+        articleData.timeToRead = calculateTimeToRead(articleData);
+      }
+    }
+  });
 
   Article.associate = (models) => {
     const { Comment } = models;
