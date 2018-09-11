@@ -315,7 +315,6 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${authorToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
-          console.log(res.body)
           expect(res).to.have.status(406);
           expect(res).to.have.property('status');
           expect(res.body.status).to.equal('error');
