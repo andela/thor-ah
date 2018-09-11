@@ -9,10 +9,10 @@ dotenv.config();
 chai.use(chaiHttp);
 
 const newUser = {
-  firstName: 'daniel',
-  lastName: 'adek',
-  username: 'danieladek',
-  email: 'danieladek@gmail.com',
+  firstName: 'egwuenu',
+  lastName: 'gift',
+  username: 'lauragift',
+  email: 'laurandidi21@gmail.com',
   password: 'adek'
 };
 
@@ -103,7 +103,7 @@ describe('Verify User\'s email address after signup', () => {
     it('Returns an error if user has already been verified', (done) => {
       chai.request(app)
         .post('/api/users/verify/resend-email')
-        .send({ email: 'danieladek@gmail.com' })
+        .send({ email: 'laurandidi21@gmail.com' })
         .end((err, res) => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal('error');
