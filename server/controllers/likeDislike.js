@@ -152,7 +152,7 @@ class likesDislikesController {
               if (likeAndDislike.status === 'liked') {
                 reactions.likes += 1;
               } else if (likeAndDislike.status === 'disliked') {
-                reactions.likes += 1;
+                reactions.dislikes += 1;
               }
             });
             res.status(200).json({
