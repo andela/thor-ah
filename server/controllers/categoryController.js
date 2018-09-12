@@ -1,5 +1,4 @@
 import { Category, Article, ArticleCategory } from '../models';
-import TokenHelper from '../utils/TokenHelper';
 
 /**
  *
