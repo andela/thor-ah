@@ -17,7 +17,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     }
-  }, {});
+  }, {
+    hooks: {
+      afterSave: (commentData) => {
+        const { dataValues } = commentData;
+        const { id, body } = dataValues;
+        sequelize.models.CommentHistory.create({
+          commentBody: body,
+          commentId: id,
+        });
+      },
+
+      beforeUpdate: (commentData) => {
+        commentData.isEdited = true;
+      }
+    }
+  });
   Comment.associate = (models) => {
     const {
       User, Article, Reply, CommentLikesDislike, CommentHistory

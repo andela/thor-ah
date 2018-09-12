@@ -66,6 +66,48 @@ class CommentsController {
   }
 
   /**
+   * update existing comment
+   *
+   * @static
+   * @param {obj} req
+   * @param {obj} res
+   * @param {obj} next
+   * @returns {next/res} returns a response if successful otherwise calls
+   * the next middleware with an error
+   * @memberof CommentsController
+   */
+  static updateComment(req, res, next) {
+    const { commentId } = req.params;
+    const { userId } = req;
+    Comment.findById(commentId)
+      .then((comment) => {
+        if (!comment) {
+          const error = new Error('comment does not exist');
+          error.status = 404;
+          return next(error);
+        }
+        // check if user in current session is same user that created the comment
+        // prevent user from updating another users' comment
+        if (userId !== comment.commenterId) {
+          const error = new Error('you are not allowed to update another user\'s comment');
+          error.status = 401;
+          return next(error);
+        }
+
+        // update comment
+        return comment.update({
+          body: req.body.comment,
+        })
+          .then(updatedComment => res.status(200).json({
+            status: 'success',
+            comment: updatedComment,
+          }))
+          .catch(next);
+      })
+      .catch(next);
+  }
+
+  /**
    * create Comment reply
    *
    * @static
@@ -397,7 +439,23 @@ class CommentsController {
               as: 'commenter',
               attributes: {
                 exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
-              }
+              },
+            },
+            {
+              model: CommentLikesDislike,
+              as: 'likes',
+              where: {
+                reaction: '1',
+              },
+              required: false,
+            },
+            {
+              model: CommentLikesDislike,
+              as: 'dislikes',
+              where: {
+                reaction: '0',
+              },
+              required: false,
             },
             {
               model: Reply,
@@ -411,12 +469,30 @@ class CommentsController {
                 }
               ]
             }
-          ]
+          ],
         })
-          .then(comments => res.status(200).json({
-            status: 'success',
-            comments,
-          }))
+          .then((comments) => {
+            const commentsResponse = comments.map((comment) => {
+              const {
+                id, body, isEdited, createdAt, updatedAt, commenter, Replies, likes, dislikes
+              } = comment;
+              return {
+                id,
+                body,
+                isEdited,
+                createdAt,
+                updatedAt,
+                commenter,
+                replies: Replies,
+                likesCount: likes.length,
+                dislikesCount: dislikes.length,
+              };
+            });
+            res.status(200).json({
+              status: 'success',
+              comments: commentsResponse,
+            });
+          })
           .catch(next);
       })
       .catch(next);

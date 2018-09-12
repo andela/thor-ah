@@ -18,6 +18,10 @@ const reply = {
   reply: 'some reply to some insightful comment'
 };
 
+const commentUpdatePayload = {
+  comment: 'updated the content of insightful comment'
+};
+
 describe('Comment Controller', () => {
   // drop(if exists) and create user table
   before((done) => {
@@ -183,6 +187,74 @@ describe('Comment Controller', () => {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
+          done();
+        });
+    });
+  });
+
+  describe('updateComment', () => {
+    it('should update an existing comment', (done) => {
+      request(app)
+        .put('/api/articles/test-article-slug12345/comments/1')
+        .set('Authorization', token)
+        .send(commentUpdatePayload)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
+
+    it('should return a 404 error for a non-existing comment', (done) => {
+      request(app)
+        .put('/api/articles/test-article-slug12345/comments/4000')
+        .set('Authorization', token)
+        .send(commentUpdatePayload)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          done();
+        });
+    });
+
+    it('should not allow a user update another users\' comment', (done) => {
+      const unauthorizedUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
+      request(app)
+        .put('/api/articles/test-article-slug12345/comments/1')
+        .set('Authorization', unauthorizedUserToken)
+        .send(commentUpdatePayload)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(401);
+          done();
+        });
+    });
+
+    it('should return the updated comment', (done) => {
+      request(app)
+        .put('/api/articles/test-article-slug12345/comments/1')
+        .set('Authorization', token)
+        .send(commentUpdatePayload)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.body.comment).to.be.an('object');
+          done();
+        });
+    });
+
+    it('should set the \'isEdited\' field to true', (done) => {
+      request(app)
+        .put('/api/articles/test-article-slug12345/comments/1')
+        .set('Authorization', token)
+        .send(commentUpdatePayload)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.body.comment).to.be.an('object');
+          expect(res.body.comment.isEdited).to.equal(true);
           done();
         });
     });
