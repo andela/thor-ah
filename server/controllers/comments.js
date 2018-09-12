@@ -1,3 +1,4 @@
+import commentNotification from '../utils/commentNotify';
 import {
   Article, Comment, User, Reply, CommentLikesDislike
 } from '../models';
@@ -102,7 +103,7 @@ class CommentsController {
                 model: User,
                 as: 'commenter',
                 attributes: {
-                  exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
+                  exclude: ['hash', 'emailVerified', 'role', 'createdAt', 'updatedAt']
                 }
               }, {
                 model: Comment,
@@ -118,7 +119,36 @@ class CommentsController {
               commentReply: newCommentReply,
             });
           })
-          .catch(next);
+          .then(() => {
+            comment.getArticle()
+              .then((article) => {
+                comment
+                  .getReplies({
+                    include: [{
+                      model: User,
+                      as: 'commenter',
+                      attributes: {
+                        exclude: ['hash', 'emailVerified', 'role', 'createdAt', 'updatedAt']
+                      },
+                    }, {
+                      model: Comment,
+                      as: 'comment',
+                      attributes: {
+                        exclude: ['createdAt', 'updatedAt']
+                      }
+                    }]
+                  })
+                  .then((replies) => {
+                    const { slug } = article;
+                    const repliers = replies.map(el => el.commenter);
+                    const emails = repliers.map(replier => replier.email);
+                    if (emails.length > 0) {
+                      commentNotification.sendNotificationEmail(emails, slug);
+                    }
+                  });
+              })
+              .catch(next);
+          });
       })
       .catch(next);
   }
