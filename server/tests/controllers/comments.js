@@ -161,4 +161,30 @@ describe('Comment Controller', () => {
         });
     });
   });
+
+  describe('getArticleComments', () => {
+    it('should fetch all comments and replies for an article', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
+
+    it('should return a 404 if article does not exist', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug-does-not-exist/comments')
+        .set('Authorization', token)
+        .send(reply)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          done();
+        });
+    });
+  });
 });

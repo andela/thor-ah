@@ -364,6 +364,63 @@ class CommentsController {
           });
       }).catch(next);
   }
+
+  /**
+  * Get all comments and replies belonging to an article
+  *
+  * @static
+  * @param {obj} req
+  * @param {obj} res
+  * @param {obj} next
+  * @returns {next/res} returns a response if successful otherwise calls
+  * the next middleware with an error
+  * @memberof CommentsController
+  */
+  static getArticleComments(req, res, next) {
+    const slug = req.params.article_slug;
+    Article
+      .findOne({
+        where: {
+          slug,
+        }
+      })
+      .then((article) => {
+        if (!article) {
+          const error = new Error('article does not exist');
+          error.status = 404;
+          next(error);
+        }
+        return article.getComments({
+          include: [
+            {
+              model: User,
+              as: 'commenter',
+              attributes: {
+                exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
+              }
+            },
+            {
+              model: Reply,
+              include: [
+                {
+                  model: User,
+                  as: 'commenter',
+                  attributes: {
+                    exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
+                  }
+                }
+              ]
+            }
+          ]
+        })
+          .then(comments => res.status(200).json({
+            status: 'success',
+            comments,
+          }))
+          .catch(next);
+      })
+      .catch(next);
+  }
 }
 
 export default CommentsController;

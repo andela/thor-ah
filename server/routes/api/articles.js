@@ -14,6 +14,7 @@ router.post('/:article_slug/comments/:commentId', authenticateUser, CommentsCont
 router.get('/:article_slug/comments/:commentId', authenticateUser, CommentsController.getCommentById);
 router.post('/:article_slug/comments/:commentId/:reaction', authenticateUser, CommentsController.likeOrDislikeComment);
 router.get('/:article_slug/comments/:commentId/reaction_status', authenticateUser, CommentsController.checkReactionStatus);
+router.get('/:article_slug/comments', authenticateUser, CommentsController.getArticleComments);
 router.get('/', authenticateUser, ArticleController.getAll);
 router.get('/:articleId/reactions', authenticateUser, LikeDislike.getLikesDislikes);
 router.get('/:articleId/reactions/status', authenticateUser, LikeDislike.getReactionStatus);
