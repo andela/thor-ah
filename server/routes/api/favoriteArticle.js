@@ -8,18 +8,12 @@ const router = Router();
 const { authenticateUser } = auth;
 
 // route for favoriting an article
-router.post(
-  '/article/:articleId/favorite', authenticateUser, favoriteArticleController.create
-);
+router.post('/article/:articleId/favorite', authenticateUser, favoriteArticleController.create);
 
 // route for removing a favorited article
-router.delete(
-  '/article/:articleId/favorite', authenticateUser, favoriteArticleController.remove
-);
+router.delete('/article/:articleId/favorite', authenticateUser, favoriteArticleController.remove);
 
 // route for getting all the user's favorite articles
-router.get(
-  '/user/articles/favorite', authenticateUser, favoriteArticleController.list
-);
+router.get('/user/articles/favorite', authenticateUser, favoriteArticleController.list);
 
 export default router;
