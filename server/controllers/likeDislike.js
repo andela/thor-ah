@@ -3,7 +3,7 @@ import db from '../models';
 const { Article, LikesDislikes } = db;
 
 /**
- * @class likeDislike
+ * @class likesDislikesController
  */
 class likesDislikesController {
   /**
@@ -14,14 +14,14 @@ class likesDislikesController {
    * @return {obj} returns an object
    */
   static likeOrDislike(req, res, next) {
-    const { articleSlug } = req.params;
+    const { articleId } = req.params;
     const { userId } = req;
     const { reaction } = req.body;
 
-    if (!articleSlug || articleSlug.trim().length < 1) {
+    if (!articleId || articleId.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide a valid article slug.',
+        message: 'No valid article ID provided.',
       });
     }
 
@@ -45,7 +45,7 @@ class likesDislikesController {
 
     Article.findOne({
       where: {
-        slug: articleSlug,
+        id: articleId,
       }
     })
       .then((article) => {
@@ -55,7 +55,6 @@ class likesDislikesController {
             message: 'Article was not found.',
           });
         }
-        const articleId = article.id;
 
         LikesDislikes.findOne({
           where: {
@@ -112,18 +111,72 @@ class likesDislikesController {
    * @return {obj} returns an object
    */
   static getLikesDislikes(req, res, next) {
-    const { articleSlug } = req.params;
-    const reactions = { likes: 0, dislikes: 0 };
-    if (!articleSlug || articleSlug.trim().length < 1) {
+    const { articleId } = req.params;
+    if (!articleId || articleId.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide a valid article slug.',
+        message: 'No valid article ID provided.',
       });
     }
 
     return Article.findOne({
       where: {
-        slug: articleSlug,
+        id: articleId,
+      }
+    })
+      .then((article) => {
+        if (!article) {
+          res.status(404).json({
+            status: 'error',
+            message: 'Article was not found.',
+          });
+        }
+        Promise.all([
+          LikesDislikes.findAll({
+            where: {
+              articleId: article.id,
+              reaction: '1',
+            },
+          }),
+          LikesDislikes.findAll({
+            where: {
+              articleId: article.id,
+              reaction: '0',
+            },
+          })
+        ])
+          .then((results) => {
+            res.status(200).json({
+              status: 'success',
+              reactions: {
+                likes: results[0].length,
+                dislikes: results[1].length,
+              },
+            });
+          }).catch(err => next(err));
+      }).catch(err => next(err));
+  }
+
+  /**
+   * @desc Get all reaction status of an article for a particular user
+   * @param {obj} req request body
+   * @param {obj} res response body
+   * @param {obj} next next action
+   * @return {obj} returns an object
+   */
+  static getReactionStatus(req, res, next) {
+    const { articleId } = req.params;
+    const { userId } = req;
+
+    if (!articleId) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'No valid article ID provided.',
+      });
+    }
+    Article.findOne({
+      where: {
+        id: articleId,
       }
     })
       .then((article) => {
@@ -133,33 +186,25 @@ class likesDislikesController {
             message: 'Article was not found.',
           });
         }
-        LikesDislikes.findAll({
+
+        LikesDislikes.findOne({
           where: {
-            articleId: article.id,
-          },
+            articleId,
+            userId,
+          }
         })
-          .then((likesDislikes) => {
-            if (likesDislikes === null) {
-              res.status(200).json({
+          .then((likeDislike) => {
+            if (!likeDislike) {
+              return res.status(200).json({
                 status: 'success',
-                reaction: {
-                  likes: 0,
-                  dislikes: 0,
-                }
+                message: 'You have not reacted to this article.',
               });
             }
-            likesDislikes.forEach((likeAndDislike) => {
-              if (likeAndDislike.reaction === '1') {
-                reactions.likes += 1;
-              } else if (likeAndDislike.reaction === '0') {
-                reactions.dislikes += 1;
-              }
-            });
-            res.status(200).json({
+            return res.status(200).json({
               status: 'success',
-              reactions,
+              reaction: likeDislike.reaction === '1' ? 'like' : 'dislike',
             });
-          });
+          }).catch(err => next(err));
       }).catch(err => next(err));
   }
 }

@@ -56,12 +56,10 @@ class CommentsController {
                 }
               }],
             }))
-          .then((newComment) => {
-            res.status(201).json({
-              status: 'success',
-              comment: newComment,
-            });
-          })
+          .then(newComment => res.status(201).json({
+            status: 'success',
+            comment: newComment,
+          }))
           .catch(next);
       })
       .catch(next);
@@ -81,7 +79,7 @@ class CommentsController {
     const { commentId } = req.params;
     const { userId } = req;
     const { reply } = req.body;
-    Comment.findOne({
+    return Comment.findOne({
       where: {
         id: commentId,
       }
@@ -113,12 +111,10 @@ class CommentsController {
                 }
               }]
             }))
-          .then((newCommentReply) => {
-            res.status(201).json({
-              status: 'success',
-              commentReply: newCommentReply,
-            });
-          })
+          .then(newCommentReply => res.status(201).json({
+            status: 'success',
+            commentReply: newCommentReply,
+          }))
           .then(() => {
             comment.getArticle()
               .then((article) => {
@@ -347,7 +343,7 @@ class CommentsController {
             });
           }
         }
-        return CommentLikesDislike.findOne({
+        CommentLikesDislike.findOne({
           where: { userId }
         })
           .then((likedislike) => {
