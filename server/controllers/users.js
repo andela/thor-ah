@@ -212,9 +212,15 @@ class UsersController {
     // check if user in current session is same with user being updated
     // prevent user from updating another users' profile
     if (Number(userId) !== Number(req.userId)) {
+<<<<<<< HEAD
       const err = new Error('you are not allowed to update another user\'s profile');
       err.status = 401;
       return next(err);
+=======
+      const errors = new Error('you are not allowed to update another user\'s profile');
+      errors.status = 401;
+      return next(errors);
+>>>>>>> feat(event): add favorite articles function
     }
 
     if (!isValid) {

@@ -83,8 +83,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'commenterId',
       // as: 'replies',
     });
+<<<<<<< HEAD
     User.hasMany(models.CommentLikesDislike, {
       foreignKey: 'userId',
+=======
+    User.hasMany(models.favoriteArticle, {
+      foreignKey: 'userId',
+      as: 'favoriteArticles'
+>>>>>>> feat(event): add favorite articles function
     });
   };
   return User;
