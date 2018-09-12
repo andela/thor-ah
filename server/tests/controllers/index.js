@@ -5,3 +5,4 @@ import './userFollows';
 import './emailVerification.test';
 import './comments';
 import './category.test';
+import './commentLike';

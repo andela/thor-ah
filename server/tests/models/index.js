@@ -3,3 +3,4 @@ import './article';
 import './userFollow';
 import './comment.model.test';
 import './reply.model.test';
+import './commentLike.model.test';

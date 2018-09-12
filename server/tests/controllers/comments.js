@@ -58,6 +58,33 @@ describe('Comment Controller', () => {
         });
     });
 
+    it('should get a single comment to an article by its id', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          expect(res.body.body).to.equal('Some insightful comment');
+          done();
+        });
+    });
+
+    it('should return error if comment does not exist', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/10')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(404);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.message).to.equal('comment does not exist');
+          done();
+        });
+    });
+
     it('should return the created comment in the response', (done) => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments')
