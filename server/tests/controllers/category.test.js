@@ -34,7 +34,7 @@ let authorToken;
 let author2Token;
 let articleId;
 
-describe.only('Categorizes articles', () => {
+describe('Categorizes articles', () => {
   before((done) => {
     chai.request(app)
       .post('/api/users/login')
