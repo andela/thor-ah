@@ -79,7 +79,7 @@ describe('Categorizes articles', () => {
 
 
   // Admin can do CRUD operations for categories
-  describe.only('Accepts CRUD operations from an Admin', () => {
+  describe('Accepts CRUD operations from an Admin', () => {
     it('Gets all categories for an Admin', (done) => {
       chai.request(app)
         .get('/api/article-categories')
@@ -108,6 +108,40 @@ describe('Categorizes articles', () => {
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('createdCategory');
           expect(res.body.createdCategory.name).to.equal('Design');
+          done();
+        });
+    });
+
+    // Admin cannot post an empty category =======================
+    it('Returns an error if name is empty', (done) => {
+      chai.request(app)
+        .post('/api/article-categories')
+        .send({ name: '' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body).to.have.property('status');
+          expect(res.body).to.have.property('error');
+          expect(res.body.error).to.equal('Name field cannot be empty');
+          done();
+        });
+    });
+
+    // Catches errors while sending request =======================
+    it('Returns error if req body of new category is undefined', (done) => {
+      chai.request(app)
+        .post('/api/article-categories')
+        .send({})
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(500);
+          expect(res.body).to.have.property('status');
+          expect(res.body).to.have.property('error');
+          expect(res.body.error.message).to.equal('Cannot read property \'trim\' of undefined');
           done();
         });
     });
@@ -226,7 +260,7 @@ describe('Categorizes articles', () => {
     });
   });
 
-  describe.only('Authors can add their article to any category', () => {
+  describe('Authors can add their article to any category', () => {
     // An author can post an article ============================
     it('Posts an article for an Author', (done) => {
       chai.request(app)
@@ -338,6 +372,23 @@ describe('Categorizes articles', () => {
           expect(res).to.have.property('status');
           expect(res.body.status).to.equal('error');
           expect(res.body.error).to.equal('Article has already been added to this Category');
+          done();
+        });
+    });
+
+    // Returns an error if req body for adding an article is undefined
+    it('Returns an error if article to be added is undefined', (done) => {
+      chai.request(app)
+        .post('/api/article-categories/Technology')
+        .send()
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(404);
+          expect(res).to.have.property('status');
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error).to.equal('Article does not exist');
           done();
         });
     });
