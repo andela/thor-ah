@@ -47,19 +47,16 @@ module.exports = (sequelize, DataTypes) => {
     Article.hasMany(Comment, {
       foreignKey: 'articleId'
     });
-<<<<<<< HEAD
     Article.belongsToMany(models.Category, {
       through: {
         model: models.ArticleCategory,
       },
       foreignKey: 'articleId',
       as: 'article'
-=======
-
+    });
     Article.hasMany(favoriteArticle, {
       foreignKey: 'articleId',
       as: 'favoriteArticles'
->>>>>>> feat(event): add favorite articles function
     });
   };
   return Article;
