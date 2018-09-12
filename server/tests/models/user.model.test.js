@@ -35,11 +35,7 @@ describe('user model', () => {
     const Article = 'some article';
     const Comment = 'some comment';
     const Reply = 'some reply';
-<<<<<<< HEAD
     const CommentLikesDislike = 'some like';
-=======
-    const CommentLike = 'some like';
->>>>>>> feat(commentLikesDislikes): endpoint to like or dislike comments on articles
 
     it('defined a belongsToMany association with User', () => {
       User.associate({ User });
@@ -58,13 +54,8 @@ describe('user model', () => {
       expect(User.hasMany.calledWith(Reply)).to.equal(true);
     });
     it('defined a hasMany association with CommentLikes', () => {
-<<<<<<< HEAD
       User.associate({ CommentLikesDislike });
       expect(User.hasMany.calledWith(CommentLikesDislike)).to.equal(true);
-=======
-      User.associate({ CommentLike });
-      expect(User.hasMany.calledWith(CommentLike)).to.equal(true);
->>>>>>> feat(commentLikesDislikes): endpoint to like or dislike comments on articles
     });
   });
 });
