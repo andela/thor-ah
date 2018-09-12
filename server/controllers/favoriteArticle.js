@@ -25,7 +25,7 @@ class FavoriteArticleController {
         if (foundFavoriteArticle) {
           return res.status(409).json({
             status: 'error',
-            message: 'you have favorited this article already'
+            error: { message: 'you have favorited this article already' }
           });
         }
         return favoriteArticle.create({
@@ -40,8 +40,7 @@ class FavoriteArticleController {
       }))
       .catch(error => res.status(500).json({
         status: 'error',
-        message: error.message ? error.message : 'An error occured during this operation',
-        error: error.errors
+        error: { message: error.message ? error.message : 'An error occured during this operation' }
       }));
   }
 
@@ -63,7 +62,7 @@ class FavoriteArticleController {
       .then((favoritedArticle) => {
         if (!favoritedArticle) {
           return res.status(404).json({
-            message: 'Article not found in your favorite list',
+            error: { message: 'Article not found in your favorite list' },
             status: 'error'
           });
         }
@@ -96,12 +95,6 @@ class FavoriteArticleController {
       where: { userId: req.userId },
     })
       .then((favoritedArticle) => {
-        if (favoritedArticle.length === 0) {
-          return res.status(200).json({
-            status: 'success',
-            message: 'You have no favorite article'
-          });
-        }
         const pagination = paginateArticle(favoritedArticle, currentPage, limit);
         res.status(200).json({
           message: 'Your favorite articles',

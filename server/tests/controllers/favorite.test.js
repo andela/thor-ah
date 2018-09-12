@@ -25,7 +25,6 @@ describe('FavoriteArticleController', () => {
         done();
       });
   });
-
   it('should return 201 for successfully adding articles to personal favorite list', (done) => {
     chai.request(server)
       .post('/api/article/1/favorite')
@@ -44,7 +43,7 @@ describe('FavoriteArticleController', () => {
       .set('Authorization', `Bearer ${token1}`)
       .end((err, res) => {
         res.should.have.status(409);
-        res.body.message.should.equal('you have favorited this article already');
+        res.body.error.message.should.equal('you have favorited this article already');
         res.body.status.should.equal('error');
         done();
       });
@@ -80,7 +79,7 @@ describe('FavoriteArticleController', () => {
       .set('Authorization', `Bearer ${token1}`)
       .end((err, res) => {
         res.should.have.status(404);
-        res.body.message.should.equal('Article not found in your favorite list');
+        res.body.error.message.should.equal('Article not found in your favorite list');
         res.body.status.should.equal('error');
         done();
       });
