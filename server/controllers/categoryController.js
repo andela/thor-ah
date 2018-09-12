@@ -38,48 +38,40 @@ class CategoryController {
    * @memberof CategoryController
    */
   static createCategory(req, res) {
-    const newCategory = req.body.name.trim();
+    const name = req.body.name.trim();
+    const newCategory = `${name.substr(0, 1)}${name.slice(1).toLowerCase()}`;
     if (newCategory === '') {
       return res.status(400).json({
         status: 'error',
         error: 'Name field cannot be empty'
       });
     }
-    return Category.all()
-      .then((allCategories) => {
-        if (allCategories.length === 10) {
-          return res.status(400).json({
+    return Category.findOne({
+      where: { name: newCategory }
+    })
+      .then((category) => {
+        if (category) {
+          return res.status(409).json({
             status: 'error',
-            error: 'You cannot have more that 10 article categories'
+            error: 'Article category already exists'
           });
         }
-        return Category.findOne({
-          where: { name: newCategory }
+        return Category.create({
+          name: newCategory,
         })
-          .then((category) => {
-            if (category) {
-              return res.status(409).json({
-                status: 'error',
-                error: 'Article category already exists'
-              });
-            }
-            return Category.create({
-              name: newCategory,
-            })
-              .then(createdCategory => (
-                res.status(201).json({
-                  status: 'success',
-                  createdCategory
-                })
-              ));
-          })
-          .catch(error => (
-            res.status(400).json({
-              status: 'error',
-              error
+          .then(createdCategory => (
+            res.status(201).json({
+              status: 'success',
+              createdCategory
             })
           ));
-      });
+      })
+      .catch(error => (
+        res.status(400).json({
+          status: 'error',
+          error
+        })
+      ));
   }
 
   /**
@@ -148,7 +140,7 @@ class CategoryController {
         if (!category) {
           return res.status(404).json({
             status: 'error',
-            error: 'You cannot delete a ategory does not exist'
+            error: 'You cannot delete a category does not exist'
           });
         }
         return category.destroy()
@@ -177,7 +169,7 @@ class CategoryController {
    * @memberof CategoryController
    */
   static addArticleToACategory(req, res, next) {
-    const { articleTitle } = req.body;
+    const { articleId } = req.body;
     const { categoryName } = req.params;
     // Check if category exists
     Category.findOne({
@@ -191,8 +183,8 @@ class CategoryController {
           });
         }
         // If category exists, check if article exists
-        Article.findOne(({
-          where: { title: articleTitle }
+        return Article.findOne(({
+          where: { id: articleId }
         }))
           .then((article) => {
             if (!article) {
@@ -202,12 +194,11 @@ class CategoryController {
               });
             }
             const categoryId = category.id;
-            const articleId = article.id;
             const { userId } = req;
             if (parseInt(article.authorId, 10) !== parseInt(userId, 10)) {
               return res.status(403).json({
                 status: 'error',
-                error: 'You cannot modify another author\'s article'
+                error: 'You do not have sufficient permissions for this action'
               });
             }
             return ArticleCategory.find({
@@ -273,7 +264,7 @@ class CategoryController {
         if (!category) {
           return res.status(404).json({
             status: 'error',
-            error: 'Category does not exist'
+            error: 'There are no articles in this category'
           });
         }
         return res.status(200).json({
@@ -293,7 +284,7 @@ class CategoryController {
    * @memberof CategoryController
    */
   static removeArticleFromACategory(req, res) {
-    const { articleTitle } = req.body;
+    const { articleId } = req.body;
     const { categoryName } = req.params;
 
     // Check if category exists
@@ -309,7 +300,7 @@ class CategoryController {
         }
         // If category exists, check if article exists
         Article.findOne(({
-          where: { title: articleTitle }
+          where: { id: articleId }
         }))
           .then((article) => {
             if (!article) {
@@ -319,15 +310,11 @@ class CategoryController {
               });
             }
             const categoryId = category.id;
-            const articleId = article.id;
-            const { authorization } = req.headers;
-            const token = authorization.split(' ')[1];
-            const decoded = TokenHelper.decodeToken(token);
-            const userId = decoded.id;
-            if (article.authorId !== userId) {
+            const { userId } = req;
+            if (parseInt(article.authorId, 10) !== userId) {
               return res.status(403).json({
                 status: 'error',
-                error: 'You cannot remove another author\'s article from this category',
+                error: 'You do not have sufficient permissions for this action',
               });
             }
             return ArticleCategory.findOne({
