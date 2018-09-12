@@ -3,4 +3,3 @@ import './middleware/auth.test';
 import './routes/index';
 import './utils/index';
 import './models/index';
-import './utils/calculateTimeToRead.test';
