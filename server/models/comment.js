@@ -13,10 +13,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
     },
+    isEdited: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    }
   }, {});
   Comment.associate = (models) => {
     const {
-      User, Article, Reply, CommentLikesDislike
+      User, Article, Reply, CommentLikesDislike, CommentHistory
     } = models;
     Comment.belongsTo(User, {
       as: 'commenter',
@@ -38,9 +42,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'commentId',
       as: 'likes',
     });
+
     Comment.hasMany(CommentLikesDislike, {
       foreignKey: 'commentId',
       as: 'dislikes',
+    });
+
+    Comment.hasMany(CommentHistory, {
+      foreignKey: 'commentId',
     });
   };
   return Comment;
