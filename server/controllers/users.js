@@ -212,9 +212,9 @@ class UsersController {
     // check if user in current session is same with user being updated
     // prevent user from updating another users' profile
     if (Number(userId) !== Number(req.userId)) {
-      const error = new Error('you are not allowed to update another user\'s profile');
-      error.status = 401;
-      return next(error);
+      const err = new Error('you are not allowed to update another user\'s profile');
+      err.status = 401;
+      return next(err);
     }
 
     if (!isValid) {

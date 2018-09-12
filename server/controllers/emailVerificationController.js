@@ -70,8 +70,8 @@ class EmailVerificationController {
         }
         if (!token) {
           return res.status(400).json({
-            status: 'success',
-            message: 'Token is invalid'
+            status: 'error',
+            message: 'No Token provided or token is invalid'
           });
         }
         user.emailVerified = true;

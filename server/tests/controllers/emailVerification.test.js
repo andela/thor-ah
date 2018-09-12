@@ -24,6 +24,8 @@ const newUser2 = {
   password: 'ayodavid'
 };
 
+const jwtKey = process.env.JWT_KEY;
+
 let user1Email;
 
 describe('Verify User\'s email address after signup', () => {
@@ -50,7 +52,7 @@ describe('Verify User\'s email address after signup', () => {
 
 
   it('Confirms user\'s email address', (done) => {
-    const token = jwt.sign({ email: user1Email }, process.env.JWT_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, jwtKey || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -62,7 +64,7 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   it('Returns an error if user does not exitst in the database', (done) => {
-    const token = jwt.sign({ id: 10 }, process.env.JWT_KEY || 'secret');
+    const token = jwt.sign({ id: 10 }, jwtKey || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -74,7 +76,7 @@ describe('Verify User\'s email address after signup', () => {
   });
 
   it('Returns an error if user has been verified', (done) => {
-    const token = jwt.sign({ email: user1Email }, process.env.JWT_KEY || 'secret');
+    const token = jwt.sign({ email: user1Email }, jwtKey || 'secret');
     chai.request(app)
       .get(`/api/users/confirmation/${token}`)
       .end((err, res) => {
@@ -85,7 +87,7 @@ describe('Verify User\'s email address after signup', () => {
       });
   });
 
-  describe('Resend verification email to user', () => {
+  describe('Resends verification email to user', () => {
     it('Resends verification email if requested by the user', (done) => {
       chai.request(app)
         .post('/api/users/verify/resend-email')
@@ -98,7 +100,7 @@ describe('Verify User\'s email address after signup', () => {
         });
     });
 
-    it('Returns and error if user has already', (done) => {
+    it('Returns an error if user has already been verified', (done) => {
       chai.request(app)
         .post('/api/users/verify/resend-email')
         .send({ email: 'danieladek@gmail.com' })
@@ -106,6 +108,20 @@ describe('Verify User\'s email address after signup', () => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal('error');
           expect(res.body.message).to.equal('Your account had already been verified');
+          done();
+        });
+    });
+
+    it('Returns an error if token provided is invalid', (done) => {
+      const wrongToken = 'eatgegaghadfkadkjldjadbihvdovhaivdgvadgdgva';
+      chai.request(app)
+        .get(`/api/users/confirmation/${wrongToken}`)
+        .send({ email: 'danieladek@gmail.com' })
+        .end((err, res) => {
+          expect(res).to.have.status(500);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error.error.name).to.equal('JsonWebTokenError');
+          expect(res.body.error.error.message).to.equal('jwt malformed');
           done();
         });
     });
