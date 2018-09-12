@@ -5,7 +5,7 @@ import auth from '../../middleware/auth';
 const { authenticateUser, authorizeAuthor, authorizeAdmin } = auth;
 const categoryRouter = Router();
 
-// Users can get all articles
+// Users can get all categories
 categoryRouter.get('/', authenticateUser, CategoryController.getAllCategories);
 
 // Admin can create a new category

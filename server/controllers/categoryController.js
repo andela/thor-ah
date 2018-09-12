@@ -250,14 +250,16 @@ class CategoryController {
    * @memberof CategoryController
    */
   static getAllArticlesForACategory(req, res, next) {
-    const { categoryName } = req.params.categoryName;
+    const { categoryName } = req.params;
     Category.findOne({
       where: { name: categoryName },
-      include: [{
-        model: Article,
-        as: 'category',
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-      }],
+      include: [
+        {
+          model: Article,
+          as: 'category',
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        },
+      ],
     })
       .then((category) => {
         if (!category) {

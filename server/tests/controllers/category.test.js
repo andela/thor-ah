@@ -494,5 +494,22 @@ describe('Categorizes articles', () => {
           done();
         });
     });
+
+    // Users should be able to get the articles for a category
+    it('Returns the articles in a category', (done) => {
+      chai.request(app)
+        .get('/api/article-categories/Technology/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal('success');
+          expect(res.body).to.have.property('category');
+          expect(res.body.category).to.have.property('createdAt');
+          expect(res.body.category).to.have.property('updatedAt');
+          done();
+        });
+    });
   });
 });
