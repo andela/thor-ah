@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.hasMany(models.Article, {
+      as: 'authored',
       foreignKey: 'authorId',
     });
     User.hasMany(models.Comment, {
