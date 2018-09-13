@@ -6,7 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {});
   CommentHistory.associate = (models) => {
-    CommentHistory.belongsTo(models.Comment);
+    CommentHistory.belongsTo(models.Comment, {
+      foreignKey: 'commentId'
+    });
   };
   return CommentHistory;
 };

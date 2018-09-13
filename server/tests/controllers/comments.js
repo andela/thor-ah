@@ -259,4 +259,31 @@ describe('Comment Controller', () => {
         });
     });
   });
+
+  describe('getCommentEdits', () => {
+    it('should fetch all edits for a comment', (done) => {
+      request(app)
+        .get('/api/articles/test-article-slug12345/comments/1/edits')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          expect(res.body.history).to.be.an('array');
+          done();
+        });
+    });
+
+    it('should return a 404 if comment does not exist', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug-slug12345/comments/3939')
+        .set('Authorization', token)
+        .send(reply)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          done();
+        });
+    });
+  });
 });

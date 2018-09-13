@@ -1,6 +1,6 @@
 import commentNotification from '../utils/commentNotify';
 import {
-  Article, Comment, User, Reply, CommentLikesDislike
+  Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
 
 /**
@@ -493,6 +493,42 @@ class CommentsController {
               comments: commentsResponse,
             });
           })
+          .catch(next);
+      })
+      .catch(next);
+  }
+
+  /**
+   * Get edit history of a comment
+   *
+   * @static
+  * @param {obj} req
+  * @param {obj} res
+  * @param {obj} next
+  * @returns {next/res} returns a response if successful otherwise calls
+  * the next middleware with an error
+   * @memberof CommentsController
+   */
+  static getCommentEdits(req, res, next) {
+    const { commentId } = req.params;
+    Comment
+      .findById(commentId)
+      .then((comment) => {
+        if (!comment) {
+          const error = new Error('comment does not exist');
+          error.status = 404;
+          return next(error);
+        }
+        return CommentHistory
+          .findAll({
+            where: {
+              commentId,
+            }
+          })
+          .then(history => res.status(200).json({
+            status: 'success',
+            history,
+          }))
           .catch(next);
       })
       .catch(next);
