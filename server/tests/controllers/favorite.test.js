@@ -49,6 +49,17 @@ describe('FavoriteArticleController', () => {
       });
   });
 
+  it('should return 500 if an error occured', (done) => {
+    chai.request(server)
+      .post('/api/article/b/favorite')
+      .set('Authorization', `Bearer ${token1}`)
+      .end((err, res) => {
+        res.should.have.status(500);
+        res.body.status.should.equal('error');
+        done();
+      });
+  });
+
   it('should return 200 when the list of favorite articles are returned', (done) => {
     chai.request(server)
       .get('/api/user/articles/favorite')
@@ -80,6 +91,17 @@ describe('FavoriteArticleController', () => {
       .end((err, res) => {
         res.should.have.status(404);
         res.body.error.message.should.equal('Article not found in your favorite list');
+        res.body.status.should.equal('error');
+        done();
+      });
+  });
+
+  it('should return 500 if an error occured', (done) => {
+    chai.request(server)
+      .delete('/api/article/b/favorite')
+      .set('Authorization', `Bearer ${token1}`)
+      .end((err, res) => {
+        res.should.have.status(500);
         res.body.status.should.equal('error');
         done();
       });

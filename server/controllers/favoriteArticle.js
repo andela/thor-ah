@@ -72,9 +72,9 @@ class FavoriteArticleController {
             message: 'Article successfully removed from your favorite list',
             status: 'success'
           }))
-          .catch(error => res.status(500).json({ error }));
+          .catch(error => res.status(500).json({ error, status: 'error' }));
       })
-      .catch(error => res.status(500).json({ error }));
+      .catch(error => res.status(500).json({ error, status: 'error' }));
   }
 
   /**
@@ -92,7 +92,7 @@ class FavoriteArticleController {
     return favoriteArticle.findAndCountAll({
       limit,
       offset,
-      where: { userId: req.userId },
+      where: { userId: req.userId }
     })
       .then((favoritedArticle) => {
         const pagination = paginateArticle(favoritedArticle, currentPage, limit);
