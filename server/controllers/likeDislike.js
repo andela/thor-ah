@@ -1,6 +1,4 @@
-import db from '../models';
-
-const { Article, LikesDislikes } = db;
+import { Article, LikesDislikes } from '../models';
 
 /**
  * @class likesDislikesController
@@ -21,14 +19,18 @@ class likesDislikesController {
     if (!articleId || articleId.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'No valid article ID provided.',
+        error: {
+          message: 'No valid article ID provided.',
+        },
       });
     }
 
     if (!reaction || reaction.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'No reaction provided.',
+        error: {
+          message: 'No reaction provided.',
+        },
       });
     }
 
@@ -36,7 +38,9 @@ class likesDislikesController {
       if (reaction !== 'dislike') {
         return res.status(400).json({
           status: 'error',
-          message: "Reaction must either be 'like' or 'dislike'",
+          error: {
+            message: "Reaction must either be 'like' or 'dislike'",
+          },
         });
       }
     }
@@ -51,7 +55,9 @@ class likesDislikesController {
         if (!article) {
           return res.status(404).json({
             status: 'error',
-            message: 'Article was not found.',
+            error: {
+              message: 'Article was not found.',
+            },
           });
         }
 
@@ -114,7 +120,9 @@ class likesDislikesController {
     if (!articleId || articleId.trim().length < 1) {
       return res.status(400).json({
         status: 'error',
-        message: 'No valid article ID provided.',
+        error: {
+          message: 'No valid article ID provided.',
+        },
       });
     }
 
@@ -127,7 +135,9 @@ class likesDislikesController {
         if (!article) {
           res.status(404).json({
             status: 'error',
-            message: 'Article was not found.',
+            error: {
+              message: 'Article was not found.',
+            },
           });
         }
         Promise.all([
@@ -157,7 +167,7 @@ class likesDislikesController {
   }
 
   /**
-   * @desc Get all reaction status of an article for a particular user
+   * @desc check if a user liked or disliked an article
    * @param {obj} req request body
    * @param {obj} res response body
    * @param {obj} next next action
@@ -170,7 +180,9 @@ class likesDislikesController {
     if (!articleId) {
       return res.status(400).json({
         status: 'error',
-        message: 'No valid article ID provided.',
+        error: {
+          message: 'No valid article ID provided.',
+        },
       });
     }
     Article.findOne({
@@ -182,7 +194,9 @@ class likesDislikesController {
         if (!article) {
           return res.status(404).json({
             status: 'error',
-            message: 'Article was not found.',
+            error: {
+              message: 'Article was not found.',
+            },
           });
         }
 

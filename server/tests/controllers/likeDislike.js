@@ -79,7 +79,7 @@ describe('likeDislike Controller', () => {
         .send({ reaction: 'like' })
         .end((err, res) => {
           res.body.status.should.equal('error');
-          res.body.message.should.equal('Article was not found.');
+          res.body.error.message.should.equal('Article was not found.');
           done();
         });
     });
@@ -92,7 +92,7 @@ describe('likeDislike Controller', () => {
         .send({ reaction: '' })
         .end((err, res) => {
           res.body.status.should.equal('error');
-          res.body.message.should.equal('No reaction provided.');
+          res.body.error.message.should.equal('No reaction provided.');
           done();
         });
     });
@@ -158,7 +158,7 @@ describe('likeDislike Controller', () => {
         .end((err, res) => {
           res.body.should.be.a('object');
           res.body.status.should.equal('error');
-          res.body.message.should.equal('Article was not found.');
+          res.body.error.message.should.equal('Article was not found.');
           done();
         });
     });
