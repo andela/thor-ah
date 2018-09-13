@@ -6,6 +6,7 @@ import userFollowRoutes from './userFollows';
 import welcomeRoute from './welcome';
 import socialAuth from './socialauth';
 import categoryRouter from './categoryRoute';
+import favoriteArticle from './favoriteArticle';
 
 
 const routes = Router();
@@ -29,5 +30,6 @@ routes.use('/', socialAuth);
 routes.use('/articles', articlesRouter);
 routes.use('/article-categories', categoryRouter);
 
+routes.use('/', favoriteArticle);
 
 export default routes;

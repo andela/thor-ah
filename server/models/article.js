@@ -31,13 +31,15 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Article.associate = (models) => {
-    const { Comment } = models;
+    const {
+      Comment, User, Tag, favoriteArticle
+    } = models;
     // 1:m relationship
-    Article.belongsTo(models.User, {
+    Article.belongsTo(User, {
       as: 'author', foreignKey: 'authorId'
     });
     // m:m relationship
-    Article.belongsToMany(models.Tag, {
+    Article.belongsToMany(Tag, {
       through: 'ArticleTags',
       as: 'tags',
       foreignKey: 'articleId',
@@ -51,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       foreignKey: 'articleId',
       as: 'article'
+    });
+    Article.hasMany(favoriteArticle, {
+      foreignKey: 'articleId',
+      as: 'favoriteArticles'
     });
   };
   return Article;

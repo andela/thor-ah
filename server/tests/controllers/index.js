@@ -6,3 +6,4 @@ import './emailVerification.test';
 import './comments';
 import './category.test';
 import './commentLike';
+import './favorite.test';

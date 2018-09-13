@@ -271,6 +271,79 @@
                     }
                 }
             }
+        },
+        "/api/article/{articleId}/favorite": {
+            "post": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "add an article to user favorite list",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "This article is added to your favorite list"
+                    }
+                ],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "409": {
+                        "description": "you have favorited this article already"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "delete a favorite article on a user's list",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "Access and return all favorite article by a user"
+                    }
+                ],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/user/articles/favorite": {
+            "get": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "get all the user's favorite article",
+                "parameters": [],
+                "security": [
+                    {
+                      "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -365,6 +438,19 @@
                 },
                 "author": {
                     "type": "string"
+                }
+            }
+        },
+        "favoriteArticle": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "articleId": {
+                    "type": "int"
+                },
+                "userId": {
+                    "type": "int"
                 }
             }
         }
