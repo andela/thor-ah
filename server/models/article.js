@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    likeDislikeId: DataTypes.INTEGER,
     timeToRead: DataTypes.INTEGER,
   }, {
     hooks: {
@@ -53,6 +52,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       foreignKey: 'articleId',
       as: 'article'
+    });
+    Article.hasMany(models.LikesDislikes, {
+      foreignKey: 'articleId',
+    });
+    Article.hasMany(models.LikesDislikes, {
+      foreignKey: 'articleId',
     });
     Article.hasMany(favoriteArticle, {
       foreignKey: 'articleId',

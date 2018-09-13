@@ -7,3 +7,4 @@ import './comments';
 import './category.test';
 import './commentLike';
 import './favorite.test';
+import './likeDislike';

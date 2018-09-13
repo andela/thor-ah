@@ -6,25 +6,22 @@ import {
   checkModelName,
   checkPropertyExists
 } from 'sequelize-test-helpers';
-import articleModel from '../../models/article';
+import likesDislikesModel from '../../models/likes_dislikes';
 
 chai.should();
 
 chai.use(chaiHttp);
 
 describe('article model', () => {
-  const Article = articleModel(sequelize, dataTypes);
-  const article = new Article();
+  const likesDislikes = likesDislikesModel(sequelize, dataTypes);
+  const likeDislike = new likesDislikes();
 
-  checkModelName(Article)('Article');
+  checkModelName(likesDislikes)('LikesDislikes');
 
   // test user model properties
   context('article model properties', () => {
     [
-      'title',
-      'slug',
-      'description',
-      'authorId'
-    ].forEach(checkPropertyExists(article));
+      'reaction'
+    ].forEach(checkPropertyExists(likeDislike));
   });
 });

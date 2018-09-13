@@ -167,7 +167,7 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'authorId'],
+      attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'authorId'],
       limit,
       offset
     })
@@ -209,7 +209,7 @@ class ArticleController {
       }, {
         model: Comment,
       }],
-      attributes: ['slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
+      attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
       .then(article => res.status(200).json({
         article,
