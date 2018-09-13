@@ -105,7 +105,7 @@ describe('likeDislike Controller', () => {
         .send({ reaction: '' })
         .end((err, res) => {
           res.body.status.should.equal('error');
-          res.body.message.should.equal('No reaction provided.');
+          res.body.error.message.should.equal('No reaction provided.');
           done();
         });
     });
