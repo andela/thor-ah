@@ -32,15 +32,14 @@ class likesDislikesController {
       });
     }
 
-    if ((reaction === 'like') !== true) {
-      if ((reaction === 'dislike') !== true) {
+    if (reaction !== 'like') {
+      if (reaction !== 'dislike') {
         return res.status(400).json({
           status: 'error',
           message: "Reaction must either be 'like' or 'dislike'",
         });
       }
     }
-
     const status = reaction === 'like' ? '1' : '0';
 
     Article.findOne({
