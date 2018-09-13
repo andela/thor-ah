@@ -35,9 +35,13 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Article.associate = (models) => {
+<<<<<<< HEAD
     const {
       Comment, User, Tag, favoriteArticle, ReportsOnArticle
     } = models;
+=======
+    const { Comment, ArticleView } = models;
+>>>>>>> ft(user-reading-stats): users can get their reading stats
     // 1:m relationship
     Article.belongsTo(User, {
       as: 'author', foreignKey: 'authorId'
@@ -67,6 +71,10 @@ module.exports = (sequelize, DataTypes) => {
     Article.hasMany(favoriteArticle, {
       foreignKey: 'articleId',
       as: 'favoriteArticles'
+    }),
+    Article.hasMany(ArticleView, {
+      foreignKey: 'articleId',
+      onDelete: 'CASCADE'
     });
     Article.hasMany(ReportsOnArticle, {
       foreignKey: 'articleId',

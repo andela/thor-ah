@@ -4,7 +4,8 @@ import auth from '../../middleware/auth';
 
 const { authenticateUser, authorizeAuthor, authorizeAdmin } = auth;
 
-const readingStatsRoute = Router();
+const readingStatsRouter = Router();
 
-readingStatsRoute.get('/api/user-reading-stats');
+readingStatsRouter.get('/', authenticateUser, ReadingStatsController.getAllReadingStats);
 
+export default readingStatsRouter;

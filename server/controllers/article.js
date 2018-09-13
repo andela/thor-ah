@@ -1,13 +1,16 @@
-import db from '../models';
+import {
+  Article,
+  User,
+  Tag,
+  Comment,
+  ArticleView,
+  ReportsOnArticle
+} from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 import Notification from './notifications';
 import Search from './search';
 import ReportInputValidation from '../utils/validateReportInput';
-
-const {
-  Article, User, Tag, Comment, ReportsOnArticle
-} = db;
 
 /**
  * Article controller function
@@ -175,10 +178,11 @@ class ArticleController {
    * @static
    * @param {object} req
    * @param {object} res
+   * @param {object} next
    * @return {json} res
    * @description returns specific article that has the slug passes as req param (article_slug).
   */
-  static getSpecific(req, res) {
+  static getSpecific(req, res, next) {
     return Article.findOne({
       where: {
         slug: req.params.article_slug,
@@ -200,10 +204,26 @@ class ArticleController {
       }],
       attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
-      .then(article => res.status(200).json({
-        article,
-        status: 'success'
-      }))
+      .then((article) => {
+        // Record users view in the Article View table
+        const articleId = article.id;
+        const { userId } = req;
+        ArticleView.findOne({
+          where: { userId, articleId },
+        })
+          .then((userView) => {
+            if (!userView) {
+              ArticleView.create({ articleId, userId })
+                .then(() => res.status(201).json())
+                .catch(next);
+            }
+          })
+          .catch(next);
+        return res.status(200).json({
+          article,
+          status: 'success',
+        });
+      })
       .catch(error => res.status(400).json({
         error,
         status: 'error'

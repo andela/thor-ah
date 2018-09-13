@@ -6,13 +6,10 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    articleId: {
-      type: Sequelize.INTEGER
-    },
     userId: {
       type: Sequelize.INTEGER
     },
-    view: {
+    articleId: {
       type: Sequelize.INTEGER
     },
     createdAt: {
