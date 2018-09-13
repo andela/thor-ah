@@ -8,6 +8,7 @@ import socialAuth from './socialauth';
 import categoryRouter from './categoryRoute';
 import favoriteArticle from './favoriteArticle';
 import adminRoutes from './admin';
+import notificationsRoute from './notifications';
 
 
 const routes = Router();
@@ -24,8 +25,9 @@ routes.use((err, req, res, next) => {
   return next(err);
 });
 
-routes.use('/users', userRoutes);
 routes.use('/users/follow', userFollowRoutes);
+routes.use('/users/notifications', notificationsRoute);
+routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
 routes.use('/articles', articlesRouter);

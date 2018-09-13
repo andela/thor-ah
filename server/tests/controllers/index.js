@@ -9,3 +9,4 @@ import './commentLike';
 import './favorite.test';
 import './likeDislike';
 import './reportArticle.test';
+import './notifications';

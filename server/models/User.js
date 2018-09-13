@@ -94,6 +94,11 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.LikesDislikes, {
       foreignKey: 'userId',
     });
+
+    // User-notification relationship
+    User.hasMany(models.Notification, {
+      foreignKey: 'userId',
+    });
   };
   return User;
 };

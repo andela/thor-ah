@@ -1,4 +1,4 @@
-import commentNotification from '../utils/commentNotify';
+import Notification from './notifications';
 import {
   Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
@@ -177,12 +177,9 @@ class CommentsController {
                     }]
                   })
                   .then((replies) => {
-                    const { slug } = article;
+                    const { slug, title } = article;
                     const repliers = replies.map(el => el.commenter);
-                    const emails = repliers.map(replier => replier.email);
-                    if (emails.length > 0) {
-                      commentNotification.sendNotificationEmail(emails, slug);
-                    }
+                    Notification.notifyForCommentReplies(title, slug, repliers, userId);
                   });
               })
               .catch(next);
