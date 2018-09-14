@@ -7,7 +7,7 @@ import welcomeRoute from './welcome';
 import socialAuth from './socialauth';
 import categoryRouter from './categoryRoute';
 import favoriteArticle from './favoriteArticle';
-import adminRoutes from './adminRoutes';
+import adminRoutes from './admin';
 
 
 const routes = Router();

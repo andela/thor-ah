@@ -146,19 +146,19 @@ describe('Reports on Article controller', () => {
   describe('blockArticle', () => {
     it('Should block an article from users if it violates terms', (done) => {
       request(app)
-        .put('/api/admin/articles/badly-written-article-slug12345/block')
+        .put('/api/admin/articles/badly-written-article-slug12345/delist')
         .set('Authorization', adminToken)
         .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
-          expect(res.body.message).to.equal('Article has been successfully blocked');
+          expect(res.body.message).to.equal('Article has been successfully delisted');
           done();
         });
     });
     it('Should return error if article does not exist', (done) => {
       request(app)
-        .put('/api/admin/articles/badly-written-articl/block')
+        .put('/api/admin/articles/badly-written-articl/delist')
         .set('Authorization', adminToken)
         .send()
         .end((err, res) => {
@@ -172,7 +172,7 @@ describe('Reports on Article controller', () => {
   describe('getBlockedArticles', () => {
     it('Should get all blocked articles', (done) => {
       request(app)
-        .get('/api/admin/articles/blocked')
+        .get('/api/admin/articles/delisted')
         .set('Authorization', adminToken)
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
@@ -183,7 +183,7 @@ describe('Reports on Article controller', () => {
     });
     it('Should get a blocked article', (done) => {
       request(app)
-        .get('/api/admin/articles/badly-written-article-slug12345/blocked')
+        .get('/api/admin/articles/badly-written-article-slug12345/delisted')
         .set('Authorization', adminToken)
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
@@ -196,19 +196,19 @@ describe('Reports on Article controller', () => {
   describe('blockArticle', () => {
     it('Should unblock a blocked article', (done) => {
       request(app)
-        .put('/api/admin/articles/badly-written-article-slug12345/unblock')
+        .put('/api/admin/articles/badly-written-article-slug12345/relist')
         .set('Authorization', adminToken)
         .send()
         .end((err, res) => {
           expect(res.type).to.equal('application/json');
           expect(res.status).to.equal(200);
-          expect(res.body.message).to.equal('Article has been successfully unblocked');
+          expect(res.body.message).to.equal('Article has been successfully re-listed');
           done();
         });
     });
     it('Should return error if article does not exist', (done) => {
       request(app)
-        .put('/api/admin/articles/badly-written-articl/unblock')
+        .put('/api/admin/articles/badly-written-articl/relist')
         .set('Authorization', adminToken)
         .send()
         .end((err, res) => {

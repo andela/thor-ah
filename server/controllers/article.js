@@ -357,7 +357,7 @@ class ArticleController {
     } else {
       res.status(400).json({
         status: 'error',
-        errors: { message: 'no search parameter supplied' }
+        error: { message: 'no search parameter supplied' }
       });
     }
   }
@@ -390,39 +390,25 @@ class ArticleController {
         if (!article) {
           return res.status(404).json({
             status: 'error',
-            errors: {
+            error: {
               message: 'Article does not exist',
             }
           });
         }
-        return ReportsOnArticle.findOne({
-          where: { userId }
+        return ReportsOnArticle.create({
+          userId,
+          username: userName,
+          articleId: article.id,
+          reasonForReport,
+          reportBody,
         })
-          .then((found) => {
-            if (found) {
-              return res.status(400).json({
-                status: 'error',
-                error: {
-                  message: 'We already have your report on this article'
-                }
-              });
-            }
-            return ReportsOnArticle.create({
-              userId,
-              username: userName,
-              articleId: article.id,
-              reasonForReport,
-              reportBody,
-            })
-              .then(report => res.status(200).json({
-                status: 'success',
-                report,
-                message: 'Thanks for the feedback. We will look into this.'
-              }))
-              .catch(next);
-          }).catch(next);
-      })
-      .catch(next);
+          .then(report => res.status(200).json({
+            status: 'success',
+            report,
+            message: 'Thanks for the feedback. We will look into this.'
+          }))
+          .catch(next);
+      }).catch(next);
   }
 }
 

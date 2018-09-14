@@ -340,8 +340,8 @@ describe('Articles controller', () => {
         .end((err, res) => {
           res.should.have.status(400);
           res.body.status.should.equal('error');
-          res.body.should.have.property('errors');
-          res.body.errors.message.should.equal('no search parameter supplied');
+          res.body.should.have.property('error');
+          res.body.error.message.should.equal('no search parameter supplied');
           done();
         });
     });

@@ -5,12 +5,12 @@ module.exports = {
     {
       type: Sequelize.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: true,
     },
   ),
 
-  down: queryInterface => queryInterface.addColumn(
+  down: queryInterface => queryInterface.removeColumn(
     'Articles',
-    'displayStatus'
+    'displayStatus',
   )
 };

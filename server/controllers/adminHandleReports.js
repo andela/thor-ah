@@ -1,13 +1,11 @@
-import {
-  Article, User, ReportsOnArticle
-} from '../models';
+import { Article, User, ReportsOnArticle } from '../models';
 
 /**
  *
  *
  * @class Comments
  */
-class AdminRolesController {
+class HandleReports {
   /**
    * @description get all reports made by users on all articles
    * @static
@@ -15,7 +13,7 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
   static getAllReports(req, res, next) {
     ReportsOnArticle.findAll({
@@ -33,6 +31,7 @@ class AdminRolesController {
       }]
     })
       .then(reports => res.status(200).json({
+        status: 'success',
         reports
       }))
       .catch(next);
@@ -45,7 +44,7 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
   static getSingleReport(req, res, next) {
     const id = req.params.reportId;
@@ -65,6 +64,7 @@ class AdminRolesController {
       }]
     })
       .then(report => res.status(200).json({
+        status: 'success',
         report
       }))
       .catch(next);
@@ -77,7 +77,7 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
   static getReportsForSingleArticle(req, res, next) {
     const slug = req.params.article_slug;
@@ -97,6 +97,7 @@ class AdminRolesController {
       }]
     })
       .then(report => res.status(200).json({
+        status: 'success',
         report
       }))
       .catch(next);
@@ -109,9 +110,9 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
-  static blockArticle(req, res, next) {
+  static delistArticle(req, res, next) {
     const slug = req.params.article_slug;
 
     Article.findOne({
@@ -134,7 +135,7 @@ class AdminRolesController {
         })
           .then(() => res.status(200).json({
             status: 'success',
-            message: 'Article has been successfully blocked'
+            message: 'Article has been successfully delisted'
           })).catch(next);
       }).catch(next);
   }
@@ -146,9 +147,9 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
-  static getBlockedArticles(req, res, next) {
+  static getDelistedArticles(req, res, next) {
     Article.findAll({
       where: {
         displayStatus: false
@@ -167,9 +168,9 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
-  static getABlockedArticle(req, res, next) {
+  static getADelistedArticle(req, res, next) {
     const slug = req.params.article_slug;
     Article.findOne({
       where: {
@@ -190,9 +191,9 @@ class AdminRolesController {
    * @param {object} res express response object
    * @param {object} next next middleware
    * @returns {next} next calls next
-   * @memberof AdminRolesController
+   * @memberof HandleReports
    */
-  static unblockArticle(req, res, next) {
+  static relistArticle(req, res, next) {
     const slug = req.params.article_slug;
 
     Article.findOne({
@@ -215,10 +216,10 @@ class AdminRolesController {
         })
           .then(() => res.status(200).json({
             status: 'success',
-            message: 'Article has been successfully unblocked'
+            message: 'Article has been successfully re-listed'
           })).catch(next);
       }).catch(next);
   }
 }
 
-export default AdminRolesController;
+export default HandleReports;
