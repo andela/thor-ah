@@ -727,7 +727,7 @@
             }
         }
       },
-      "/api/admin/articles/{slug}/block": {
+      "/api/admin/articles/{slug}/delist": {
         "put": {
             "tags": [
                 "Admin Roles"
@@ -752,7 +752,7 @@
             }
         }
       },
-      "/api/admin/articles/blocked": {
+      "/api/admin/articles/delisted": {
         "get": {
             "tags": [
                 "Admin Roles"
@@ -771,7 +771,7 @@
             }
         }
       },
-      "/api/admin/articles/{slug}/blocked": {
+      "/api/admin/articles/{slug}/delisted": {
         "get": {
             "tags": [
                 "Admin Roles"
@@ -796,7 +796,7 @@
             }
         }
       },
-      "/api/admin/articles/{slug}/unblock": {
+      "/api/admin/articles/{slug}/relist": {
         "put": {
             "tags": [
                 "Admin Roles"

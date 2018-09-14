@@ -15,7 +15,7 @@ class HandleReports {
    * @returns {next} next calls next
    * @memberof HandleReports
    */
-  static getAllReports(req, res, next) {
+  static getReportedArticles(req, res, next) {
     ReportsOnArticle.findAll({
       include: [{
         model: Article,
@@ -38,7 +38,7 @@ class HandleReports {
   }
 
   /**
-   * @description get a single report made by a user on an article
+   * @description get a single reported article
    * @static
    * @param {object} req express request object
    * @param {object} res express response object
@@ -46,7 +46,7 @@ class HandleReports {
    * @returns {next} next calls next
    * @memberof HandleReports
    */
-  static getSingleReport(req, res, next) {
+  static getAReportedArticle(req, res, next) {
     const id = req.params.reportId;
     ReportsOnArticle.findOne({
       where: { id },
@@ -71,7 +71,7 @@ class HandleReports {
   }
 
   /**
-   * @description get a single report made by a user on an article
+   * @description get reports on an article
    * @static
    * @param {object} req express request object
    * @param {object} res express response object
@@ -79,7 +79,7 @@ class HandleReports {
    * @returns {next} next calls next
    * @memberof HandleReports
    */
-  static getReportsForSingleArticle(req, res, next) {
+  static getReportsForAnArticle(req, res, next) {
     const slug = req.params.article_slug;
 
     Article.findOne({
