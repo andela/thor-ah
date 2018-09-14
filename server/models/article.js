@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     timeToRead: DataTypes.INTEGER,
+    displayStatus: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
   }, {
     hooks: {
       beforeCreate: (articleData) => {
@@ -31,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Article.associate = (models) => {
     const {
-      Comment, User, Tag, favoriteArticle
+      Comment, User, Tag, favoriteArticle, ReportsOnArticle
     } = models;
     // 1:m relationship
     Article.belongsTo(User, {
@@ -62,6 +67,10 @@ module.exports = (sequelize, DataTypes) => {
     Article.hasMany(favoriteArticle, {
       foreignKey: 'articleId',
       as: 'favoriteArticles'
+    });
+    Article.hasMany(ReportsOnArticle, {
+      foreignKey: 'articleId',
+      as: 'reports'
     });
   };
   return Article;

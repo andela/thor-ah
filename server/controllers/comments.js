@@ -223,6 +223,7 @@ class CommentsController {
       .catch(next);
   }
 
+
   /**
    * @description query method for users to like or dislike comments made on articles
    * @static
@@ -343,7 +344,7 @@ class CommentsController {
             });
           }
         }
-        CommentLikesDislike.findOne({
+        return CommentLikesDislike.findOne({
           where: { userId }
         })
           .then((likedislike) => {
