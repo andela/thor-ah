@@ -96,6 +96,19 @@ describe('likeDislike Controller', () => {
           done();
         });
     });
+    it('should return error if reaction is invalid or not provided', (done) => {
+      chai.request(app)
+        .post(`/api/articles/${articleId}/reactions`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({ reaction: '' })
+        .end((err, res) => {
+          res.body.status.should.equal('error');
+          res.body.error.message.should.equal('No reaction provided.');
+          done();
+        });
+    });
     it('should successfully like an article', (done) => {
       chai.request(app)
         .post(`/api/articles/${articleId}/reactions`)
