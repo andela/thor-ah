@@ -206,6 +206,11 @@
                         }
                     }
                 ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created"
@@ -218,6 +223,11 @@
                 ],
                 "summary": "get all articles",
                 "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -232,6 +242,11 @@
                 ],
                 "summary": "get a single article",
                 "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -253,6 +268,11 @@
                         }
                     }
                 ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -265,6 +285,11 @@
                 ],
                 "summary": "delete an article",
                 "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -374,6 +399,11 @@
                         "description": "search by keywords"
                     }
                 ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -383,6 +413,123 @@
                     },
                     "500":{
                         "description": "server error"
+                    }
+                }
+            }
+        },
+        "/api/articles/{articleId}/reactions": {
+            "post": {
+                "tags": [
+                    "Like or Dislike an Articles"
+                ],
+                "summary": "like or dislike to an article",
+                "parameters": [
+                    {
+                        "name": "reaction",
+                        "in": "body",
+                        "description": "'like' or 'dislike'",
+                        "schema": {
+                            "$ref": "#/definitions/likeDislikeArticle"
+                        }
+                    },
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "ID of the article"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Like or Dislike an Articles"
+                ],
+                "summary": "get counts of likes and dislikes for an article",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "ID of the article"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            }
+        },
+        "/api/articles/{articleId}/reactions/status": {
+            "get": {
+                "tags": [
+                    "Like or Dislike an Articles"
+                ],
+                "summary": "get the reaction status of a user to an article",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "ID of the article"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
                     }
                 }
             }
@@ -493,6 +640,13 @@
                 },
                 "userId": {
                     "type": "int"
+                }
+            }
+        },
+        "likeDislikeArticle": {
+            "properties": {
+                "reaction": {
+                    "type": "string"
                 }
             }
         }
