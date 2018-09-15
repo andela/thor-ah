@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../../index';
+import TokenHelper from '../../utils/TokenHelper';
 
 chai.use(chaiHttp);
 
@@ -33,6 +34,7 @@ describe('User\'s reading stats', () => {
       .send(user)
       .end((req, res) => {
         userToken = res.body.user.token;
+        console.log(res.body);
         done();
       });
   });
