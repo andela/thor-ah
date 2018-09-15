@@ -3,7 +3,7 @@ import {
   User,
   Tag,
   Comment,
-  ArticleView,
+  ArticleViewHistory,
   ReportsOnArticle
 } from '../models';
 import articleValidation from '../utils/articles';
@@ -135,7 +135,7 @@ class ArticleController {
    * @return {json} res
    * @description returns all article.
   */
-  static getAll({ query }, res) {
+  static getAllArticles({ query }, res) {
     const limit = Number(query.limit) || 4;
     const currentPage = Number(query.page) || 1;
     const offset = (currentPage - 1) * limit;
@@ -182,7 +182,7 @@ class ArticleController {
    * @return {json} res
    * @description returns specific article that has the slug passes as req param (article_slug).
   */
-  static getSpecific(req, res, next) {
+  static getArticle(req, res, next) {
     return Article.findOne({
       where: {
         slug: req.params.article_slug,
@@ -211,20 +211,11 @@ class ArticleController {
             error: 'Article does not exist'
           });
         }
-        // Record users view in the Article View table
+        // Save the view in the Article view table
         const articleId = article.id;
         const { userId } = req;
-        ArticleView.findOne({
-          where: { userId, articleId },
-        })
-          .then((userView) => {
-            if (!userView) {
-              ArticleView.create({ articleId, userId })
-                .then(() => res.status(201).json())
-                .catch(next);
-            }
-          })
-          .catch(next);
+        res.locals = { userId, articleId };
+        next();
         return res.status(200).json({
           article,
           status: 'success',

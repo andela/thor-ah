@@ -50,11 +50,6 @@ describe('article model', () => {
       expect(Article.hasMany.calledWith(LikesDislikes)).equal(true);
     });
 
-    it('defined a hasMany association with LikesDislikes', () => {
-      Article.associate({ LikesDislikes });
-      expect(Article.hasMany.calledWith(LikesDislikes)).equal(true);
-    });
-
     it('defined a hasMany association with favoriteArticle', () => {
       Article.associate({ favoriteArticle });
       expect(Article.hasMany.calledWith(favoriteArticle)).equal(true);

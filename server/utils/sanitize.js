@@ -2,7 +2,7 @@
  * Sanitizes string before processing the request
  *
  * @param {string} string
- * @returns {number} timeToRead - time it takes to read an article
+ * @returns {number} changes the first letter of each word to uppercase
  */
 
 const sanitizeString = (string) => {

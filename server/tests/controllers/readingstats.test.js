@@ -4,17 +4,20 @@ import app from '../../../index';
 
 chai.use(chaiHttp);
 
+const userPassword = process.env.USER_PASSWORD;
+const authorPassword = process.env.ADMIN_PASSWORD;
+
 const user = {
   email: 'su@mail.com',
-  password: 'ThorAndHisChildrenAH'
+  password: userPassword
 };
 const user2 = {
   email: 'romeo@mail.com',
-  password: 'ThorAndHisChildrenAH'
+  password: userPassword
 };
 const author = {
   email: 'author1@mail.com',
-  password: 'ThorAndHisChildrenAH'
+  password: authorPassword
 };
 
 let userToken;

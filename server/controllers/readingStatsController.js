@@ -1,7 +1,11 @@
 import {
-  Article, ArticleView, Category, LikesDislikes, ArticleCategory
+  Article,
+  ArticleView,
+  Category,
+  LikesDislikes,
+  ArticleCategory,
 } from '../models';
-import modeValue from '../utils/modeValue';
+import mode from '../utils/modeValue';
 
 /**
  *
@@ -13,10 +17,11 @@ class ReadingStatsController {
    * @description Get all categories
    * @param  {object} req body of the user's request
    * @param  {function} res response from the server
+   * @param  {function} next response from the server
    * @returns {object} The body of the response message
    * @memberof ReadingStatsController
    */
-  static getAllReadingStats(req, res) {
+  static getAllReadingStats(req, res, next) {
     const { userId } = req;
     ArticleView.findAll({
       where: { userId },
@@ -58,7 +63,7 @@ class ReadingStatsController {
                       mostReadCategory = 'Articles have not been added to any category';
                     }
                     const names = categoryNames.map(category => category.name);
-                    mostReadCategory = modeValue(names);
+                    mostReadCategory = mode(names);
                     return res.status(200).json({
                       status: 'success',
                       articlesRead: articles.length === 0 ? 'You have not read any article' : articles,
@@ -67,13 +72,37 @@ class ReadingStatsController {
                       mostReadCategory
                     });
                   })
-                  .catch(error => res.status(400).send(error));
+                  .catch(error => next(error));
               })
-              .catch(error => error);
+              .catch(error => next(error));
           })
-          .catch(error => error);
+          .catch(error => next(error));
       })
-      .catch(error => res.status(400).json({ status: 'error', error }));
+      .catch(error => next(error));
+  }
+
+  /**
+   * @description Get all categories
+   * @param  {object} req body of the user's request
+   * @param  {function} res response from the server
+   * @param  {function} next response from the server
+   * @returns {object} The body of the response message
+   * @param  {string} articleId body of the user's request
+   * @memberof ReadingStatsController
+   */
+  static saveArticleView(req, res, next) {
+    const { userId, articleId } = res.locals;
+    ArticleView.findOne({
+      where: { userId, articleId },
+    })
+      .then((userView) => {
+        if (!userView) {
+          ArticleView.create({ articleId, userId })
+            .then(() => res.status(201).send())
+            .catch(next);
+        }
+      })
+      .catch(next);
   }
 }
 
