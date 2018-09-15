@@ -65,29 +65,31 @@ describe('User\'s reading stats', () => {
       .set('Authorization', `Bearer ${authorToken}`)
       .set('Accept', 'application/json')
       .end((req, res) => {
+        const { createdArticle } = res.body.newArticleAlert;
         articleId = res.body.newArticleAlert.createdArticle.id;
         articleSlug = res.body.newArticleAlert.createdArticle.slug;
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('status');
-        expect(res.body.newArticleAlert.createdArticle).to.have.property('title');
-        expect(res.body.newArticleAlert.createdArticle).to.have.property('description');
-        expect(res.body.newArticleAlert.createdArticle).to.have.property('body');
+        expect(createdArticle).to.have.property('title');
+        expect(createdArticle).to.have.property('description');
+        expect(createdArticle).to.have.property('body');
         done();
       });
   });
 
   it('Add an article to a category', (done) => {
     chai.request(app)
-      .post('/api/article-categories/Technology')
+      .post('/api/article-categories/Technology/articles')
       .send({ articleId })
       .set('Content-Type', 'application/json')
       .set('Authorization', `Bearer ${authorToken}`)
       .set('Accept', 'application/json')
       .end((req, res) => {
+        const { created } = res.body;
         expect(res).to.have.status(202);
         expect(res.body).to.have.property('status');
-        expect(res.body.created).to.have.property('articleId');
-        expect(res.body.created).to.have.property('categoryId');
+        expect(created).to.have.property('articleId');
+        expect(created).to.have.property('categoryId');
         done();
       });
   });
@@ -130,14 +132,15 @@ describe('User\'s reading stats', () => {
       .set('Authorization', `Bearer ${user2Token}`)
       .set('Accept', 'application/json')
       .end((req, res) => {
+        const { articlesRead, numberOfArticlesRead, articleReactions } = res.body;
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('status');
         expect(res.body).to.have.property('articlesRead');
         expect(res.body).to.have.property('numberOfArticlesRead');
         expect(res.body).to.have.property('articleReactions');
-        expect(res.body.articlesRead).to.equal('You have not read any article');
-        expect(res.body.numberOfArticlesRead).to.equal(0);
-        expect(res.body.articleReactions).to.equal('You have not liked/disliked any article');
+        expect(articlesRead).to.equal('You have not read any article');
+        expect(numberOfArticlesRead).to.equal(0);
+        expect(articleReactions).to.equal('You have not liked/disliked any article');
         done();
       });
   });

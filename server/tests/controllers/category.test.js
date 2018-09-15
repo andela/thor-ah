@@ -87,10 +87,11 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
+          const { status } = res.body;
           expect(res).to.have.status(200);
           expect(res.body).to.have.property('status');
-          expect(res.body.status).to.equal('success');
           expect(res.body).to.have.property('categories');
+          expect(status).to.equal('success');
           done();
         });
     });
@@ -104,10 +105,11 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
+          const { createdCategory } = res.body;
           expect(res).to.have.status(201);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('createdCategory');
-          expect(res.body.createdCategory.name).to.equal('Design');
+          expect(createdCategory.name).to.equal('Design');
           done();
         });
     });
@@ -245,7 +247,7 @@ describe('Categorizes articles', () => {
     });
 
     // Admin cannot delete a category that does not exists ====================
-    it('Does not delete a category that does not exists', (done) => {
+    it('Cannot not delete a category that does not exists', (done) => {
       chai.request(app)
         .delete('/api/article-categories/Socialization')
         .set('Accept', 'application/json')
@@ -260,7 +262,7 @@ describe('Categorizes articles', () => {
     });
   });
 
-  describe('Authors can add their article to any category', () => {
+  describe('Authors can add their article to a category', () => {
     // An author can post an article ============================
     it('Posts an article for an Author', (done) => {
       chai.request(app)
@@ -282,7 +284,7 @@ describe('Categorizes articles', () => {
 
     it('Adds an author\'s article to a category', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Business')
+        .post('/api/article-categories/Business/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -302,7 +304,7 @@ describe('Categorizes articles', () => {
 
     it('Adds an author\'s article to a category', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Health')
+        .post('/api/article-categories/Health/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -323,7 +325,7 @@ describe('Categorizes articles', () => {
     // Author cannot add their article(s) to more than 3 categories
     it('Returns an error if author tries to add an article to more than 3 categories', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Politics')
+        .post('/api/article-categories/Politics/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -340,7 +342,7 @@ describe('Categorizes articles', () => {
     // Author cannot add the same article twice to the same category
     it('Returns an error if article has already been added', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Technology')
+        .post('/api/article-categories/Technology/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -357,7 +359,7 @@ describe('Categorizes articles', () => {
     // Returns an error if req body for adding an article is undefined
     it('Returns an error if article to be added is undefined', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Technology')
+        .post('/api/article-categories/Technology/articles')
         .send()
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -374,7 +376,7 @@ describe('Categorizes articles', () => {
     // Author cannot add article to a category that does not exist
     it('Returns an error if author author\'s adds an article to a category that does not exist', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Headphones')
+        .post('/api/article-categories/Headphones/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -391,7 +393,7 @@ describe('Categorizes articles', () => {
     // Author cannot add an article that does not exist
     it('Returns an error if article does not exist', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Technology')
+        .post('/api/article-categories/Technology/articles')
         .send({ articleId: 80 })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -408,7 +410,7 @@ describe('Categorizes articles', () => {
     // Author cannot add another author's article to any category
     it('Returns an error if author tries to add another author\'s article', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Technology')
+        .post('/api/article-categories/Technology/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${author2Token}`)
@@ -465,10 +467,11 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${authorToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
+          const { status, error } = res.body;
           expect(res).to.have.status(404);
           expect(res).to.have.property('status');
-          expect(res.body.status).to.equal('error');
-          expect(res.body.error).to.equal('You cannot remove an article that does not exists in this category');
+          expect(status).to.equal('error');
+          expect(error).to.equal('You cannot remove an article that does not exists in this category');
           done();
         });
     });
@@ -481,11 +484,12 @@ describe('Categorizes articles', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .set('Content-Type', 'application/json')
         .end((req, res) => {
+          const { category } = res.body;
           expect(res).to.have.status(200);
           expect(res.body.status).to.equal('success');
           expect(res.body).to.have.property('category');
-          expect(res.body.category).to.have.property('createdAt');
-          expect(res.body.category).to.have.property('updatedAt');
+          expect(category).to.have.property('createdAt');
+          expect(category).to.have.property('updatedAt');
           done();
         });
     });
