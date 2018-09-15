@@ -280,28 +280,6 @@ describe('Categorizes articles', () => {
         });
     });
 
-    // An author can add their article to a category ============================
-    it('Adds an author\'s article to a category', (done) => {
-      chai.request(app)
-        .post('/api/article-categories/Technology')
-        .send({ articleId })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${authorToken}`)
-        .set('Content-Type', 'application/json')
-        .end((req, res) => {
-          expect(res).to.have.status(202);
-          expect(res.body).to.have.property('status');
-          expect(res.body.status).to.equal('success');
-          expect(res.body).to.have.property('created');
-          expect(res.body.created).to.have.property('articleId');
-          expect(res.body.created).to.have.property('categoryId');
-          expect(res.body.created).to.have.property('updatedAt');
-          expect(res.body.created).to.have.property('createdAt');
-          done();
-        });
-    });
-
-
     it('Adds an author\'s article to a category', (done) => {
       chai.request(app)
         .post('/api/article-categories/Business')

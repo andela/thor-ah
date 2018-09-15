@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import ArticleController from '../../controllers/article';
 import CommentsController from '../../controllers/comments';
 import LikeDislike from '../../controllers/likeDislike';
@@ -5,7 +6,7 @@ import auth from '../../middleware/auth';
 
 // get authenticateUser method
 const { authenticateUser, authorizeAuthor } = auth;
-const router = require('express').Router();
+const router = Router();
 
 router.get('/search', ArticleController.search);
 router.post('/', authenticateUser, authorizeAuthor, ArticleController.create);

@@ -21,12 +21,9 @@ describe('Category Model', () => {
   context('associations', () => {
     const Article = 'some dummy artcle';
 
-    before(() => {
-      Category.associate({ Article });
-    });
-
     it('defined a belongsTo association with Article', () => {
-      expect(Category.belongsTo).to.have.been.calledWith(Article);
+      Category.associate({ Article });
+      expect(Category.belongsToMany.calledWith(Article)).equal(true);
     });
   });
 });

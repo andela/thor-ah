@@ -35,7 +35,6 @@ routes.use('/articles', articlesRouter);
 routes.use('/article-categories', categoryRouter);
 routes.use('/admin', adminRoutes);
 routes.use('/user-reading-stats', readingStatsRouter);
-
 routes.use('/', favoriteArticle);
 
 export default routes;

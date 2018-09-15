@@ -1,4 +1,5 @@
 import { Category, Article, ArticleCategory } from '../models';
+import sanitizeString from '../utils/sanitize';
 
 /**
  *
@@ -38,7 +39,9 @@ class CategoryController {
    */
   static createCategory(req, res) {
     const name = req.body.name.trim();
-    const newCategory = `${name.substr(0, 1).toUpperCase()}${name.slice(1).toLowerCase()}`;
+    // const newCategory = `${name.substr(0, 1).toUpperCase()}${name.slice(1).toLowerCase()}`;
+    const newCategory = sanitizeString(name);
+    console.log(newCategory);
     if (newCategory === '') {
       return res.status(400).json({
         status: 'error',

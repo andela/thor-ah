@@ -10,3 +10,4 @@ import './favorite.test';
 import './likeDislike';
 import './reportArticle.test';
 import './notifications';
+import './readingstats.test';

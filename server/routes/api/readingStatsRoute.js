@@ -2,7 +2,7 @@ import { Router } from 'express';
 import ReadingStatsController from '../../controllers/readingStatsController';
 import auth from '../../middleware/auth';
 
-const { authenticateUser, authorizeAuthor, authorizeAdmin } = auth;
+const { authenticateUser } = auth;
 
 const readingStatsRouter = Router();
 

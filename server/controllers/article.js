@@ -205,6 +205,12 @@ class ArticleController {
       attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
       .then((article) => {
+        if (!article) {
+          return res.status(404).json({
+            status: 'error',
+            error: 'Article does not exist'
+          });
+        }
         // Record users view in the Article View table
         const articleId = article.id;
         const { userId } = req;

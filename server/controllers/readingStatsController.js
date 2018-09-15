@@ -1,4 +1,7 @@
-import { Article, ArticleView, Category } from '../models';
+import {
+  Article, ArticleView, Category, LikesDislikes, ArticleCategory
+} from '../models';
+import modeValue from '../utils/modeValue';
 
 /**
  *
@@ -17,62 +20,61 @@ class ReadingStatsController {
     const { userId } = req;
     ArticleView.findAll({
       where: { userId },
-      attributes: ['userId', 'articleId'],
+      attributes: ['articleId'],
       include: [
         {
           model: Article,
           as: 'article',
-          attributes: ['title', 'body', 'authorId']
+          attributes: ['title', 'body', 'description', 'authorId']
         }
       ]
     })
-      .then((user) => {
-        if (!user) {
-          return res.status(200).json({
-            status: 'success',
-            message: 'No articles read yet'
-          });
-        }
-        const articleIds = user.map(detail => detail.articleId);
-        const mostReadCategory = user.map((detail) => {
-          return Category.findAll({
-            where: { id: detail.articleId },
-            attributes: ['name']
-          })
-            .then((categories) => {
-              return res.status(200).json({
-                status: 'success',
-                user,
-                articlesRead: articleIds.length,
-                mostReadCategory: categories
-              });
+      .then((articles) => {
+        const articleCount = articles.map(article => article.articleId);
+        return LikesDislikes.findAll({
+          where: { userId },
+          attributes: ['articleId', 'reaction'],
+          include: [
+            {
+              model: Article,
+              as: 'article',
+              attributes: ['title', 'body', 'description']
+            }
+          ]
+        })
+          .then((reaction) => {
+            ArticleCategory.findAll({
+              where: { articleId: articleCount }
             })
-            .catch(error => error);
-        });
-        // return res.status(200).json({
-        //   status: 'success',
-        //   user,
-        //   articlesRead: articleIds.length,
-        // })
-        // return user.count()
-          // .then(result => res.status(200).json({ status: 'success', result }))
-          // .catch(error => res.status(400).json({ status: 'error', error }));
-        return mostReadCategory;
+              .then((result) => {
+                const categoryIds = result.map(article => article.categoryId);
+                return Category.findAll({
+                  where: { id: categoryIds },
+                  attributes: ['name']
+                })
+                  .then((categoryNames) => {
+                    let mostReadCategory;
+                    if (categoryNames.length === 0) {
+                      mostReadCategory = 'Articles have not been added to any category';
+                    }
+                    const names = categoryNames.map(category => category.name);
+                    mostReadCategory = modeValue(names);
+                    return res.status(200).json({
+                      status: 'success',
+                      articlesRead: articles.length === 0 ? 'You have not read any article' : articles,
+                      numberOfArticlesRead: articleCount.length,
+                      articleReactions: reaction.length === 0 ? 'You have not liked/disliked any article' : reaction,
+                      mostReadCategory
+                    });
+                  })
+                  .catch(error => res.status(400).send(error));
+              })
+              .catch(error => error);
+          })
+          .catch(error => error);
       })
       .catch(error => res.status(400).json({ status: 'error', error }));
   }
-
-  /**
-   * @description Get all categories
-   * @param  {object} req body of the user's request
-   * @param  {function} res response from the server
-   * @returns {object} The body of the response message
-   * @memberof ReadingStatsController
-   */
-  static getMostReadCategory(req, res) {
-
-  }
-
 }
 
 export default ReadingStatsController;

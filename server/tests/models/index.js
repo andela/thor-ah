@@ -7,3 +7,5 @@ import './commentLike.model.test';
 import './likeDislike';
 import './reportArticle.model.test';
 import './commentHistory.model.test';
+import './category.model.test';
+import './articleview.model.test';
