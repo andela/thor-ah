@@ -1,12 +1,11 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../../index';
-import TokenHelper from '../../utils/TokenHelper';
 
 chai.use(chaiHttp);
 
 const userPassword = process.env.USER_PASSWORD;
-const authorPassword = process.env.ADMIN_PASSWORD;
+const authorPassword = process.env.AUTHOR_PASSWORD;
 
 const user = {
   email: 'su@mail.com',
@@ -34,7 +33,6 @@ describe('User\'s reading stats', () => {
       .send(user)
       .end((req, res) => {
         userToken = res.body.user.token;
-        console.log(res.body);
         done();
       });
   });
@@ -78,7 +76,7 @@ describe('User\'s reading stats', () => {
       });
   });
 
-  it('Add an article to a categoruy', (done) => {
+  it('Add an article to a category', (done) => {
     chai.request(app)
       .post('/api/article-categories/Technology')
       .send({ articleId })
