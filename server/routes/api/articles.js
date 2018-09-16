@@ -25,5 +25,6 @@ router.put('/:article_slug', authenticateUser, ArticleController.update);
 router.delete('/:article_slug', authenticateUser, ArticleController.delete);
 router.post('/tags', authenticateUser, authorizeAuthor, ArticleController.createTags);
 router.post('/:articleId/reactions', authenticateUser, LikeDislike.likeOrDislike);
+router.post('/:article_slug/report', authenticateUser, ArticleController.reportOnArticle);
 
 export default router;

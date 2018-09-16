@@ -6,6 +6,26 @@ module.exports = {
         tag: 'walker',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        tag: 'tech',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        tag: 'andela',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        tag: 'wildlife',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        tag: 'agric',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {}
   ),

@@ -3,9 +3,10 @@ import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 import articleNotification from '../utils/articleNotify';
 import Search from './search';
+import ReportInputValidation from '../utils/validateReportInput';
 
 const {
-  Article, User, Tag, Comment
+  Article, User, Tag, Comment, ReportsOnArticle
 } = db;
 
 /**
@@ -155,6 +156,9 @@ class ArticleController {
     const offset = (currentPage - 1) * limit;
 
     return Article.findAndCountAll({
+      where: {
+        displayStatus: true,
+      },
       include: [{
         model: User,
         as: 'author',
@@ -194,7 +198,10 @@ class ArticleController {
   */
   static getSpecific(req, res) {
     return Article.findOne({
-      where: { slug: req.params.article_slug },
+      where: {
+        slug: req.params.article_slug,
+        displayStatus: true,
+      },
       include: [{
         model: User,
         as: 'author',
@@ -230,7 +237,10 @@ class ArticleController {
   */
   static update(req, res) {
     return Article.findOne({
-      where: { slug: req.params.article_slug },
+      where: {
+        slug: req.params.article_slug,
+        displayStatus: true,
+      },
       include: [{
         model: User,
         as: 'author',
@@ -288,7 +298,12 @@ class ArticleController {
    * @description deletes an article object with given slug in param.
   */
   static delete(req, res) {
-    return Article.findOne({ where: { slug: req.params.article_slug } })
+    return Article.findOne({
+      where: {
+        slug: req.params.article_slug,
+        displayStatus: true
+      }
+    })
       .then((article) => {
         if (!article) {
           return res.status(404).json({
@@ -342,9 +357,58 @@ class ArticleController {
     } else {
       res.status(400).json({
         status: 'error',
-        errors: { message: 'no search parameter supplied' }
+        error: { message: 'no search parameter supplied' }
       });
     }
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @return {json} res
+   * @description deletes an article object with given slug in param.
+  */
+  static reportOnArticle(req, res, next) {
+    const slug = req.params.article_slug;
+    const { userId, userName } = req;
+    const { reasonForReport, reportBody } = req.body;
+
+    const { error, isValid } = ReportInputValidation.validateArticleReportInput(req.body);
+    if (!isValid) {
+      return res.status(400).json({
+        error,
+        status: 'error'
+      });
+    }
+
+    Article.findOne({
+      where: { slug }
+    })
+      .then((article) => {
+        if (!article) {
+          return res.status(404).json({
+            status: 'error',
+            error: {
+              message: 'Article does not exist',
+            }
+          });
+        }
+        return ReportsOnArticle.create({
+          userId,
+          username: userName,
+          articleId: article.id,
+          reasonForReport,
+          reportBody,
+        })
+          .then(report => res.status(200).json({
+            status: 'success',
+            report,
+            message: 'Thanks for the feedback. We will look into this.'
+          }))
+          .catch(next);
+      }).catch(next);
   }
 }
 
