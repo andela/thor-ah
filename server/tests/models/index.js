@@ -6,3 +6,4 @@ import './reply.model.test';
 import './commentLike.model.test';
 import './likeDislike';
 import './reportArticle.model.test';
+import './commentHistory.model.test';
