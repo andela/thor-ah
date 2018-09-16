@@ -5,6 +5,16 @@ module.exports = {
   up: queryInterface => queryInterface.bulkInsert('Users',
     [
       {
+        firstName: 'Sudo',
+        lastName: 'Admin',
+        username: 'superadmin',
+        email: 'superadmin@mail.com',
+        role: 'superAdmin',
+        hash: bcrypt.hashSync(process.env.SUPER_ADMIN_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
         firstName: 'author1',
         lastName: 'Author',
         username: 'randomAuthor1',

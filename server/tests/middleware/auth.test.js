@@ -4,7 +4,12 @@ import { spy } from 'sinon';
 import auth from '../../middleware/auth';
 import TokenHelper from '../../utils/TokenHelper';
 
-const { authenticateUser, authorizeAdmin, authorizeAuthor } = auth;
+const {
+  authenticateUser,
+  authorizeAdmin,
+  authorizeAuthor,
+  authorizeSuperAdmin
+} = auth;
 
 describe('auth middleware', () => {
   it('should exist', () => {
@@ -138,6 +143,39 @@ describe('auth middleware', () => {
       req.userRole = 'admin';
       const nextSpy = spy();
       authorizeAdmin(req, res, nextSpy);
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0]).to.equal(undefined);
+    });
+  });
+
+  describe('authorizeSuperAdmin', () => {
+    const req = {
+      headers: {}
+    };
+    const res = {};
+
+    it('should always call next()', () => {
+      const nextSpy = spy();
+      authorizeSuperAdmin(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+    });
+
+    it('should call next with an error if user is not a super admin', () => {
+      req.userRole = 'user';
+      const nextSpy = spy();
+      authorizeSuperAdmin(req, res, nextSpy);
+      expect(nextSpy.called).to.equal(true);
+
+      const { args } = nextSpy.getCalls()[0];
+      expect(nextSpy.called).to.equal(true);
+      expect(args[0].message).to.equal('you are not a Super Admin');
+    });
+
+    it('should call next middleware if user is a super admin', () => {
+      req.userRole = 'superAdmin';
+      const nextSpy = spy();
+      authorizeSuperAdmin(req, res, nextSpy);
       const { args } = nextSpy.getCalls()[0];
       expect(nextSpy.called).to.equal(true);
       expect(args[0]).to.equal(undefined);
