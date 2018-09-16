@@ -1,6 +1,9 @@
 {
   "name": "express-authorshaven",
   "version": "1.0.0",
+  "engines": {
+    "node": "10.8.0"
+  },
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {

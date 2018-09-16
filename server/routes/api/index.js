@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import articlesRouter from './articles';
 
+import articlesRouter from './articles';
 import userRoutes from './users';
 import userFollowRoutes from './userFollows';
 import welcomeRoute from './welcome';
 import socialAuth from './socialauth';
 import categoryRouter from './categoryRoute';
 import favoriteArticle from './favoriteArticle';
-
+import adminRoute from './adminRoute';
 
 const routes = Router();
 
@@ -29,6 +29,7 @@ routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
 routes.use('/articles', articlesRouter);
 routes.use('/article-categories', categoryRouter);
+routes.use('/admin', adminRoute);
 
 routes.use('/', favoriteArticle);
 

@@ -1,12 +1,11 @@
-import db from '../models';
+import {
+  Article, User, Tag, Comment
+} from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 import articleNotification from '../utils/articleNotify';
 import Search from './search';
 
-const {
-  Article, User, Tag, Comment
-} = db;
 
 /**
  * Article controller function
