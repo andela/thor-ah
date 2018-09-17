@@ -3,7 +3,6 @@ import {
   User,
   Tag,
   Comment,
-  ArticleViewHistory,
   ReportsOnArticle
 } from '../models';
 import articleValidation from '../utils/articles';
