@@ -138,9 +138,9 @@ describe('User\'s reading stats', () => {
         expect(res.body).to.have.property('articlesRead');
         expect(res.body).to.have.property('numberOfArticlesRead');
         expect(res.body).to.have.property('articleReactions');
-        expect(articlesRead).to.equal('You have not read any article');
+        expect(articlesRead).to.equal('No articles found');
         expect(numberOfArticlesRead).to.equal(0);
-        expect(articleReactions).to.equal('You have not liked/disliked any article');
+        expect(articleReactions).to.equal('No reactions found');
         done();
       });
   });

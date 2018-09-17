@@ -23,7 +23,7 @@ router.get('/', authenticateUser, ArticleController.getAll);
 router.get('/', authenticateUser, ArticleController.getAllArticles);
 router.get('/:articleId/reactions', authenticateUser, LikeDislike.getLikesDislikes);
 router.get('/:articleId/reactions/status', authenticateUser, LikeDislike.getReactionStatus);
-router.get('/:article_slug', authenticateUser, ArticleController.getArticle, ReadingStatsController.saveArticleView);
+router.get('/:article_slug', authenticateUser, ArticleController.getArticle, ReadingStatsController.postArticleViewHistory);
 router.put('/:article_slug', authenticateUser, ArticleController.update);
 router.delete('/:article_slug', authenticateUser, ArticleController.delete);
 router.post('/tags', authenticateUser, authorizeAuthor, ArticleController.createTags);

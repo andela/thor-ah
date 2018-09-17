@@ -8,4 +8,4 @@ import './likeDislike';
 import './reportArticle.model.test';
 import './commentHistory.model.test';
 import './category.model.test';
-import './articleview.model.test';
+import './articleViewHistory.model.test';

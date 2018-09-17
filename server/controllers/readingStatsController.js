@@ -1,6 +1,6 @@
 import {
   Article,
-  ArticleView,
+  ArticleViewHistory,
   Category,
   LikesDislikes,
   ArticleCategory,
@@ -9,7 +9,7 @@ import mode from '../utils/modeValue';
 
 /**
  *
- * @description controller class with methods for categorizing articles
+ * @description controller class with methods for getting user's reading stats
  * @class RedingStatsController
  */
 class ReadingStatsController {
@@ -23,7 +23,7 @@ class ReadingStatsController {
    */
   static getAllReadingStats(req, res, next) {
     const { userId } = req;
-    ArticleView.findAll({
+    ArticleViewHistory.findAll({
       where: { userId },
       attributes: ['articleId'],
       include: [
@@ -66,9 +66,9 @@ class ReadingStatsController {
                     mostReadCategory = mode(names);
                     return res.status(200).json({
                       status: 'success',
-                      articlesRead: articles.length === 0 ? 'You have not read any article' : articles,
+                      articlesRead: articles.length === 0 ? 'No articles found' : articles,
                       numberOfArticlesRead: articleCount.length,
-                      articleReactions: reaction.length === 0 ? 'You have not liked/disliked any article' : reaction,
+                      articleReactions: reaction.length === 0 ? 'No reactions found' : reaction,
                       mostReadCategory
                     });
                   })
@@ -90,14 +90,14 @@ class ReadingStatsController {
    * @param  {string} articleId body of the user's request
    * @memberof ReadingStatsController
    */
-  static saveArticleView(req, res, next) {
+  static postArticleViewHistory(req, res, next) {
     const { userId, articleId } = res.locals;
-    ArticleView.findOne({
+    ArticleViewHistory.findOne({
       where: { userId, articleId },
     })
       .then((userView) => {
         if (!userView) {
-          ArticleView.create({ articleId, userId })
+          ArticleViewHistory.create({ articleId, userId })
             .then(() => res.status(201).send())
             .catch(next);
         }

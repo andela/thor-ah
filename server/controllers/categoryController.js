@@ -40,7 +40,7 @@ class CategoryController {
   static createCategory(req, res) {
     const name = req.body.name.trim();
     const newCategory = sanitizeString(name);
-    if (newCategory === '') {
+    if (!newCategory) {
       return res.status(400).json({
         status: 'error',
         error: 'Name field cannot be empty'
