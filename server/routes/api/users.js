@@ -3,6 +3,7 @@ import UserController from '../../controllers/users';
 import auth from '../../middleware/auth';
 
 import EmailVerificationController from '../../controllers/emailVerificationController';
+import authorRequestsController from '../../controllers/authorRequests';
 
 const userRoutes = Router();
 // get authenticateUser method
@@ -25,5 +26,13 @@ userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
 userRoutes.post('/password/recover', UserController.recoverPassword);
 
 userRoutes.post('/password/reset', UserController.resetPassword);
+
+userRoutes.post('/authors/requests', authenticateUser, authorRequestsController.makeRequest);
+
+userRoutes.get('/authors/requests', authenticateUser, authorRequestsController.getRequests);
+
+userRoutes.get('/authors/requests/:requestId', authenticateUser, authorRequestsController.getRequest);
+
+userRoutes.delete('/authors/requests/:requestId', authenticateUser, authorRequestsController.deleteARequest);
 
 export default userRoutes;
