@@ -748,7 +748,7 @@
             "responses": {
                 "200": {
                   "description": "Ok"
-                },
+                }
             }
         },
         "/api/articles/search?": {
