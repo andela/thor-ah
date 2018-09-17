@@ -47,33 +47,89 @@
       }
   ],
   "paths": {
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Authors Haven",
+        "description": "API documentation for Authors Haven application",
+        "license" : {
+            "name" : "MIT 2.0.0",
+            "url" : "https://thor-ah-staging.herokuapp.com"
+        }
+    },
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Access all endpoints associated with users."
+        },
+        {
+            "name": "Article",
+            "description": "Access all endpoints associated with articles"
+        },
+        {
+            "name": "Article Categories",
+            "description": "Access all endpoints associated with article categories"
+        },
+        {
+            "name": "User Reading Stats",
+            "description": "Access all endpoints associated with user reading stats"
+        },
+        {
+            "name": "Favorite Article",
+            "description": "Access user's favorite articles"
+        },
+        {
+            "name": "Comments",
+            "description": "Access all endpoints associated with article comments"
+        },
+        {
+            "name": "Admin Roles",
+            "description": "Access all endpoints associated with the admin"
+        },
+        {
+            "name": "Notifications",
+            "description": "Access endpoints associated with notifications"
+        }
+    ],
+    "paths": {
       "/api/users": {
-          "post": {
-              "tags": [
-                  "Users"
-              ],
-              "summary": "create a new user",
-              "description": "This endpoints create a new user",
-              "parameters": [
-                  {
-                      "name": "user",
-                      "in": "body",
-                      "description": "Create a new User",
-                      "schema": {
-                          "$ref": "#/definitions/users"
-                      }
-                  }
-              ],
-              "responses": {
-                  "201": {
-                      "description": "user created successfully"
-                  },
-                  "400": {
-                      "description": "This email has already been registered"
-                  }
-              }
-          },
-          "get": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "create a new user",
+                "description": "This endpoints create a new user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Create a new User",
+                        "schema": {
+                            "$ref": "#/definitions/users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "user created successfully"
+                    },
+                    "400": {
+                        "description": "This email has already been registered"
+                    }
+                }
+            },
+            "get": {
               "tags": [
                   "Users"
               ],
@@ -544,19 +600,34 @@
                 "$ref": "#/definitions/reply"
               }
             }
-          ],
-          "security": [
-            {
-              "Bearer": []
-            }
-          ],
-          "responses": {
-              "201": {
-                  "description": "posted"
+            ],
+            "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+            "responses": {
+                  "201": {
+                      "description": "posted"
+                  }
               }
+          },
+        "delete": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "delete an article",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "forbidden"
+                    }
+                }
           }
-        }
-      },
+        },
       "/api/articles/{slug}/comments/{commentId}/like": {
         "post": {
             "tags": [
@@ -677,6 +748,278 @@
             "responses": {
                 "200": {
                   "description": "Ok"
+                }
+            }
+        },
+        "/api/articles/search?": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "search articles using tag, author, keywords",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by tag"
+                    },
+                    {
+                        "name": "author",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by author"
+                    },
+                    {
+                        "name": "keywords",
+                        "in":"query",
+                        "required":false,
+                        "type":"string",
+                        "description": "search by keywords"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400":{
+                        "description": "bad input"
+                    },
+                    "500":{
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/api/article-categories": {
+            "get": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "Get all article categories available",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "article categories available"
+                    },
+                    "403": {
+                        "description": "forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "Create a new category",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "body",
+                        "description": "new cateogry to be added",
+                        "schema": {
+                            "$ref": "#/definitions/article-categories"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "new category added"
+                    },
+                    "403": {
+                        "description": "forbidden"
+                    }
+                }
+            }
+        },
+        "/api/article-categories/{categoryName}": {
+            "put": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "Update a category",
+                "parameters": [
+                    {
+                        "name": "categoryName",
+                        "in": "body",
+                        "description": "category to be updated"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "category successfully updated"
+                    },
+                    "403": {
+                        "description": "forbidden"
+                    },
+                    "404": {
+                        "description": "category does not exist"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "Delete a cateogory",
+                "parameters": [
+                    {
+                        "name": "categoryName",
+                        "in": "body",
+                        "description": "category to be deleted"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "category successfully deleted"
+                    },
+                    "403": {
+                        "description": "forbidden"
+                    },
+                    "404": {
+                        "description": "category does not exist"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                }
+            }
+        },
+        "/api/article-categories/{categoryName}/articles": {
+            "get": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "add an article to a category",
+                "parameters":[],
+                "description": "get all articles from a category",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "articles in a category"
+                    },
+                    "404": {
+                        "description": "category does not exist"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "adds an article to a category",
+                "parameters":[
+                    {
+                        "name": "articleId",
+                        "in": "body",
+                        "description": "id of the article to be added"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "articles added successfully to category"
+                    },
+                    "404": {
+                        "description": "article/category does not exist"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "403": {
+                        "description": "does not have permissiont perform the request"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Article Categories"
+                ],
+                "summary": "delete an article from a category",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name": "articleId",
+                        "in": "body",
+                        "description": "id of the article to be removed from category"
+                    }
+                ],
+                "description": "get all articles from a category",
+                "responses": {
+                    "200": {
+                        "description": "articles in a category"
+                    },
+                    "404": {
+                        "description": "category does not exist"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "403": {
+                        "description": "does not have permissiont perform the request"
+                    }
+                }
+            }
+        },
+        "/api/user-reading-stats": {
+            "get": {
+                "tags": [
+                    "User Reading Stats"
+                ],
+                "summary": "get a user's reading stats",
+                "parameters":[],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user's reading stats"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
                 }
             }
         },
@@ -940,9 +1283,45 @@
             "responses": {
                 "200": {
                   "description": "Ok"
+                 }
+            },
+        "user": {
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "bio": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "twitter": {
+                    "type": "string"
+                },
+                "linkedin": {
+                    "type": "string"
                 }
             }
-        }
+          }
       },
       "/api/admin/articles/{slug}/delisted": {
         "get": {
@@ -992,8 +1371,39 @@
                   "description": "Ok"
                 }
             }
+        },
+        "ArticleCategories": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserReadingStats": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "articlesRead": {
+                    "type": "array"
+                },
+                "numberOfArticlesRead": {
+                    "type": "int"
+                },
+                "articleReactions": {
+                    "type": "array"
+                },
+                "mostReadCategory": {
+                    "type": "string"
+                }
+            }
         }
-      },
+      }
+      }
+    },
     "/api/articles/{articleId}/reactions": {
         "post": {
             "tags": [

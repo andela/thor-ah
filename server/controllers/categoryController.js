@@ -1,4 +1,5 @@
 import { Category, Article, ArticleCategory } from '../models';
+import sanitizeString from '../utils/sanitize';
 
 /**
  *
@@ -38,8 +39,8 @@ class CategoryController {
    */
   static createCategory(req, res) {
     const name = req.body.name.trim();
-    const newCategory = `${name.substr(0, 1).toUpperCase()}${name.slice(1).toLowerCase()}`;
-    if (newCategory === '') {
+    const newCategory = sanitizeString(name);
+    if (!newCategory) {
       return res.status(400).json({
         status: 'error',
         error: 'Name field cannot be empty'
@@ -250,14 +251,16 @@ class CategoryController {
    * @memberof CategoryController
    */
   static getAllArticlesForACategory(req, res, next) {
-    const { categoryName } = req.params.categoryName;
+    const { categoryName } = req.params;
     Category.findOne({
       where: { name: categoryName },
-      include: [{
-        model: Article,
-        as: 'category',
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-      }],
+      include: [
+        {
+          model: Article,
+          as: 'category',
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        },
+      ],
     })
       .then((category) => {
         if (!category) {

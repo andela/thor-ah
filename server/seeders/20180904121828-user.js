@@ -35,6 +35,16 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
+        firstName: 'Romeo',
+        lastName: 'Canvas',
+        username: 'romeo',
+        email: 'romeo@mail.com',
+        role: 'user',
+        hash: bcrypt.hashSync(process.env.USER_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
         firstName: 'Some',
         lastName: 'Author',
         username: 'awesomeAuthor',

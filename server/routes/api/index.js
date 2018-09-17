@@ -9,6 +9,7 @@ import categoryRouter from './categoryRoute';
 import favoriteArticle from './favoriteArticle';
 import adminRoutes from './admin';
 import notificationsRoute from './notifications';
+import readingStatsRouter from './readingStatsRoute';
 
 
 const routes = Router();
@@ -33,7 +34,7 @@ routes.use('/', socialAuth);
 routes.use('/articles', articlesRouter);
 routes.use('/article-categories', categoryRouter);
 routes.use('/admin', adminRoutes);
-
+routes.use('/user-reading-stats', readingStatsRouter);
 routes.use('/', favoriteArticle);
 
 export default routes;

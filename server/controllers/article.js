@@ -1,13 +1,15 @@
-import db from '../models';
+import {
+  Article,
+  User,
+  Tag,
+  Comment,
+  ReportsOnArticle
+} from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
 import Notification from './notifications';
 import Search from './search';
 import ReportInputValidation from '../utils/validateReportInput';
-
-const {
-  Article, User, Tag, Comment, ReportsOnArticle
-} = db;
 
 /**
  * Article controller function
@@ -132,7 +134,7 @@ class ArticleController {
    * @return {json} res
    * @description returns all article.
   */
-  static getAll({ query }, res) {
+  static getAllArticles({ query }, res) {
     const limit = Number(query.limit) || 4;
     const currentPage = Number(query.page) || 1;
     const offset = (currentPage - 1) * limit;
@@ -175,10 +177,11 @@ class ArticleController {
    * @static
    * @param {object} req
    * @param {object} res
+   * @param {object} next
    * @return {json} res
    * @description returns specific article that has the slug passes as req param (article_slug).
   */
-  static getSpecific(req, res) {
+  static getArticle(req, res, next) {
     return Article.findOne({
       where: {
         slug: req.params.article_slug,
@@ -200,10 +203,23 @@ class ArticleController {
       }],
       attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
     })
-      .then(article => res.status(200).json({
-        article,
-        status: 'success'
-      }))
+      .then((article) => {
+        if (!article) {
+          return res.status(404).json({
+            status: 'error',
+            error: 'Article does not exist'
+          });
+        }
+        // Save the view in the Article view table
+        const articleId = article.id;
+        const { userId } = req;
+        res.locals = { userId, articleId };
+        next();
+        return res.status(200).json({
+          article,
+          status: 'success',
+        });
+      })
       .catch(error => res.status(400).json({
         error,
         status: 'error'

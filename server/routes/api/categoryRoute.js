@@ -5,7 +5,7 @@ import auth from '../../middleware/auth';
 const { authenticateUser, authorizeAuthor, authorizeAdmin } = auth;
 const categoryRouter = Router();
 
-// Users can get all articles
+// Users can get all categories
 categoryRouter.get('/', authenticateUser, CategoryController.getAllCategories);
 
 // Admin can create a new category
@@ -18,7 +18,10 @@ categoryRouter.put('/:categoryName', authenticateUser, authorizeAdmin, CategoryC
 categoryRouter.delete('/:categoryName', authenticateUser, authorizeAdmin, CategoryController.deleteCategory);
 
 // Authors can add their article(s) to a category
-categoryRouter.post('/:categoryName', authenticateUser, authorizeAuthor, CategoryController.addArticleToACategory);
+categoryRouter.post(
+  '/:categoryName/articles', authenticateUser,
+  authorizeAuthor, CategoryController.addArticleToACategory
+);
 
 // Users can get all articles for a category
 categoryRouter.get(

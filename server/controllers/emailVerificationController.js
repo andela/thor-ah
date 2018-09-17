@@ -9,6 +9,7 @@ dotenv.config();
 
 const secret = process.env.JWT_KEY;
 const baseURL = process.env.BASE_URL;
+const mailKey = process.env.MAIL_API_KEY;
 
 /**
  *
@@ -30,7 +31,7 @@ class EmailVerificationController {
 
       const url = `${baseURL}/api/users/confirmation/${emailToken}`;
 
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      sgMail.setApiKey(mailKey);
       const msg = {
         to: user.email,
         from: 'noreply@authorshaven.com',
