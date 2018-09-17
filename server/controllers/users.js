@@ -281,6 +281,66 @@ class UsersController {
   }
 
   /**
+   * @description Static method for admin to get a list of all users
+   * @param  {object} req body of the Admin's request
+   * @param  {object} res  body of the response message
+   * @param  {function} next next function to be called
+   * @returns {object} The body of the resposne message
+   */
+  static adminGetUsers(req, res) {
+    User.findAll(
+      {
+        where: {
+          role: 'user'
+        },
+        attributes: {
+          exclude: ['hash']
+        }
+      }
+    )
+      .then(users => res.status(200).json({
+        // add success message here.
+        message: 'All registered users returned',
+        status: 'success',
+        profiles: users,
+      }))
+      .catch(error => res.status(500).json({
+        status: 'error',
+        error: { message: error.message ? error.message : 'An error occured during this operation' }
+      }));
+  }
+
+  /**
+   * @description Static method for admin to get a list of all authors
+   * @param  {object} req body of the Admin's request
+   * @param  {object} res  body of the response message
+   * @param  {function} next next function to be called
+   * @returns {object} The body of the resposne message
+   */
+  static adminGetAuthors(req, res) {
+    User.findAll(
+      {
+        where: {
+          role: 'author'
+        },
+        attributes: {
+          exclude: ['hash']
+        }
+      }
+    )
+      .then(authors => res.status(200).json({
+        // add success message here.
+        message: 'All registered authors returned',
+        status: 'success',
+        profiles: authors,
+      }))
+      .catch(error => res.status(500).json({
+        status: 'error',
+        error: { message: error.message ? error.message : 'An error occured during this operation' }
+      }));
+  }
+
+  /**
   * @description Send recovery mail to user's email
   * @param {obj} req response body
   * @param {obj} res request body
