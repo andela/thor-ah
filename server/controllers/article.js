@@ -1,7 +1,7 @@
 import db from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
-import articleNotification from '../utils/articleNotify';
+import Notification from './notifications';
 import Search from './search';
 import ReportInputValidation from '../utils/validateReportInput';
 
@@ -119,25 +119,7 @@ class ArticleController {
               status: 'success'
             }))
             .then(() => {
-              User
-                .findById(req.userId, {
-                  include: [{
-                    model: User,
-                    as: 'following',
-                    attributes: { exclude: ['emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
-                  },
-                  {
-                    model: User,
-                    as: 'followers',
-                    attributes: { exclude: ['emailVerified', 'role', 'hash', 'createdAt', 'updatedAt'] }
-                  }],
-                }).then((users) => {
-                  const author = users.firstName;
-                  const emails = users.followers.map(el => el.email);
-                  if (emails.length > 0) {
-                    articleNotification.sendNotificationEmail(emails, author, slug);
-                  }
-                });
+              Notification.notifyForArticle(req.userId, slug, title, user.username);
             });
         });
     });

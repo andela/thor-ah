@@ -40,6 +40,10 @@
       {
         "name": "Admin Roles",
         "description": "Access all endpoints associated with the admin"
+      },
+      {
+        "name": "Notifications",
+        "description": "Access endpoints associated with notifications"
       }
   ],
   "paths": {
@@ -790,6 +794,58 @@
                     "5XX": {
                         "description": "Unexpected Error."
                     }
+                }
+            }
+        }
+      },
+      "/api/users/notifications": {
+        "get": {
+            "tags": [
+                "Notifications"
+            ],
+            "summary": "get user's notifications",
+            "parameters": [],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
+                }
+            }
+        }
+      },
+      "/api/users/notifications/{notifId}": {
+        "delete": {
+            "tags": [
+                "Notifications"
+            ],
+            "summary": "delete given user notification",
+            "parameters": [
+                {
+                    "name": "notifId",
+                    "in": "path",
+                    "description": "id of notification to be deleted",
+                    "required": true,
+                    "type": "integer"
+                }
+            ],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "404": {
+                    "description": "not found"
+                },
+                "403": {
+                    "description": "no token provided"
                 }
             }
         }
