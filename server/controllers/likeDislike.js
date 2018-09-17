@@ -16,7 +16,7 @@ class likesDislikesController {
     const { userId } = req;
     const { reaction } = req.body;
 
-    if (!articleId || articleId.trim().length < 1) {
+    if (!articleId) {
       return res.status(400).json({
         status: 'error',
         error: {
@@ -64,6 +64,7 @@ class likesDislikesController {
         LikesDislikes.findOne({
           where: {
             userId,
+            articleId,
           }
         })
           .then((likeOrDislike) => {
@@ -117,7 +118,8 @@ class likesDislikesController {
    */
   static getLikesDislikes(req, res, next) {
     const { articleId } = req.params;
-    if (!articleId || articleId.trim().length < 1) {
+
+    if (!articleId) {
       return res.status(400).json({
         status: 'error',
         error: {
