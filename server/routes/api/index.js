@@ -10,6 +10,7 @@ import favoriteArticle from './favoriteArticle';
 import adminRoutes from './admin';
 import notificationsRoute from './notifications';
 import readingStatsRouter from './readingStatsRoute';
+import subscriptionRoute from './subscription';
 
 
 const routes = Router();
@@ -28,6 +29,7 @@ routes.use((err, req, res, next) => {
 
 routes.use('/users/follow', userFollowRoutes);
 routes.use('/users/notifications', notificationsRoute);
+routes.use('/users/subscription', subscriptionRoute);
 routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
