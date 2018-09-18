@@ -3,6 +3,7 @@ import auth from '../../middleware/auth';
 import authorRequestsController from '../../controllers/authorRequests';
 import HandleReports from '../../controllers/adminHandleReports';
 import UsersController from '../../controllers/users';
+import AdminDeactivateController from '../../controllers/adminDeactivate';
 
 // get authenticateUser method
 const { authenticateUser, authorizeAdmin } = auth;
@@ -23,5 +24,7 @@ adminRoutes.get('/authors/requests/users/:paramsUserId', authenticateUser, autho
 adminRoutes.get('/authors/requests', authenticateUser, authorizeAdmin, authorRequestsController.getAllRequests);
 adminRoutes.delete('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.deleteUsersRequest);
 adminRoutes.get('/getusers', authenticateUser, authorizeAdmin, UsersController.adminGetUsers);
+adminRoutes.put('/deactivate/:userId', authenticateUser, authorizeAdmin, AdminDeactivateController.deactivateUser);
+adminRoutes.put('/activate/:userId', authenticateUser, authorizeAdmin, AdminDeactivateController.activateUser);
 
 export default adminRoutes;
