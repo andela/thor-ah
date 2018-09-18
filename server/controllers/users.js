@@ -287,7 +287,7 @@ class UsersController {
    * @param  {function} next next function to be called
    * @returns {object} The body of the resposne message
    */
-  static adminGetUsers(req, res) {
+  static adminGetUsers(req, res, next) {
     User.findAll(
       {
         where: {
@@ -303,11 +303,7 @@ class UsersController {
         message: 'All registered users returned',
         status: 'success',
         profiles: users,
-      }))
-      .catch(error => res.status(500).json({
-        status: 'error',
-        error: { message: error.message ? error.message : 'An error occured during this operation' }
-      }));
+      })).catch(next);
   }
 
   /**
@@ -317,7 +313,7 @@ class UsersController {
    * @param  {function} next next function to be called
    * @returns {object} The body of the resposne message
    */
-  static adminGetAuthors(req, res) {
+  static adminGetAuthors(req, res, next) {
     User.findAll(
       {
         where: {
@@ -333,11 +329,7 @@ class UsersController {
         message: 'All registered authors returned',
         status: 'success',
         profiles: authors,
-      }))
-      .catch(error => res.status(500).json({
-        status: 'error',
-        error: { message: error.message ? error.message : 'An error occured during this operation' }
-      }));
+      })).catch(next);
   }
 
   /**
