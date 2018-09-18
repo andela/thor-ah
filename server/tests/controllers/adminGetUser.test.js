@@ -51,7 +51,7 @@ describe('Admin get Users and Authors function', () => {
       });
   });
 
-  it('should return 200 if all users are returned', (done) => {
+  it('should return 200 if all users and authors are returned', (done) => {
     chai.request(server)
       .get('/api/admin/getUsers')
       .set('Authorization', `Bearer ${token2}`)
@@ -65,11 +65,23 @@ describe('Admin get Users and Authors function', () => {
 
   it('should return 200 if all authors are returned', (done) => {
     chai.request(server)
-      .get('/api/admin/getAuthors')
+      .get('/api/admin/getUsers?role=author')
       .set('Authorization', `Bearer ${token2}`)
       .end((err, res) => {
         res.should.have.status(200);
-        res.body.message.should.equal('All registered authors returned');
+        res.body.message.should.equal('All registered users/authors returned');
+        res.body.status.should.equal('success');
+        done();
+      });
+  });
+
+  it('should return 200 if all users are returned', (done) => {
+    chai.request(server)
+      .get('/api/admin/getUsers?role=user')
+      .set('Authorization', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.message.should.equal('All registered users/authors returned');
         res.body.status.should.equal('success');
         done();
       });

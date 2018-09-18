@@ -1,3 +1,5 @@
+import { Op } from 'sequelize';
+
 import bcrypt from 'bcrypt';
 import sendgrid from '@sendgrid/mail';
 import env from 'dotenv';
@@ -13,7 +15,6 @@ import { isAdmin } from '../utils/verifyRoles';
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 env.config();
-
 
 /**
  *
@@ -288,48 +289,44 @@ class UsersController {
    * @returns {object} The body of the resposne message
    */
   static adminGetUsers(req, res, next) {
-    User.findAll(
-      {
-        where: {
-          role: 'user'
-        },
-        attributes: {
-          exclude: ['hash']
+    const { role } = req.query;
+    if (!role) {
+      User.findAll(
+        {
+          where: {
+            role: {
+              [Op.or]: ['user', 'author']
+            }
+          },
+          attributes: {
+            exclude: ['hash']
+          }
         }
-      }
-    )
-      .then(users => res.status(200).json({
+      )
+        .then(users => res.status(200).json({
         // add success message here.
-        message: 'All registered users returned',
-        status: 'success',
-        profiles: users,
-      })).catch(next);
-  }
-
-  /**
-   * @description Static method for admin to get a list of all authors
-   * @param  {object} req body of the Admin's request
-   * @param  {object} res  body of the response message
-   * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
-   */
-  static adminGetAuthors(req, res, next) {
-    User.findAll(
-      {
-        where: {
-          role: 'author'
-        },
-        attributes: {
-          exclude: ['hash']
+          message: 'All registered users returned',
+          status: 'success',
+          profiles: users,
+        })).catch(next);
+    } else {
+      User.findAll(
+        {
+          where: {
+            role
+          },
+          attributes: {
+            exclude: ['hash']
+          }
         }
-      }
-    )
-      .then(authors => res.status(200).json({
+      )
+        .then(users => res.status(200).json({
         // add success message here.
-        message: 'All registered authors returned',
-        status: 'success',
-        profiles: authors,
-      })).catch(next);
+          message: 'All registered users/authors returned',
+          status: 'success',
+          profiles: users,
+        })).catch(next);
+    }
   }
 
   /**

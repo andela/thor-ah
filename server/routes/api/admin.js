@@ -23,6 +23,5 @@ adminRoutes.get('/authors/requests/users/:paramsUserId', authenticateUser, autho
 adminRoutes.get('/authors/requests', authenticateUser, authorizeAdmin, authorRequestsController.getAllRequests);
 adminRoutes.delete('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.deleteUsersRequest);
 adminRoutes.get('/getusers', authenticateUser, authorizeAdmin, UsersController.adminGetUsers);
-adminRoutes.get('/getAuthors', authenticateUser, authorizeAdmin, UsersController.adminGetAuthors);
 
 export default adminRoutes;
