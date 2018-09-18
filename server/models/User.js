@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     userFollowId: DataTypes.INTEGER
   }, {
     hooks: {
