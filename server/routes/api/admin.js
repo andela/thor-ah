@@ -2,9 +2,12 @@ import { Router } from 'express';
 import auth from '../../middleware/auth';
 import authorRequestsController from '../../controllers/authorRequests';
 import HandleReports from '../../controllers/adminHandleReports';
+import HandleRoles from '../../controllers/adminHandleRoles';
 
-const { authenticateUser, authorizeAdmin } = auth;
+// get authenticateUser method
+const { authenticateUser, authorizeAdmin, authorizeSuperAdmin } = auth;
 const adminRoutes = Router();
+
 
 adminRoutes.get('/articles/reports', authenticateUser, authorizeAdmin, HandleReports.getReportedArticles);
 adminRoutes.get('/articles/reports/:reportId', authenticateUser, authorizeAdmin, HandleReports.getAReportedArticle);
@@ -19,5 +22,7 @@ adminRoutes.get('/authors/requests/:requestId', authenticateUser, authorizeAdmin
 adminRoutes.get('/authors/requests/users/:paramsUserId', authenticateUser, authorizeAdmin, authorRequestsController.getRequestsByAUser);
 adminRoutes.get('/authors/requests', authenticateUser, authorizeAdmin, authorRequestsController.getAllRequests);
 adminRoutes.delete('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.deleteUsersRequest);
+adminRoutes.put('/users/:userId/roles', authenticateUser, authorizeSuperAdmin, HandleRoles.assignAdminRole);
+adminRoutes.delete('/users/:userId/roles', authenticateUser, authorizeSuperAdmin, HandleRoles.revokeAdminRole);
 
 export default adminRoutes;

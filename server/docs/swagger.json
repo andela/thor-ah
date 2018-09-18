@@ -1830,7 +1830,426 @@
                 }
             }
         }
-    },
+      },
+      "/api/users/notifications": {
+        "get": {
+            "tags": [
+                "Notifications"
+            ],
+            "summary": "get user's notifications",
+            "parameters": [],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
+                }
+            }
+        }
+      },
+      "/api/users/notifications/{notifId}": {
+        "delete": {
+            "tags": [
+                "Notifications"
+            ],
+            "summary": "delete given user notification",
+            "parameters": [
+                {
+                    "name": "notifId",
+                    "in": "path",
+                    "description": "id of notification to be deleted",
+                    "required": true,
+                    "type": "integer"
+                }
+            ],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "404": {
+                    "description": "not found"
+                },
+                "403": {
+                    "description": "no token provided"
+                }
+            }
+        }
+      },
+      "/api/admin/articles/reports/{reportId}": {
+        "get": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "get a single report made on one article",
+            "parameters": [
+              {
+                "name": "reportId",
+                "in": "path",
+                "description": "report id"
+              }
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                }
+            }
+        }
+      },
+      "/api/admin/reports/articles/{slug}": {
+        "get": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "get reports made on one article",
+            "parameters": [
+              {
+                "name": "slug",
+                "in": "path",
+                "description": "enter article slug"
+              }
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                }
+            }
+        }
+      },
+      "/api/admin/articles/{slug}/delist": {
+        "put": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "block an article from being viewed",
+            "parameters": [
+              {
+                "name": "slug",
+                "in": "path",
+                "description": "enter article slug"
+              }
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                }
+            }
+        }
+      },
+      "/api/admin/articles/delisted": {
+        "get": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "view all blocked articles",
+            "parameters": [],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                 }
+            },
+        "user": {
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "bio": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "twitter": {
+                    "type": "string"
+                },
+                "linkedin": {
+                    "type": "string"
+                }
+            }
+          }
+      },
+      "/api/admin/articles/{slug}/delisted": {
+        "get": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "view a blocked article",
+            "parameters": [
+              {
+                "name": "slug",
+                "in": "path",
+                "description": "enter article slug"
+              }
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                }
+            }
+        }
+      },
+      "/api/admin/articles/{slug}/relist": {
+        "put": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "unblock an article",
+            "parameters": [
+              {
+                "name": "slug",
+                "in": "path",
+                "description": "enter article slug"
+              }
+            ],
+            "security": [
+              {
+                "Bearer": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "Ok"
+                }
+            }
+        },
+        "ArticleCategories": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserReadingStats": {
+            "properties": {
+                "id": {
+                    "type": "int"
+                },
+                "articlesRead": {
+                    "type": "array"
+                },
+                "numberOfArticlesRead": {
+                    "type": "int"
+                },
+                "articleReactions": {
+                    "type": "array"
+                },
+                "mostReadCategory": {
+                    "type": "string"
+                }
+            }
+        }
+      }
+      },
+      "/api/admin/users/{userId}/roles": {
+          "put": {
+              "tags": [
+                  "Admin Roles"
+              ],
+              "summary": "make a user an admin",
+              "parameters": [{
+                  "name": "userId",
+                  "in": "path",
+                  "description": "user id"
+              }],
+              "security": [{
+                  "Bearer": []
+              }],
+              "responses": {
+                  "200": {
+                      "description": "Ok"
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "Admin Roles"
+              ],
+              "summary": "revoke an admin role",
+              "parameters": [{
+                  "name": "userId",
+                  "in": "path",
+                  "description": "user id"
+              }],
+              "security": [{
+                  "Bearer": []
+              }],
+              "responses": {
+                  "200": {
+                      "description": "Ok"
+                  }
+              }
+          }
+      },
+      "/api/articles/{articleId}/reactions": {
+          "post": {
+              "tags": [
+                  "Like or Dislike an Articles"
+              ],
+              "summary": "like or dislike to an article",
+              "parameters": [
+                  {
+                      "name": "reaction",
+                      "in": "body",
+                      "description": "'like' or 'dislike'",
+                      "schema": {
+                          "$ref": "#/definitions/likeDislikeArticle"
+                      }
+                  },
+                  {
+                      "name": "articleId",
+                      "in": "path",
+                      "description": "ID of the article"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "OK"
+                  },
+                  "400": {
+                      "description": "Bad Request."
+                  },
+                  "403": {
+                      "description": "Authorization Error."
+                  },
+                  "404": {
+                      "description": "Not Found."
+                  },
+                  "5XX": {
+                      "description": "Unexpected Error."
+                  }
+              }
+          },
+          "get": {
+              "tags": [
+                  "Like or Dislike an Articles"
+              ],
+              "summary": "get counts of likes and dislikes for an article",
+              "parameters": [
+                  {
+                      "name": "articleId",
+                      "in": "path",
+                      "description": "ID of the article"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "OK"
+                  },
+                  "400": {
+                      "description": "Bad Request."
+                  },
+                  "403": {
+                      "description": "Authorization Error."
+                  },
+                  "404": {
+                      "description": "Not Found."
+                  },
+                  "5XX": {
+                      "description": "Unexpected Error."
+                  }
+              }
+          }
+      },
+      "/api/articles/{articleId}/reactions/status": {
+          "get": {
+              "tags": [
+                  "Like or Dislike an Articles"
+              ],
+              "summary": "get the reaction status of a user to an article",
+              "parameters": [
+                  {
+                      "name": "articleId",
+                      "in": "path",
+                      "description": "ID of the article"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "OK"
+                  },
+                  "400": {
+                      "description": "Bad Request."
+                  },
+                  "403": {
+                      "description": "Authorization Error."
+                  },
+                  "404": {
+                      "description": "Not Found."
+                  },
+                  "5XX": {
+                      "description": "Unexpected Error."
+                  }
+              }
+          }
+      },
     "securityDefinitions": {
         "Bearer": {
             "description": "For accessing the API a valid JWT token must be passed in all the queries in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the API and returned as answer of a call\nto the route /api/users/login giving a valid user & password.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n",
