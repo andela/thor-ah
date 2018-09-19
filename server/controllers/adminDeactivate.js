@@ -1,4 +1,6 @@
 import { User, Article } from '../models';
+import isValidNumber from '../utils/is_valid_number';
+import { isAdmin } from '../utils/verifyRoles';
 
 /**
  * @class adminDeactivate
@@ -13,10 +15,19 @@ class AdminDeactivateController {
    * @returns {next} next calls next
    * @memberof AdminDeactivateController
    */
-  static deleteAuthor(req, res, next) {
-    const { authorId } = req.params;
+  static deleteUser(req, res, next) {
+    const { userId } = req.params;
+    const { userRole } = req;
+
+    isValidNumber(req, res);
+
+    if (!isAdmin(userRole) && (Number(userId) !== Number(req.userId))) {
+      const err = new Error('you are not allowed to delete a user');
+      err.status = 404;
+      return next(err);
+    }
     return User
-      .findById(authorId, {
+      .findById(userId, {
         attributes: ['username', 'email', 'bio'],
         include: [{
           model: Article,
@@ -35,23 +46,20 @@ class AdminDeactivateController {
         }
         Article
           .update(
-            { authorId: 5 },
-            { where: { authorId } }
+            { userId: 5 },
+            { where: { authorId: userId } }
           )
           .then(() => {
             User
               .destroy({
-                where: { id: authorId }
+                where: { id: userId }
               });
             res.status(200).json({
               message: 'user successfully deleted',
               status: 'success'
             });
           })
-          .catch(error => res.status(400).json({
-            error,
-            status: 'error'
-          }));
+          .catch(next);
       })
       .catch(next);
   }
@@ -67,6 +75,7 @@ class AdminDeactivateController {
   static deactivateUser(req, res, next) {
     // find user and update active column to false
     const { userId } = req.params;
+    isValidNumber(req, res);
     return User
       .findById(userId, {
         where: { id: userId },
@@ -79,11 +88,12 @@ class AdminDeactivateController {
             status: 'error'
           });
         }
-        User.update({ active: false }, { where: { id: userId } });
-        return res.status(200).json({
-          message: 'User has been deactivated successfully',
-          status: 'success'
-        });
+        User.update({ active: false }, { where: { id: userId } })
+          .then(() => res.status(200).json({
+            message: 'User has been deactivated successfully',
+            status: 'success'
+          }))
+          .catch(next);
       })
       .catch(next);
   }
@@ -98,6 +108,7 @@ class AdminDeactivateController {
    */
   static activateUser(req, res, next) {
     const { userId } = req.params;
+    isValidNumber(req, res);
     User.findById(userId, {
       where: { id: userId },
       attributes: ['username', 'email', 'active'],
@@ -109,13 +120,14 @@ class AdminDeactivateController {
             status: 'error'
           });
         }
-        User.update({ active: true }, { where: { id: userId } });
-        return res.status(200).json({
-          message: 'User has been reactivated successfully',
-          status: 'success'
-        });
+        User.update({ active: true }, { where: { id: userId } })
+          .then(() => res.status(200).json({
+            message: 'User has been reactivated successfully',
+            status: 'success'
+          }))
+          .catch(next);
       })
-      .catch(error => next(error));
+      .catch(next);
   }
 }
 

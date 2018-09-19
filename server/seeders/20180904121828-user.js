@@ -55,16 +55,6 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        firstName: 'Some',
-        lastName: 'Author',
-        username: 'awesomeAuthor',
-        email: 'sa@mail.com',
-        role: 'admin',
-        hash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
         firstName: 'Author',
         lastName: 'Haven',
         username: 'authorshaven',
@@ -74,6 +64,26 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        firstName: 'Juliet',
+        lastName: 'User',
+        username: 'juliet',
+        email: 'juliet@mail.com',
+        role: 'user',
+        hash: bcrypt.hashSync(process.env.USER_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        firstName: 'Some',
+        lastName: 'Author',
+        username: 'awesomeAuthor',
+        email: 'sa@mail.com',
+        role: 'admin',
+        hash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
     ], {}),
 
   down: queryInterface => queryInterface.bulkDelete('Users', null, {})
