@@ -110,6 +110,15 @@ class UsersController {
             }
           });
         }
+        const { active } = user;
+        if (!active) {
+          return res.status(400).json({
+            status: 'error',
+            error: {
+              message: 'User has been deactivated'
+            }
+          });
+        }
         bcrypt.compare(password, user.hash).then((isMatch) => {
           if (isMatch) {
             const { dataValues } = user;

@@ -13,6 +13,7 @@ module.exports = {
     },
     commenterId: {
       type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
       foreignKey: true,
       allowNull: false,
       references: {

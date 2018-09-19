@@ -15,29 +15,39 @@ class AdminDeactivateController {
    */
   static deleteAuthor(req, res, next) {
     const { authorId } = req.params;
-
-    User.findById(authorId, {
-      attributes: ['username', 'email', 'bio'],
-      include: [{
-        model: Article,
-        as: 'authored',
-        attributes: {
-          exclude: ['timeToRead', 'createdAt', 'updatedAt']
+    return User
+      .findById(authorId, {
+        attributes: ['username', 'email', 'bio'],
+        include: [{
+          model: Article,
+          as: 'authored',
+          attributes: {
+            exclude: ['timeToRead', 'createdAt', 'updatedAt']
+          }
+        }]
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({
+            error: { message: 'User does not exist' },
+            status: 'error'
+          });
         }
-      }]
-    })
-      .then(() => {
-        Article.update(
-          { authorId: 7 },
-          { where: { authorId } }
-        );
-        User.destroy({
-          where: { id: authorId }
-        })
-          .then(() => res.status(200).json({
-            message: 'user successfully deleted',
-            status: 'success'
-          }))
+        Article
+          .update(
+            { authorId: 5 },
+            { where: { authorId } }
+          )
+          .then(() => {
+            User
+              .destroy({
+                where: { id: authorId }
+              });
+            res.status(200).json({
+              message: 'user successfully deleted',
+              status: 'success'
+            });
+          })
           .catch(error => res.status(400).json({
             error,
             status: 'error'
@@ -54,10 +64,27 @@ class AdminDeactivateController {
    * @returns {next} next calls next
    * @memberof AdminDeactivateController
    */
-  static deactivateUser(req, res, next) {
-    // find user and set active column to false
-
-
+  static deactivateUser(req, res) {
+    // find user and update active column to false
+    const { userId } = req.params;
+    return User
+      .findById(userId, {
+        where: { id: userId },
+        attributes: ['username', 'email', 'active'],
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({
+            error: { message: 'User does not exist' },
+            status: 'error'
+          });
+        }
+        User.update({ active: false }, { where: { id: userId } });
+        return res.status(200).json({
+          message: 'User has been deactivated successfully',
+          status: 'success'
+        });
+      });
   }
 }
 

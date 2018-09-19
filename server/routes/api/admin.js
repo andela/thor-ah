@@ -1,4 +1,4 @@
-import adminDeactivateController from '../../controllers/adminDeactivate';
+import AdminDeactivateController from '../../controllers/adminDeactivate';
 import auth from '../../middleware/auth';
 
 
@@ -7,7 +7,7 @@ const { authenticateUser, authorizeAdmin } = auth;
 const adminRoutes = require('express').Router();
 
 
-adminRoutes.post('/delete/:authorId', authenticateUser, authorizeAdmin, adminDeactivateController.deleteAuthor);
-adminRoutes.post('/deactivate/:userId', authenticateUser, authorizeAdmin, adminDeactivateController.deactivateUser);
+adminRoutes.delete('/delete/:authorId', authenticateUser, authorizeAdmin, AdminDeactivateController.deleteAuthor);
+adminRoutes.put('/deactivate/:userId', authenticateUser, authorizeAdmin, AdminDeactivateController.deactivateUser);
 
 export default adminRoutes;
