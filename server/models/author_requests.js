@@ -1,9 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
   const AuthorRequests = sequelize.define('AuthorRequests', {
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     status: {
       type: DataTypes.ENUM('accepted', 'rejected', 'pending'),
       allowNull: false,

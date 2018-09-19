@@ -1,60 +1,12 @@
 {
-  "swagger": "2.0",
-  "info": {
-      "version": "1.0.0",
-      "title": "Authors Haven",
-      "description": "API documentation for Authors Haven application",
-      "license" : {
-          "name" : "MIT 2.0.0",
-          "url" : "https://thor-ah-staging.herokuapp.com"
-      }
-  },
-  "schemes": [
-      "https",
-      "http"
-  ],
-  "basePath": "/",
-  "consumes": [
-      "application/json"
-  ],
-  "produces": [
-      "application/json"
-  ],
-  "tags": [
-      {
-          "name": "Users",
-          "description": "Access all endpoints associated with users."
-      },
-      {
-      "name": "Article",
-      "description": "Access all endpoints associated with articles"
-      },
-      {
-        "name": "Favorite Article",
-        "description": "Access user's favorite articles"
-      },
-      {
-        "name": "Comments",
-        "description": "Access all endpoints associated with article comments"
-      },
-      {
-        "name": "Admin Roles",
-        "description": "Access all endpoints associated with the admin"
-      },
-      {
-        "name": "Notifications",
-        "description": "Access endpoints associated with notifications"
-      }
-  ],
-  "paths": {
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
         "title": "Authors Haven",
         "description": "API documentation for Authors Haven application",
-        "license" : {
-            "name" : "MIT 2.0.0",
-            "url" : "https://thor-ah-staging.herokuapp.com"
+        "license": {
+            "name": "MIT 2.0.0",
+            "url": "https://thor-ah-staging.herokuapp.com"
         }
     },
     "schemes": [
@@ -78,14 +30,6 @@
             "description": "Access all endpoints associated with articles"
         },
         {
-            "name": "Article Categories",
-            "description": "Access all endpoints associated with article categories"
-        },
-        {
-            "name": "User Reading Stats",
-            "description": "Access all endpoints associated with user reading stats"
-        },
-        {
             "name": "Favorite Article",
             "description": "Access user's favorite articles"
         },
@@ -100,10 +44,14 @@
         {
             "name": "Notifications",
             "description": "Access endpoints associated with notifications"
+        },
+        {
+            "name": "Author Requests",
+            "description": "Access all endpoints associated with users requests to be an author"
         }
     ],
     "paths": {
-      "/api/users": {
+        "/api/users": {
             "post": {
                 "tags": [
                     "Users"
@@ -130,16 +78,16 @@
                 }
             },
             "get": {
-              "tags": [
-                  "Users"
-              ],
-              "summary": "get a user profile details",
-              "description": "Returns a list of all user profiles",
-              "parameters": [],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get a user profile details",
+                "description": "Returns a list of all user profiles",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -152,467 +100,467 @@
                         "description": "Invalid authorization format"
                     }
                 }
-          }
-      },
-      "/api/users/login": {
-          "post": {
-              "tags": [
-                  "Users"
-              ],
-              "summary": "login existing user",
-              "description": "This endpoints logs in an existing user",
-              "parameters": [
-                  {
-                      "name": "user",
-                      "in": "body",
-                      "description": "User sign in successful",
-                      "schema": {
-                          "$ref": "#/definitions/users_login"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "login successfully"
-                  },
-                  "404": {
-                      "description": "User not found"
-                  },
-                  "400": {
-                      "description": "Incorrect Password"
-                  }
-              }
-          }
-      },
-      "/api/users/{username}": {
-          "get": {
-              "tags": [
-                  "Users"
-              ],
-              "summary": "get a user by username",
-              "parameters": [
-                  {
-                      "name": "username",
-                      "in": "path",
-                      "description": "username to be return",
-                      "required": true,
-                      "type": "string"
-                  }
-              ],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "User retrieved successfully",
-                      "schema": {
-                          "$ref": "#/definitions/users"
-                      }
-                  },
-                  "404": {
-                      "description": "User not found"
-                  }
-              }
-          }
-      },
-      "/api/users/{userId}": {
-          "put": {
-              "tags": [
-                  "Users"
-              ],
-              "summary": "update a user profile details",
-              "parameters": [
-                  {
-                      "name": "userId",
-                      "in": "path",
-                      "description": "ID of user that needs to be updated",
-                      "required": true,
-                      "type": "integer",
-                      "format": "int64"
-                  },
-                  {
-                      "name": "user",
-                      "in": "body",
-                      "description": "body of user data",
-                      "schema": {
-                          "$ref": "#/definitions/user"
-                      }
-                  }
-              ],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "user details updated successfully"
-                  },
-                  "400": {
-                      "description": "Invalid data"
-                  },
-                  "404": {
-                      "description": "User not found"
-                  },
-                  "409": {
-                      "description": "Username already exists"
-                  }
-              }
-          }
-      },
-      "/api/articles/tags": {
-        "post": {
-            "tags": [
-                "Article"
-            ],
-            "summary": "create a tag",
-            "parameters": [
-                {
-                    "name": "tag",
-                    "in": "body",
-                    "description": "enter a tag name",
-                    "schema": {
-                        "$ref": "#/definitions/tag"
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "login existing user",
+                "description": "This endpoints logs in an existing user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User sign in successful",
+                        "schema": {
+                            "$ref": "#/definitions/users_login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "login successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "400": {
+                        "description": "Incorrect Password"
                     }
                 }
-            ],
-            "responses": {
-                "201": {
-                    "description": "Created"
-                }
             }
-        }
-      },
-      "/api/articles": {
-          "post": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "create an article",
-              "parameters": [
-                  {
-                      "name": "article",
-                      "in": "body",
-                      "description": "enter article body",
-                      "schema": {
-                          "$ref": "#/definitions/article"
-                      }
-                  }
-              ],
-              "responses": {
-                  "201": {
-                      "description": "Created"
-                  }
-              }
-          },
-          "get": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "get all articles",
-              "parameters": [],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  }
-              }
-          }
-      },
-      "/api/articles/{slug}": {
-          "get": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "get a single article",
-              "parameters": [
-                {
-                  "name": "slug",
-                  "in": "path",
-                  "description": "get article slug"
-                }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  }
-              }
-          },
-          "put": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "update a single article",
-              "parameters": [
-                  {
-                      "name": "article",
-                      "in": "body",
-                      "description": "article updated successfully",
-                      "schema": {
-                          "$ref": "#/definitions/article"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  }
-              }
-          },
-          "delete": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "delete an article",
-              "parameters": [],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  }
-              }
-          }
-      },
-      "/api/article/{articleId}/favorite": {
-          "post": {
-              "tags": [
-                  "Favorite Article"
-              ],
-              "summary": "add an article to user favorite list",
-              "parameters": [
-                  {
-                      "name": "articleId",
-                      "in": "path",
-                      "description": "This article is added to your favorite list"
-                  }
-              ],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
-              ],
-              "responses": {
-                  "201": {
-                      "description": "Created"
-                  },
-                  "409": {
-                      "description": "you have favorited this article already"
-                  }
-              }
-          },
-          "delete": {
-              "tags": [
-                  "Favorite Article"
-              ],
-              "summary": "delete a favorite article on a user's list",
-              "parameters": [
-                  {
-                      "name": "articleId",
-                      "in": "path",
-                      "description": "Access and return all favorite article by a user"
-                  }
-              ],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  },
-                  "404": {
-                      "description": "not found"
-                  }
-              }
-          }
-      },
-      "/api/user/articles/favorite": {
-          "get": {
-              "tags": [
-                  "Favorite Article"
-              ],
-              "summary": "get all the user's favorite article",
-              "parameters": [],
-              "security": [
-                  {
-                    "Bearer": []
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  }
-              }
-          }
-      },
-      "/api/articles/search?": {
-          "get": {
-              "tags": [
-                  "Article"
-              ],
-              "summary": "search articles using tag, author, keywords",
-              "parameters": [
-                  {
-                      "name": "tag",
-                      "in":"query",
-                      "required":false,
-                      "type":"string",
-                      "description": "search by tag"
-                  },
-                  {
-                      "name": "author",
-                      "in":"query",
-                      "required":false,
-                      "type":"string",
-                      "description": "search by author"
-                  },
-                  {
-                      "name": "keywords",
-                      "in":"query",
-                      "required":false,
-                      "type":"string",
-                      "description": "search by keywords"
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK"
-                  },
-                  "400":{
-                      "description": "bad imput"
-                  },
-                  "500":{
-                      "description": "server error"
-                  }
-              }
-          }
-      },
-      "/api/articles/{slug}/comments": {
-        "post": {
-            "tags": [
-                "Comments"
-            ],
-            "summary": "post a comment on an article",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "get article slug"
-              },
-              {
-                "name": "comment",
-                "in": "body",
-                "description": "post a comment",
-                "schema": {
-                  "$ref": "#/definitions/comments"
-                }
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "201": {
-                    "description": "posted"
+        },
+        "/api/users/{username}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get a user by username",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username to be return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/users"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
                 }
             }
         },
-        "get": {
-          "tags": [
-              "Comments"
-          ],
-          "summary": "get all comments made on an article",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "description": "get article slug"
-            }
-          ],
-          "security": [
-            {
-              "Bearer": []
-            }
-          ],
-          "responses": {
-              "200": {
-                  "description": "ok"
-              }
-          }
-        }
-      },
-      "/api/articles/{slug}/comments/{commentId}": {
-        "get": {
-            "tags": [
-                "Comments"
-            ],
-            "summary": "get comment by the Id",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "get article slug"
-              },
-              {
-                "name": "commentId",
-                "in": "path",
-                "description": "get comment id"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                    "description": "Ok"
-                },
-                "404": {
-                  "description": "Does not exist"
+        "/api/users/{userId}": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update a user profile details",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of user that needs to be updated",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "body of user data",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user details updated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid data"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "Username already exists"
+                    }
                 }
             }
         },
-        "post": {
-          "tags": [
-              "Comments"
-          ],
-          "summary": "reply a comment made on an article",
-          "parameters": [
-            {
-              "name": "slug",
-              "in": "path",
-              "description": "get article slug"
-            },
-            {
-              "name": "commentId",
-              "in": "path",
-              "description": "get comment id"
-            },
-            {
-              "name": "reply",
-              "in": "body",
-              "description": "reply body",
-              "schema": {
-                "$ref": "#/definitions/reply"
-              }
-            }
-            ],
-            "security": [
-                {
-                  "Bearer": []
+        "/api/articles/tags": {
+            "post": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "create a tag",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "body",
+                        "description": "enter a tag name",
+                        "schema": {
+                            "$ref": "#/definitions/tag"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
                 }
-              ],
-            "responses": {
-                  "201": {
-                      "description": "posted"
-                  }
-              }
-          },
-        "delete": {
+            }
+        },
+        "/api/articles": {
+            "post": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "create an article",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "body",
+                        "description": "enter article body",
+                        "schema": {
+                            "$ref": "#/definitions/article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "get all articles",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/articles/{slug}": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "get a single article",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "update a single article",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "body",
+                        "description": "article updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "delete an article",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/article/{articleId}/favorite": {
+            "post": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "add an article to user favorite list",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "This article is added to your favorite list"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "409": {
+                        "description": "you have favorited this article already"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "delete a favorite article on a user's list",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "path",
+                        "description": "Access and return all favorite article by a user"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/user/articles/favorite": {
+            "get": {
+                "tags": [
+                    "Favorite Article"
+                ],
+                "summary": "get all the user's favorite article",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/articles/search?": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "search articles using tag, author, keywords",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "search by tag"
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "search by author"
+                    },
+                    {
+                        "name": "keywords",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "search by keywords"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "bad imput"
+                    },
+                    "500": {
+                        "description": "server error"
+                    }
+                }
+            }
+        },
+        "/api/articles/{slug}/comments": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "post a comment on an article",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    },
+                    {
+                        "name": "comment",
+                        "in": "body",
+                        "description": "post a comment",
+                        "schema": {
+                            "$ref": "#/definitions/comments"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "posted"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "get all comments made on an article",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+        "/api/articles/{slug}/comments/{commentId}": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "get comment by the Id",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "get comment id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "404": {
+                        "description": "Does not exist"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "reply a comment made on an article",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "get comment id"
+                    },
+                    {
+                        "name": "reply",
+                        "in": "body",
+                        "description": "reply body",
+                        "schema": {
+                            "$ref": "#/definitions/reply"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "posted"
+                    }
+                }
+            },
+            "delete": {
                 "tags": [
                     "Article"
                 ],
@@ -626,179 +574,119 @@
                         "description": "forbidden"
                     }
                 }
-          }
-        },
-      "/api/articles/{slug}/comments/{commentId}/like": {
-        "post": {
-            "tags": [
-                "Comments"
-            ],
-            "summary": "like a comment",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "get article slug"
-              },
-              {
-                "name": "commentId",
-                "in": "path",
-                "description": "get comment id"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                    "description": "Ok"
-                },
-                "400": {
-                  "description": "Bad input"
-                },
-                "404": {
-                  "description": "Does not exist"
-                }
-            }
-        }
-      },
-      "/api/articles/{slug}/comments/{commentId}/dislike": {
-        "post": {
-            "tags": [
-                "Comments"
-            ],
-            "summary": "dislike a comment",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "get article slug"
-              },
-              {
-                "name": "commentId",
-                "in": "path",
-                "description": "get comment id"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                    "description": "Ok"
-                },
-                "400": {
-                  "description": "Bad input"
-                },
-                "404": {
-                  "description": "Does not exist"
-                }
-            }
-        }
-      },
-      "/api/articles/{slug}/comments/{commentId}/reaction_status": {
-        "get": {
-            "tags": [
-                "Comments"
-            ],
-            "summary": "check user's reaction status on comment",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "get article slug"
-              },
-              {
-                "name": "commentId",
-                "in": "path",
-                "description": "get comment id"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                },
-                "404": {
-                  "description": "Does not exist"
-                }
-            }
-        }
-      },
-      "/api/admin/articles/reports": {
-        "get": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "get reports made on articles",
-            "parameters": [],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
             }
         },
-        "/api/articles/search?": {
-            "get": {
+        "/api/articles/{slug}/comments/{commentId}/like": {
+            "post": {
                 "tags": [
-                    "Article"
+                    "Comments"
                 ],
-                "summary": "search articles using tag, author, keywords",
+                "summary": "like a comment",
                 "parameters": [
                     {
-                        "name": "tag",
-                        "in":"query",
-                        "required":false,
-                        "type":"string",
-                        "description": "search by tag"
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
                     },
                     {
-                        "name": "author",
-                        "in":"query",
-                        "required":false,
-                        "type":"string",
-                        "description": "search by author"
-                    },
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "get comment id"
+                    }
+                ],
+                "security": [
                     {
-                        "name": "keywords",
-                        "in":"query",
-                        "required":false,
-                        "type":"string",
-                        "description": "search by keywords"
+                        "Bearer": []
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Ok"
                     },
-                    "400":{
-                        "description": "bad input"
+                    "400": {
+                        "description": "Bad input"
                     },
-                    "500":{
-                        "description": "server error"
+                    "404": {
+                        "description": "Does not exist"
                     }
                 }
             }
         },
-        "/api/article-categories": {
+        "/api/articles/{slug}/comments/{commentId}/dislike": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "dislike a comment",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "get comment id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad input"
+                    },
+                    "404": {
+                        "description": "Does not exist"
+                    }
+                }
+            }
+        },
+        "/api/articles/{slug}/comments/{commentId}/reaction_status": {
             "get": {
                 "tags": [
-                    "Article Categories"
+                    "Comments"
                 ],
-                "summary": "Get all article categories available",
+                "summary": "check user's reaction status on comment",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "get article slug"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "get comment id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "404": {
+                        "description": "Does not exist"
+                    }
+                }
+            }
+        },
+        "/api/admin/articles/reports": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "get reports made on articles",
                 "parameters": [],
                 "security": [
                     {
@@ -807,27 +695,433 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "article categories available"
-                    },
-                    "403": {
-                        "description": "forbidden"
+                        "description": "Ok"
                     }
                 }
             },
-            "post": {
-                "tags": [
-                    "Article Categories"
-                ],
-                "summary": "Create a new category",
-                "parameters": [
-                    {
-                        "name": "category",
-                        "in": "body",
-                        "description": "new cateogry to be added",
-                        "schema": {
-                            "$ref": "#/definitions/article-categories"
+            "/api/articles/search?": {
+                "get": {
+                    "tags": [
+                        "Article"
+                    ],
+                    "summary": "search articles using tag, author, keywords",
+                    "parameters": [
+                        {
+                            "name": "tag",
+                            "in": "query",
+                            "required": false,
+                            "type": "string",
+                            "description": "search by tag"
+                        },
+                        {
+                            "name": "author",
+                            "in": "query",
+                            "required": false,
+                            "type": "string",
+                            "description": "search by author"
+                        },
+                        {
+                            "name": "keywords",
+                            "in": "query",
+                            "required": false,
+                            "type": "string",
+                            "description": "search by keywords"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "OK"
+                        },
+                        "400": {
+                            "description": "bad input"
+                        },
+                        "500": {
+                            "description": "server error"
                         }
                     }
+                }
+            },
+            "/api/article-categories": {
+                "get": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "Get all article categories available",
+                    "parameters": [],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "article categories available"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        }
+                    }
+                },
+                "post": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "Create a new category",
+                    "parameters": [
+                        {
+                            "name": "category",
+                            "in": "body",
+                            "description": "new cateogry to be added",
+                            "schema": {
+                                "$ref": "#/definitions/article-categories"
+                            }
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "new category added"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        }
+                    }
+                }
+            },
+            "/api/article-categories/{categoryName}": {
+                "put": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "Update a category",
+                    "parameters": [
+                        {
+                            "name": "categoryName",
+                            "in": "body",
+                            "description": "category to be updated"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "201": {
+                            "description": "category successfully updated"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        },
+                        "404": {
+                            "description": "category does not exist"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        }
+                    }
+                },
+                "delete": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "Delete a cateogory",
+                    "parameters": [
+                        {
+                            "name": "categoryName",
+                            "in": "body",
+                            "description": "category to be deleted"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "201": {
+                            "description": "category successfully deleted"
+                        },
+                        "403": {
+                            "description": "forbidden"
+                        },
+                        "404": {
+                            "description": "category does not exist"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        }
+                    }
+                }
+            },
+            "/api/article-categories/{categoryName}/articles": {
+                "get": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "add an article to a category",
+                    "parameters": [],
+                    "description": "get all articles from a category",
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "articles in a category"
+                        },
+                        "404": {
+                            "description": "category does not exist"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        }
+                    }
+                },
+                "post": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "adds an article to a category",
+                    "parameters": [
+                        {
+                            "name": "articleId",
+                            "in": "body",
+                            "description": "id of the article to be added"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "articles added successfully to category"
+                        },
+                        "404": {
+                            "description": "article/category does not exist"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        },
+                        "403": {
+                            "description": "does not have permissiont perform the request"
+                        }
+                    }
+                },
+                "delete": {
+                    "tags": [
+                        "Article Categories"
+                    ],
+                    "summary": "delete an article from a category",
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "parameters": [
+                        {
+                            "name": "articleId",
+                            "in": "body",
+                            "description": "id of the article to be removed from category"
+                        }
+                    ],
+                    "description": "get all articles from a category",
+                    "responses": {
+                        "200": {
+                            "description": "articles in a category"
+                        },
+                        "404": {
+                            "description": "category does not exist"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        },
+                        "403": {
+                            "description": "does not have permissiont perform the request"
+                        }
+                    }
+                }
+            },
+            "/api/user-reading-stats": {
+                "get": {
+                    "tags": [
+                        "User Reading Stats"
+                    ],
+                    "summary": "get a user's reading stats",
+                    "parameters": [],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "user's reading stats"
+                        },
+                        "400": {
+                            "description": "bad request"
+                        }
+                    }
+                }
+            },
+            "/api/articles/{articleId}/reactions": {
+                "post": {
+                    "tags": [
+                        "Like or Dislike an Articles"
+                    ],
+                    "summary": "like or dislike to an article",
+                    "parameters": [
+                        {
+                            "name": "reaction",
+                            "in": "body",
+                            "description": "'like' or 'dislike'",
+                            "schema": {
+                                "$ref": "#/definitions/likeDislikeArticle"
+                            }
+                        },
+                        {
+                            "name": "articleId",
+                            "in": "path",
+                            "description": "ID of the article"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "OK"
+                        },
+                        "400": {
+                            "description": "Bad Request."
+                        },
+                        "403": {
+                            "description": "Authorization Error."
+                        },
+                        "404": {
+                            "description": "Not Found."
+                        },
+                        "5XX": {
+                            "description": "Unexpected Error."
+                        }
+                    }
+                },
+                "get": {
+                    "tags": [
+                        "Like or Dislike an Articles"
+                    ],
+                    "summary": "get counts of likes and dislikes for an article",
+                    "parameters": [
+                        {
+                            "name": "articleId",
+                            "in": "path",
+                            "description": "ID of the article"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "OK"
+                        },
+                        "400": {
+                            "description": "Bad Request."
+                        },
+                        "403": {
+                            "description": "Authorization Error."
+                        },
+                        "404": {
+                            "description": "Not Found."
+                        },
+                        "5XX": {
+                            "description": "Unexpected Error."
+                        }
+                    }
+                }
+            },
+            "/api/articles/{articleId}/reactions/status": {
+                "get": {
+                    "tags": [
+                        "Like or Dislike an Articles"
+                    ],
+                    "summary": "get the reaction status of a user to an article",
+                    "parameters": [
+                        {
+                            "name": "articleId",
+                            "in": "path",
+                            "description": "ID of the article"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "OK"
+                        },
+                        "400": {
+                            "description": "Bad Request."
+                        },
+                        "403": {
+                            "description": "Authorization Error."
+                        },
+                        "404": {
+                            "description": "Not Found."
+                        },
+                        "5XX": {
+                            "description": "Unexpected Error."
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "get user's notifications",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/users/notifications/{notifId}": {
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "delete given user notification",
+                "parameters": [
+                    {
+                        "name": "notifId",
+                        "in": "path",
+                        "description": "id of notification to be deleted",
+                        "required": true,
+                        "type": "integer"
+                    }
                 ],
                 "security": [
                     {
@@ -836,25 +1130,78 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "new category added"
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "not found"
                     },
                     "403": {
-                        "description": "forbidden"
+                        "description": "no token provided"
                     }
                 }
             }
         },
-        "/api/article-categories/{categoryName}": {
+        "/api/admin/articles/reports/{reportId}": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "get a single report made on one article",
+                "parameters": [
+                    {
+                        "name": "reportId",
+                        "in": "path",
+                        "description": "report id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            }
+        },
+        "/api/admin/reports/articles/{slug}": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "get reports made on one article",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "enter article slug"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            }
+        },
+        "/api/admin/articles/{slug}/delist": {
             "put": {
                 "tags": [
-                    "Article Categories"
+                    "Admin Roles"
                 ],
-                "summary": "Update a category",
+                "summary": "block an article from being viewed",
                 "parameters": [
                     {
-                        "name": "categoryName",
-                        "in": "body",
-                        "description": "category to be updated"
+                        "name": "slug",
+                        "in": "path",
+                        "description": "enter article slug"
                     }
                 ],
                 "security": [
@@ -863,61 +1210,19 @@
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "category successfully updated"
-                    },
-                    "403": {
-                        "description": "forbidden"
-                    },
-                    "404": {
-                        "description": "category does not exist"
-                    },
-                    "400": {
-                        "description": "bad request"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Article Categories"
-                ],
-                "summary": "Delete a cateogory",
-                "parameters": [
-                    {
-                        "name": "categoryName",
-                        "in": "body",
-                        "description": "category to be deleted"
-                    }
-                ],
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "category successfully deleted"
-                    },
-                    "403": {
-                        "description": "forbidden"
-                    },
-                    "404": {
-                        "description": "category does not exist"
-                    },
-                    "400": {
-                        "description": "bad request"
+                    "200": {
+                        "description": "Ok"
                     }
                 }
             }
         },
-        "/api/article-categories/{categoryName}/articles": {
+        "/api/admin/articles/delisted": {
             "get": {
                 "tags": [
-                    "Article Categories"
+                    "Admin Roles"
                 ],
-                "summary": "add an article to a category",
-                "parameters":[],
-                "description": "get all articles from a category",
+                "summary": "view all blocked articles",
+                "parameters": [],
                 "security": [
                     {
                         "Bearer": []
@@ -925,100 +1230,123 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "articles in a category"
-                    },
-                    "404": {
-                        "description": "category does not exist"
-                    },
-                    "400": {
-                        "description": "bad request"
+                        "description": "Ok"
+                    }
+                },
+                "user": {
+                    "properties": {
+                        "firstName": {
+                            "type": "string"
+                        },
+                        "lastName": {
+                            "type": "string"
+                        },
+                        "username": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "emailVerified": {
+                            "type": "boolean"
+                        },
+                        "bio": {
+                            "type": "string"
+                        },
+                        "image": {
+                            "type": "string"
+                        },
+                        "password": {
+                            "type": "string"
+                        },
+                        "role": {
+                            "type": "string"
+                        },
+                        "twitter": {
+                            "type": "string"
+                        },
+                        "linkedin": {
+                            "type": "string"
+                        }
                     }
                 }
             },
-            "post": {
-                "tags": [
-                    "Article Categories"
-                ],
-                "summary": "adds an article to a category",
-                "parameters":[
-                    {
-                        "name": "articleId",
-                        "in": "body",
-                        "description": "id of the article to be added"
-                    }
-                ],
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "articles added successfully to category"
-                    },
-                    "404": {
-                        "description": "article/category does not exist"
-                    },
-                    "400": {
-                        "description": "bad request"
-                    },
-                    "403": {
-                        "description": "does not have permissiont perform the request"
+            "/api/admin/articles/{slug}/delisted": {
+                "get": {
+                    "tags": [
+                        "Admin Roles"
+                    ],
+                    "summary": "view a blocked article",
+                    "parameters": [
+                        {
+                            "name": "slug",
+                            "in": "path",
+                            "description": "enter article slug"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Ok"
+                        }
                     }
                 }
             },
-            "delete": {
-                "tags": [
-                    "Article Categories"
-                ],
-                "summary": "delete an article from a category",
-                "security": [
-                    {
-                        "Bearer": []
+            "/api/admin/articles/{slug}/relist": {
+                "put": {
+                    "tags": [
+                        "Admin Roles"
+                    ],
+                    "summary": "unblock an article",
+                    "parameters": [
+                        {
+                            "name": "slug",
+                            "in": "path",
+                            "description": "enter article slug"
+                        }
+                    ],
+                    "security": [
+                        {
+                            "Bearer": []
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Ok"
+                        }
                     }
-                ],
-                "parameters":[
-                    {
-                        "name": "articleId",
-                        "in": "body",
-                        "description": "id of the article to be removed from category"
+                },
+                "ArticleCategories": {
+                    "properties": {
+                        "id": {
+                            "type": "int"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
                     }
-                ],
-                "description": "get all articles from a category",
-                "responses": {
-                    "200": {
-                        "description": "articles in a category"
-                    },
-                    "404": {
-                        "description": "category does not exist"
-                    },
-                    "400": {
-                        "description": "bad request"
-                    },
-                    "403": {
-                        "description": "does not have permissiont perform the request"
-                    }
-                }
-            }
-        },
-        "/api/user-reading-stats": {
-            "get": {
-                "tags": [
-                    "User Reading Stats"
-                ],
-                "summary": "get a user's reading stats",
-                "parameters":[],
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "user's reading stats"
-                    },
-                    "400": {
-                        "description": "bad request"
+                },
+                "UserReadingStats": {
+                    "properties": {
+                        "id": {
+                            "type": "int"
+                        },
+                        "articlesRead": {
+                            "type": "array"
+                        },
+                        "numberOfArticlesRead": {
+                            "type": "int"
+                        },
+                        "articleReactions": {
+                            "type": "array"
+                        },
+                        "mostReadCategory": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -1026,7 +1354,7 @@
         "/api/articles/{articleId}/reactions": {
             "post": {
                 "tags": [
-                    "Like or Dislike an Articles"
+                    "Article"
                 ],
                 "summary": "like or dislike to an article",
                 "parameters": [
@@ -1069,7 +1397,7 @@
             },
             "get": {
                 "tags": [
-                    "Like or Dislike an Articles"
+                    "Article"
                 ],
                 "summary": "get counts of likes and dislikes for an article",
                 "parameters": [
@@ -1106,7 +1434,7 @@
         "/api/articles/{articleId}/reactions/status": {
             "get": {
                 "tags": [
-                    "Like or Dislike an Articles"
+                    "Article"
                 ],
                 "summary": "get the reaction status of a user to an article",
                 "parameters": [
@@ -1139,395 +1467,376 @@
                     }
                 }
             }
-        }
-      },
-      "/api/users/notifications": {
-        "get": {
-            "tags": [
-                "Notifications"
-            ],
-            "summary": "get user's notifications",
-            "parameters": [],
-            "security": [
-                {
-                    "Bearer": []
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK"
-                }
-            }
-        }
-      },
-      "/api/users/notifications/{notifId}": {
-        "delete": {
-            "tags": [
-                "Notifications"
-            ],
-            "summary": "delete given user notification",
-            "parameters": [
-                {
-                    "name": "notifId",
-                    "in": "path",
-                    "description": "id of notification to be deleted",
-                    "required": true,
-                    "type": "integer"
-                }
-            ],
-            "security": [
-                {
-                    "Bearer": []
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK"
-                },
-                "404": {
-                    "description": "not found"
-                },
-                "403": {
-                    "description": "no token provided"
-                }
-            }
-        }
-      },
-      "/api/admin/articles/reports/{reportId}": {
-        "get": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "get a single report made on one article",
-            "parameters": [
-              {
-                "name": "reportId",
-                "in": "path",
-                "description": "report id"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
-            }
-        }
-      },
-      "/api/admin/reports/articles/{slug}": {
-        "get": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "get reports made on one article",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "enter article slug"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
-            }
-        }
-      },
-      "/api/admin/articles/{slug}/delist": {
-        "put": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "block an article from being viewed",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "enter article slug"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
-            }
-        }
-      },
-      "/api/admin/articles/delisted": {
-        "get": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "view all blocked articles",
-            "parameters": [],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                 }
-            },
-        "user": {
-            "properties": {
-                "firstName": {
-                    "type": "string"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "emailVerified": {
-                    "type": "boolean"
-                },
-                "bio": {
-                    "type": "string"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "twitter": {
-                    "type": "string"
-                },
-                "linkedin": {
-                    "type": "string"
-                }
-            }
-          }
-      },
-      "/api/admin/articles/{slug}/delisted": {
-        "get": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "view a blocked article",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "enter article slug"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
-            }
-        }
-      },
-      "/api/admin/articles/{slug}/relist": {
-        "put": {
-            "tags": [
-                "Admin Roles"
-            ],
-            "summary": "unblock an article",
-            "parameters": [
-              {
-                "name": "slug",
-                "in": "path",
-                "description": "enter article slug"
-              }
-            ],
-            "security": [
-              {
-                "Bearer": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Ok"
-                }
-            }
         },
-        "ArticleCategories": {
-            "properties": {
-                "id": {
-                    "type": "int"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "UserReadingStats": {
-            "properties": {
-                "id": {
-                    "type": "int"
-                },
-                "articlesRead": {
-                    "type": "array"
-                },
-                "numberOfArticlesRead": {
-                    "type": "int"
-                },
-                "articleReactions": {
-                    "type": "array"
-                },
-                "mostReadCategory": {
-                    "type": "string"
-                }
-            }
-        }
-      }
-      }
-    },
-    "/api/articles/{articleId}/reactions": {
-        "post": {
-            "tags": [
-                "Like or Dislike an Articles"
-            ],
-            "summary": "like or dislike to an article",
-            "parameters": [
-                {
-                    "name": "reaction",
-                    "in": "body",
-                    "description": "'like' or 'dislike'",
-                    "schema": {
-                        "$ref": "#/definitions/likeDislikeArticle"
+        "/api/users/authors/requests": {
+            "post":{
+                "tags": [
+                    "Author Requests"
+                ],
+                "summary": "make request to be an author",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
                     }
-                },
-                {
-                    "name": "articleId",
-                    "in": "path",
-                    "description": "ID of the article"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
                 }
-            ],
-            "security": [
-                {
-                    "Bearer": []
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK"
-                },
-                "400": {
-                    "description": "Bad Request."
-                },
-                "403": {
-                    "description": "Authorization Error."
-                },
-                "404": {
-                    "description": "Not Found."
-                },
-                "5XX": {
-                    "description": "Unexpected Error."
+            },
+            "get":{
+                "tags": [
+                    "Author Requests"
+                ],
+                "summary": "get all requests by the authenticated user",
+                "parameters": [],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
                 }
             }
         },
-        "get": {
-            "tags": [
-                "Like or Dislike an Articles"
-            ],
-            "summary": "get counts of likes and dislikes for an article",
-            "parameters": [
-                {
-                    "name": "articleId",
-                    "in": "path",
-                    "description": "ID of the article"
+        "/api/users/authors/requests/{requestId}": {
+            "get": {
+                "tags": [
+                    "Author Requests"
+                ],
+                "summary": "get a request by the authenticated user",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
                 }
-            ],
-            "security": [
-                {
-                    "Bearer": []
+            },
+            "delete": {
+                "tags": [
+                    "Author Requests"
+                ],
+                "summary": "Delete a request by an authenticated user",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
                 }
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK"
-                },
-                "400": {
-                    "description": "Bad Request."
-                },
-                "403": {
-                    "description": "Authorization Error."
-                },
-                "404": {
-                    "description": "Not Found."
-                },
-                "5XX": {
-                    "description": "Unexpected Error."
+            }
+        },
+        "/api/admin/authors/requests?": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Get all requests to be an author",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "Status of request (accepted, requested, pending)"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            }
+        },
+        "/api/admin/authors/requests/{requestId}": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Get a request to be an author",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Delete a request to be an author",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            }
+        },
+        "/api/admin/authors/requests/users/{userId}": {
+            "get": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Get all requests by a particular user",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of the user"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            }
+        },
+        "/api/admin/authors/requests/{requestId}/accept": {
+            "put": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Accept a request to be an author",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
+                }
+            }
+        },
+        "/api/admin/authors/requests/{requestId}/reject": {
+            "put": {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "Reject a request to be an author",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "description": "ID of the request"
+                    },
+                    {
+                        "name": "feedback",
+                        "in": "body",
+                        "description": "Reasons for rejecting a request",
+                        "schema": {
+                            "$ref": "#/definitions/rejectRequestToBeAuthor"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Authorization Error."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error."
+                    }
                 }
             }
         }
     },
-    "/api/articles/{articleId}/reactions/status": {
-        "get": {
-            "tags": [
-                "Like or Dislike an Articles"
-            ],
-            "summary": "get the reaction status of a user to an article",
-            "parameters": [
-                {
-                    "name": "articleId",
-                    "in": "path",
-                    "description": "ID of the article"
-                }
-            ],
-            "security": [
-                {
-                    "Bearer": []
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK"
-                },
-                "400": {
-                    "description": "Bad Request."
-                },
-                "403": {
-                    "description": "Authorization Error."
-                },
-                "404": {
-                    "description": "Not Found."
-                },
-                "5XX": {
-                    "description": "Unexpected Error."
-                }
-            }
-        }
-    }
-  },
     "securityDefinitions": {
         "Bearer": {
-        "description": "For accessing the API a valid JWT token must be passed in all the queries in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the API and returned as answer of a call\nto the route /api/users/login giving a valid user & password.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n",
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
+            "description": "For accessing the API a valid JWT token must be passed in all the queries in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the API and returned as answer of a call\nto the route /api/users/login giving a valid user & password.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     },
     "definitions": {
@@ -1552,7 +1861,7 @@
         },
         "users_login": {
             "properties": {
-                "email":{
+                "email": {
                     "type": "string"
                 },
                 "password": {
@@ -1593,7 +1902,6 @@
                     "type": "string"
                 }
             }
-
         },
         "article": {
             "properties": {
@@ -1622,40 +1930,49 @@
             }
         },
         "reports": {
-        "properties": {
-            "reasonForReport": {
-                "type": "string"
-            },
-            "reportBody": {
-                "type": "string"
+            "properties": {
+                "reasonForReport": {
+                    "type": "string"
+                },
+                "reportBody": {
+                    "type": "string"
+                }
             }
-        }
         },
         "comments": {
-        "properties": {
-            "body": {
-                "type": "string"
+            "properties": {
+                "body": {
+                    "type": "string"
+                }
             }
-        }
         },
         "reply": {
-        "properties": {
-            "reply": {
-                "type": "string"
+            "properties": {
+                "reply": {
+                    "type": "string"
+                }
             }
-        }
         },
         "tag": {
-        "properties": {
-            "tag": {
-                "type": "string"
+            "properties": {
+                "tag": {
+                    "type": "string"
+                }
             }
-        }
         },
         "likeDislikeArticle": {
             "properties": {
                 "reaction": {
-                    "type": "string"
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "rejectRequestToBeAuthor": {
+            "properties": {
+                "feedback": {
+                    "type": "string",
+                    "required": true
                 }
             }
         }

@@ -27,11 +27,11 @@ userRoutes.post('/password/recover', UserController.recoverPassword);
 
 userRoutes.post('/password/reset', UserController.resetPassword);
 
-userRoutes.post('/authors/requests', authenticateUser, authorRequestsController.makeRequest);
+userRoutes.post('/authors/requests', authenticateUser, authorRequestsController.makeARequest);
 
-userRoutes.get('/authors/requests', authenticateUser, authorRequestsController.getRequests);
+userRoutes.get('/authors/requests', authenticateUser, authorRequestsController.getRequestsByAUser);
 
-userRoutes.get('/authors/requests/:requestId', authenticateUser, authorRequestsController.getRequest);
+userRoutes.get('/authors/requests/:requestId', authenticateUser, authorRequestsController.getOneRequest);
 
 userRoutes.delete('/authors/requests/:requestId', authenticateUser, authorRequestsController.deleteARequest);
 

@@ -21,7 +21,7 @@ export default class auth {
   static authenticateUser(req, res, next) {
     const { authorization } = req.headers;
     if (!authorization) {
-      const error = new Error('No token provided');
+      const error = new Error('no token provided');
       error.status = 403;
       return next(error);
     }

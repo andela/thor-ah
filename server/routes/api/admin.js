@@ -15,7 +15,9 @@ adminRoutes.get('/articles/:article_slug/delisted', authenticateUser, authorizeA
 adminRoutes.put('/articles/:article_slug/relist', authenticateUser, authorizeAdmin, HandleReports.relistArticle);
 adminRoutes.put('/authors/requests/:requestId/accept', authenticateUser, authorizeAdmin, authorRequestsController.acceptRequest);
 adminRoutes.put('/authors/requests/:requestId/reject', authenticateUser, authorizeAdmin, authorRequestsController.rejectRequest);
-adminRoutes.get('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.getRequest);
-adminRoutes.get('/authors/requests/users/:userId', authenticateUser, authorizeAdmin, authorRequestsController.getRequests);
+adminRoutes.get('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.getOneRequest);
+adminRoutes.get('/authors/requests/users/:paramsUserId', authenticateUser, authorizeAdmin, authorRequestsController.getRequestsByAUser);
+adminRoutes.get('/authors/requests', authenticateUser, authorizeAdmin, authorRequestsController.getAllRequests);
+adminRoutes.delete('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.deleteUsersRequest);
 
 export default adminRoutes;
