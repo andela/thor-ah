@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import UserController from '../../controllers/users';
+import AdminDeactivateController from '../../controllers/adminDeactivate';
 import auth from '../../middleware/auth';
 
 import EmailVerificationController from '../../controllers/emailVerificationController';
@@ -32,5 +33,8 @@ userRoutes.get('/authors/requests', authenticateUser, authorRequestsController.g
 userRoutes.get('/authors/requests/:requestId', authenticateUser, authorRequestsController.getOneRequest);
 
 userRoutes.delete('/authors/requests/:requestId', authenticateUser, authorRequestsController.deleteARequest);
+
+userRoutes.delete('/delete/:userId', authenticateUser, AdminDeactivateController.deleteUser);
+
 
 export default userRoutes;

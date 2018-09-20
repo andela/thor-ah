@@ -13,3 +13,4 @@ import './notifications';
 import './readingstats.test';
 import './authorRequests';
 import './adminGetUser.test';
+import './adminDeactivate';

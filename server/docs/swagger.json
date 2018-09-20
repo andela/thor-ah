@@ -1833,6 +1833,99 @@
                     }
                 }
             }
+        },
+        "/api/users/delete/{userId}": {
+            "delete":
+            {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "delete a user account",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "enter user id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user successfully deleted"
+                    },
+                    "404": {
+                        "description": "User does not exist"
+                    }
+                }
+
+            }
+
+        },
+        "/api/admin/deactivate/{userId}": {
+            "put":
+            {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "deactivate a user account",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "enter user id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User has been deactivated successfully"
+                    },
+                    "404": {
+                        "description": "User does not exist"
+                    }
+                }
+
+            }
+
+        },
+        "/api/admin/activate/{userId}": {
+            "put":
+            {
+                "tags": [
+                    "Admin Roles"
+                ],
+                "summary": "reactivate a user account",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "enter user id"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User has been reactivated successfully"
+                    },
+                    "404": {
+                        "description": "User does not exist"
+                    }
+                }
+
+            }
+
         }
       },
     "securityDefinitions": {

@@ -12,7 +12,7 @@ const user = {
   password: userPassword
 };
 const user2 = {
-  email: 'romeo@mail.com',
+  email: 'juliet@mail.com',
   password: userPassword
 };
 const author = {

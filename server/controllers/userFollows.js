@@ -1,7 +1,4 @@
-import db from '../models';
-
-
-const { UserFollow, User } = db;
+import { UserFollow, User } from '../models';
 
 /**
  * UserFollow controller class

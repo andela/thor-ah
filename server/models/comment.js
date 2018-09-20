@@ -38,8 +38,8 @@ module.exports = (sequelize, DataTypes) => {
       User, Article, Reply, CommentLikesDislike, CommentHistory
     } = models;
     Comment.belongsTo(User, {
-      as: 'commenter',
       onDelete: 'CASCADE',
+      as: 'commenter',
     });
 
     Comment.belongsTo(Article, {
