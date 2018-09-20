@@ -2,6 +2,7 @@ import Notification from './notifications';
 import {
   Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
+import isEmpty from '../utils/is_empty';
 
 /**
  *
@@ -9,6 +10,82 @@ import {
  * @class Comments
  */
 class CommentsController {
+  /**
+   * createComment
+   *
+   * @static
+   * @param {object} article article promise
+   * @param {string} newBody article body to update with
+   * @param {string} highlighted highlighted text
+   * @param {string} cssId
+   * @param {object} commentObj
+   * @param {object} res
+   * @param {objec} next
+   * @returns {boolean} true if diff btwn new and current article body is expected, false otherwise
+   * @memberof CommentsController
+   */
+  static processHighlighted(article, newBody, highlighted, cssId, commentObj, res, next) {
+    const injectedCharLength = 10;
+    const error = {};
+
+    if (isEmpty(highlighted)) {
+      error.highlighted = 'highlighted text missing';
+    }
+
+    if (isEmpty(cssId)) {
+      error.cssId = 'cssId missing';
+    }
+
+    if (isEmpty(newBody)) {
+      error.newBody = 'injected article body missing';
+    } else if ((newBody.length - article.body.length) !== injectedCharLength) {
+      error.newBody = 'injected article body: characters missmatch';
+    }
+
+    if (Object.keys(error).length !== 0) {
+      return { error, updated: false };
+    }
+    article.update({ body: newBody }).then(() => {
+      CommentsController.saveComment(res, next, commentObj);
+    }).catch(next);
+  }
+
+
+  /**
+   * createComment
+   *
+   * @static
+   * @param {object} res
+   * @param {object} next
+   * @param {object} comment
+   * @returns {object} jsonResponse
+   * @memberof CommentsController
+   */
+  static saveComment(res, next, comment) {
+    Comment.create(comment)
+      .then(newComment => Comment
+        .findById(newComment.id, {
+          include: [{
+            model: User,
+            as: 'commenter',
+            attributes: {
+              exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
+            }
+          }, {
+            model: Article,
+            as: 'article',
+            attributes: {
+              exclude: ['authorId', 'createdAt', 'updatedAt']
+            }
+          }],
+        }))
+      .then(newComment => res.status(201).json({
+        status: 'success',
+        comment: newComment,
+      }))
+      .catch(next);
+  }
+
   /**
    * createComment
    *
@@ -22,7 +99,13 @@ class CommentsController {
   static createComment(req, res, next) {
     const slug = req.params.article_slug;
     const { userId } = req;
-    const { comment } = req.body;
+    const {
+      comment,
+      articleBody,
+      highlited,
+      cssId
+    } = req.body;
+
     Article.findOne({
       where: {
         slug,
@@ -34,33 +117,19 @@ class CommentsController {
           error.status = 404;
           next(error);
         }
-        // create comment
-        Comment.create({
+
+        const commentObj = {
           articleId: article.id,
           commenterId: userId,
           body: comment,
-        })
-          .then(newComment => Comment
-            .findById(newComment.id, {
-              include: [{
-                model: User,
-                as: 'commenter',
-                attributes: {
-                  exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
-                }
-              }, {
-                model: Article,
-                as: 'article',
-                attributes: {
-                  exclude: ['authorId', 'createdAt', 'updatedAt']
-                }
-              }],
-            }))
-          .then(newComment => res.status(201).json({
-            status: 'success',
-            comment: newComment,
-          }))
-          .catch(next);
+        };
+
+        if (highlited || cssId || articleBody) {
+          CommentsController.processHighlighted(article, articleBody, highlited,
+            cssId, commentObj, res, next);
+        } else {
+          CommentsController.saveComment(res, next, commentObj);
+        }
       })
       .catch(next);
   }
