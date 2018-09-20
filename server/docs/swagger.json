@@ -1834,18 +1834,18 @@
                 }
             }
         },
-        "/api/admin/delete/{authorId}": {
+        "/api/users/delete/{userId}": {
             "delete":
             {
                 "tags": [
-                    "Admin Roles"
+                    "Users"
                 ],
-                "summary": "delete an author and pass all articles to a default author",
+                "summary": "delete a user account",
                 "parameters": [
                     {
-                        "name": "authorId",
+                        "name": "userId",
                         "in": "path",
-                        "description": "enter author id"
+                        "description": "enter user id"
                     }
                 ],
                 "security": [

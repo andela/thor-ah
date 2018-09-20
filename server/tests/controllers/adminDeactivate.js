@@ -13,7 +13,7 @@ describe('adminDeactivate controller', () => {
   describe('deleteAuthor', () => {
     it('should be able to delete an author and assign articles to another author', (done) => {
       chai.request(app)
-        .delete('/api/admin/delete/4')
+        .delete('/api/users/delete/4')
         .set('Authorization', token)
         .end((err, res) => {
           expect(res.status).to.equal(200);
@@ -23,7 +23,7 @@ describe('adminDeactivate controller', () => {
     });
     it('should return 404 error if user does not exist', (done) => {
       chai.request(app)
-        .delete('/api/admin/delete/23333')
+        .delete('/api/users/delete/23333')
         .set('Authorization', token)
         .end((err, res) => {
           expect(res.status).to.equal(404);
