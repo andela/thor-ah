@@ -15,7 +15,7 @@ class CommentsController {
    *
    * @static
    * @param {object} article article promise
-   * @param {string} newBody article body to update with
+   * @param {string} articleBody article body to update with
    * @param {string} highlighted highlighted text
    * @param {string} cssId
    * @param {object} commentObj
@@ -24,8 +24,15 @@ class CommentsController {
    * @returns {boolean} true if diff btwn new and current article body is expected, false otherwise
    * @memberof CommentsController
    */
-  static processHighlighted(article, newBody, highlighted, cssId, commentObj, res, next) {
-    const injectedCharLength = 10;
+  static processHighlighted(article, articleBody, highlighted, cssId, commentObj, res, next) {
+    // returns true if article should be saved, else false
+    const injectionCheck = () => {
+      const closingTagLength = 7; // '</span>'.length
+      const openingTag = `<span id=“${cssId}” class=“highlighted”>`;
+      const stripped = articleBody.replace(openingTag, ''); //
+      return (stripped.length - article.body.length) === closingTagLength;
+    };
+
     const error = {};
 
     if (isEmpty(highlighted)) {
@@ -36,16 +43,21 @@ class CommentsController {
       error.cssId = 'cssId missing';
     }
 
-    if (isEmpty(newBody)) {
-      error.newBody = 'injected article body missing';
-    } else if ((newBody.length - article.body.length) !== injectedCharLength) {
-      error.newBody = 'injected article body: characters missmatch';
+    if (isEmpty(articleBody)) {
+      error.articleBody = 'injected article body missing';
+    } else if (!injectionCheck()) {
+      error.articleBody = 'injected article body: characters mismatch';
     }
 
     if (Object.keys(error).length !== 0) {
-      return { error, updated: false };
+      return res.status(400).json({
+        status: 'error',
+        error
+      });
     }
-    article.update({ body: newBody }).then(() => {
+    article.update({ body: articleBody }).then(() => {
+      commentObj.highlighted = highlighted;
+      commentObj.cssId = cssId;
       CommentsController.saveComment(res, next, commentObj);
     }).catch(next);
   }
@@ -102,7 +114,7 @@ class CommentsController {
     const {
       comment,
       articleBody,
-      highlited,
+      highlighted,
       cssId
     } = req.body;
 
@@ -124,9 +136,11 @@ class CommentsController {
           body: comment,
         };
 
-        if (highlited || cssId || articleBody) {
-          CommentsController.processHighlighted(article, articleBody, highlited,
-            cssId, commentObj, res, next);
+        if (highlighted || cssId || articleBody) {
+          CommentsController.processHighlighted(
+            article, articleBody, highlighted, cssId,
+            commentObj, res, next
+          );
         } else {
           CommentsController.saveComment(res, next, commentObj);
         }
@@ -540,11 +554,14 @@ class CommentsController {
           .then((comments) => {
             const commentsResponse = comments.map((comment) => {
               const {
-                id, body, isEdited, createdAt, updatedAt, commenter, Replies, likes, dislikes
+                id, body, isEdited, createdAt, updatedAt, commenter, Replies, likes, dislikes,
+                highlighted, cssId
               } = comment;
               return {
                 id,
                 body,
+                highlighted,
+                cssId,
                 isEdited,
                 createdAt,
                 updatedAt,

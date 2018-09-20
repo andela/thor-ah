@@ -76,9 +76,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'articleId',
       as: 'reports'
     });
-    Article.hasMany(models.HighlightedComment, {
-      foreignKey: 'articleId',
-    });
   };
   return Article;
 };

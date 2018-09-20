@@ -10,7 +10,6 @@ import favoriteArticle from './favoriteArticle';
 import adminRoutes from './admin';
 import notificationsRoute from './notifications';
 import readingStatsRouter from './readingStatsRoute';
-import highlightedCommentRouter from './highlightedComment';
 
 
 const routes = Router();
@@ -32,7 +31,6 @@ routes.use('/users/notifications', notificationsRoute);
 routes.use('/users', userRoutes);
 routes.use('/', welcomeRoute);
 routes.use('/', socialAuth);
-routes.use('/articles/highlited-comment/', highlightedCommentRouter);
 routes.use('/articles', articlesRouter);
 routes.use('/article-categories', categoryRouter);
 routes.use('/admin', adminRoutes);
