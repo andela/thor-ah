@@ -1,0 +1,24 @@
+html
+    body
+      form(action="subscribe/basic", method="post")
+        article
+          label Basic Subscription NGN1500.00/year
+        script(
+          src="//checkout.stripe.com/v2/checkout.js",
+          class="stripe-button",
+          data-key='pk_test_Dd2IUOC4Lxnin6RXIjuSzGeC',
+          data-locale="auto",
+          data-description="Thor Authors Haven Basic Subscription",
+          data-amount="150000"
+          data-plan="basic")
+      form(action="subscribe/premium", method="post")
+        article
+          label Premium Subscription NGN2000.00/year
+        script(
+          src="//checkout.stripe.com/v2/checkout.js",
+          class="stripe-button",
+          data-key='pk_test_Dd2IUOC4Lxnin6RXIjuSzGeC',
+          data-locale="auto",
+          data-description="Thor Authors Haven Premium Subscription",
+          data-amount="200000"
+          data-plan="premium")

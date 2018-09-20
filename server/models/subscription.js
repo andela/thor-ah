@@ -1,28 +1,27 @@
 module.exports = (sequelize, DataTypes) => {
-  const Subscription = sequelize.define('subscription', {
+  const Subscription = sequelize.define('Subscription', {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     plan: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('basic', 'premium'),
       allowNull: false
     },
-    active: {
-      type: DataTypes.INTEGER,
+    paymentDate: {
+      type: DataTypes.DATE,
       allowNull: false
     },
-    key: {
+    transactionKey: {
       type: DataTypes.STRING,
-      allowNull: false
     }
-  });
-
+  }, {});
   Subscription.associate = (models) => {
     const { User } = models;
     // 1:m relationship
     Subscription.belongsTo(User, {
-      as: 'subscriber', foreignKey: 'userId'
+      as: 'subscriber',
+      foreignKey: 'userId'
     });
   };
   return Subscription;

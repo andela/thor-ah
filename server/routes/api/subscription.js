@@ -1,12 +1,20 @@
-import Sucscription from '../../controllers/subscription';
 import auth from '../../middleware/auth';
+import Subscription from '../../controllers/subscription';
 
 // get authenticateUser method
 const { authenticateUser } = auth;
+const subscriptionRoutes = require('express').Router();
 
-const router = require('express').Router();
+const keyPublishable = process.env.STRIPE_PUBLISHABLE_KEY;
 
-router.post('/', authenticateUser, Sucscription.subscribe);
-router.delete('/:notifId', authenticateUser, Sucscription.unsoscribe);
+subscriptionRoutes.get('/', ((req, res) => {
+  res.render('index', { keyPublishable });
+}));
 
-export default router;
+subscriptionRoutes.post('/subscribe/:plan', Subscription.subscribe);
+
+subscriptionRoutes.get('/user-subscription', authenticateUser, Subscription.getUsersSubscriptions);
+
+subscriptionRoutes.get('/user-subscription/:userId', authenticateUser, Subscription.getSingleUserSubscriptions);
+
+export default subscriptionRoutes;

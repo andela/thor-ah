@@ -20,6 +20,26 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      title: 'Eating good food',
+      body: 'Food is an important factor in life. Eating good food is another one',
+      description: 'wildlife',
+      slug: 'Eating-good-food',
+      authorId: 1,
+      displayStatus: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      title: 'living the good life',
+      body: 'Brace each day with enough motivation and excitement',
+      description: 'fitness',
+      slug: 'living-the-good-life',
+      authorId: 2,
+      displayStatus: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
 
   ], {}),
 

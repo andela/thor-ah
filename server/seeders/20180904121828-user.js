@@ -83,7 +83,7 @@ module.exports = {
         hash: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ], {}),
 
   down: queryInterface => queryInterface.bulkDelete('Users', null, {})

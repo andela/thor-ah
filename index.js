@@ -5,6 +5,7 @@ import errorhandler from 'errorhandler';
 import log from 'fancy-log';
 import swaggerUi from 'swagger-ui-express';
 import passport from 'passport';
+import path from 'path';
 import router from './server/routes';
 import swaggerDocument from './server/docs/swagger.json';
 import './server/config/passport';
@@ -29,7 +30,9 @@ app.use(bodyParser.json());
 
 app.use(require('method-override')());
 
-app.use(express.static(`${__dirname}/public`));
+app.set('views', path.join(__dirname, 'views'));
+// set view engine as pug
+app.set('view engine', 'pug');
 
 if (!isProduction) {
   app.use(errorhandler());
