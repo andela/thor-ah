@@ -9,6 +9,7 @@ import UserValidation from '../utils/validation';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
 import { User } from '../models';
+import { isAdmin } from '../utils/verifyRoles';
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 env.config();
@@ -201,17 +202,31 @@ class UsersController {
    */
   static updateUserProfile(req, res, next) {
     const { userId } = req.params;
+    const { userRole } = req;
     const {
       firstName, lastName, username, bio, twitter, linkedin, facebook, image
     } = req.body;
 
     const { error, isValid } = UserValidation.validateProfileInput(req.body);
 
+    // assign role field if user in session is an admin
+    const { role } = isAdmin(userRole) ? req.body : '';
+
+    if (role === 'admin') {
+      const err = new Error('only Super Admin can update role to admin');
+      err.status = 401;
+      return next(err);
+    }
+
     isValidNumber(req, res);
 
-    // check if user in current session is same with user being updated
-    // prevent user from updating another users' profile
-    if (Number(userId) !== Number(req.userId)) {
+    /*
+    * prevent user from updating another users ' profile
+    * check if user in current session is same with user being updated
+    * An admin can update a users ' profile as well, so check if user
+    * accessing this route is an admin
+    */
+    if (!isAdmin(userRole) && (Number(userId) !== Number(req.userId))) {
       const err = new Error('you are not allowed to update another user\'s profile');
       err.status = 401;
       return next(err);
@@ -249,6 +264,7 @@ class UsersController {
               lastName: trimInput(lastName) || user.lastName,
               username: trimInput(username) || user.username,
               bio: trimInput(bio) || user.bio,
+              role: role || user.role,
               twitter: twitter || user.twitter,
               linkedin: linkedin || user.linkedin,
               facebook: facebook || user.facebook,

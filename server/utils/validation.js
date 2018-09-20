@@ -77,6 +77,7 @@ class UserValidation {
   static validateProfileInput(data) {
     const error = {};
 
+    const { role } = data;
     data.firstName = !isEmpty(data.firstName) ? data.firstName : '';
     data.lastName = !isEmpty(data.lastName) ? data.lastName : '';
     data.username = !isEmpty(data.username) ? data.username : '';
@@ -112,6 +113,12 @@ class UserValidation {
     if (!isEmpty(data.linkedin)) {
       if (!validator.isURL(data.linkedin)) {
         error.linkedin = 'linkedin URL is not valid';
+      }
+    }
+
+    if (!isEmpty(role)) {
+      if (role !== 'user' && role !== 'author' && role !== 'admin') {
+        error.role = 'role type is not valid';
       }
     }
 

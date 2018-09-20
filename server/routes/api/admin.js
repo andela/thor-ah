@@ -2,10 +2,9 @@ import { Router } from 'express';
 import auth from '../../middleware/auth';
 import authorRequestsController from '../../controllers/authorRequests';
 import HandleReports from '../../controllers/adminHandleReports';
-import HandleRoles from '../../controllers/adminHandleRoles';
 
 // get authenticateUser method
-const { authenticateUser, authorizeAdmin, authorizeSuperAdmin } = auth;
+const { authenticateUser, authorizeAdmin } = auth;
 const adminRoutes = Router();
 
 
@@ -22,7 +21,5 @@ adminRoutes.get('/authors/requests/:requestId', authenticateUser, authorizeAdmin
 adminRoutes.get('/authors/requests/users/:paramsUserId', authenticateUser, authorizeAdmin, authorRequestsController.getRequestsByAUser);
 adminRoutes.get('/authors/requests', authenticateUser, authorizeAdmin, authorRequestsController.getAllRequests);
 adminRoutes.delete('/authors/requests/:requestId', authenticateUser, authorizeAdmin, authorRequestsController.deleteUsersRequest);
-adminRoutes.put('/users/:userId/roles', authenticateUser, authorizeSuperAdmin, HandleRoles.assignAdminRole);
-adminRoutes.delete('/users/:userId/roles', authenticateUser, authorizeSuperAdmin, HandleRoles.revokeAdminRole);
 
 export default adminRoutes;

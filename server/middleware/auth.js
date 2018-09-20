@@ -108,7 +108,7 @@ export default class auth {
     const { userRole } = req;
 
     if (!isSuperAdmin(userRole)) {
-      const error = new Error('you are not a Super Admin');
+      const error = new Error('Only a Super Admin can take this action');
       error.status = 401;
       return next(error);
     }

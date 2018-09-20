@@ -71,6 +71,76 @@ describe('Users Controllers', () => {
   });
 
   describe('updateUserProfile', () => {
+    it('an admin can update any users profile', (done) => {
+      const adminToken = `Bearer ${TokenHelper.generateToken({ id: 10, role: 'admin' })}`;
+      chai.request(app)
+        .put('/api/users/1')
+        .set('Authorization', adminToken)
+        .send({
+          firstName: 'Samuel',
+          linkedin: 'www.linkedin.com',
+          bio: 'A very good and prolific Author'
+        })
+        .end((error, res) => {
+          const { dataValues } = res.body;
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          dataValues.should.have.property('lastName');
+          dataValues.should.have.property('image');
+          done();
+        });
+    });
+    it('an admin can update a user role', (done) => {
+      const adminToken = `Bearer ${TokenHelper.generateToken({ id: 10, role: 'admin' })}`;
+      chai.request(app)
+        .put('/api/users/1')
+        .set('Authorization', adminToken)
+        .send({
+          role: 'author'
+        })
+        .end((error, res) => {
+          const { dataValues } = res.body;
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          dataValues.should.have.property('lastName');
+          dataValues.should.have.property('image');
+          dataValues.role.should.equal('author');
+          done();
+        });
+    });
+    it('only a super admin can assign "admin" role', (done) => {
+      const adminToken = `Bearer ${TokenHelper.generateToken({ id: 10, role: 'admin' })}`;
+      chai.request(app)
+        .put('/api/users/1')
+        .set('Authorization', adminToken)
+        .send({
+          firstName: 'Samuel',
+          linkedin: 'www.linkedin.com',
+          bio: 'A very good and prolific Author',
+          role: 'admin'
+        })
+        .end((error, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error.message).to.equal('only Super Admin can update role to admin');
+          done();
+        });
+    });
+    it('should return an error if wrong role is supplied', (done) => {
+      const superAdminToken = `Bearer ${TokenHelper.generateToken({ id: 1, role: 'superAdmin' })}`;
+      chai.request(app)
+        .put('/api/users/1')
+        .set('Authorization', superAdminToken)
+        .send({
+          role: 'non existing role'
+        })
+        .end((error, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error.role).to.equal('role type is not valid');
+          done();
+        });
+    });
     it('should prevent user from updating other users profiles', (done) => {
       const unauthorizedUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
       chai.request(app)

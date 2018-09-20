@@ -169,7 +169,7 @@ describe('auth middleware', () => {
 
       const { args } = nextSpy.getCalls()[0];
       expect(nextSpy.called).to.equal(true);
-      expect(args[0].message).to.equal('you are not a Super Admin');
+      expect(args[0].message).to.equal('Only a Super Admin can take this action');
     });
 
     it('should call next middleware if user is a super admin', () => {
