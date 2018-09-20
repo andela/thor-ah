@@ -3,8 +3,10 @@ import auth from '../../middleware/auth';
 import authorRequestsController from '../../controllers/authorRequests';
 import HandleReports from '../../controllers/adminHandleReports';
 
+// get authenticateUser method
 const { authenticateUser, authorizeAdmin } = auth;
 const adminRoutes = Router();
+
 
 adminRoutes.get('/articles/reports', authenticateUser, authorizeAdmin, HandleReports.getReportedArticles);
 adminRoutes.get('/articles/reports/:reportId', authenticateUser, authorizeAdmin, HandleReports.getAReportedArticle);

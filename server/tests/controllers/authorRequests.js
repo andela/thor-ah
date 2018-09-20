@@ -2,17 +2,64 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../../index';
 import TokenHelper from '../../utils/TokenHelper';
+import db from '../../models';
 
 chai.use(chaiHttp);
 
 describe('author Request', () => {
   const tokens = {};
 
-  tokens.admin = TokenHelper.generateToken({ id: 5, username: 'Admin', role: 'admin' });
-  tokens.author = TokenHelper.generateToken({ id: 2, username: 'randomAuthor2', role: 'author' });
-  tokens.userOne = TokenHelper.generateToken({ id: 3, username: 'randomUser', role: 'user' });
-  tokens.userTwo = TokenHelper.generateToken({ id: 4, username: 'romeo', role: 'user' });
-  tokens.userThree = TokenHelper.generateToken({ id: 6, username: 'andelan', role: 'user' });
+  before((done) => {
+    db.User.bulkCreate([
+      {
+        firstName: 'Michael',
+        lastName: 'Angelo',
+        username: 'admin',
+        email: 'mangelo@mail.com',
+        role: 'admin',
+        hash: 'password'
+      },
+      {
+        firstName: 'Femi',
+        lastName: 'Kuti',
+        username: 'author',
+        email: 'fkuti@mail.com',
+        role: 'author',
+        hash: 'password'
+      },
+      {
+        firstName: 'Fela',
+        lastName: 'Kuti',
+        username: 'userOne',
+        email: 'fekuti@mail.com',
+        hash: 'password'
+      },
+      {
+        firstName: 'Debby',
+        lastName: 'Grace',
+        username: 'userTwo',
+        email: 'dgrace@mail.com',
+        hash: 'password'
+      },
+      {
+        firstName: 'Bola',
+        lastName: 'Salami',
+        username: 'userThree',
+        email: 'bsalami@mail.com',
+        hash: 'password'
+      },
+    ])
+      .then(() => db.User.findAll({
+        order: [['id', 'DESC']],
+        limit: 5
+      }))
+      .then((users) => {
+        users.forEach((user) => {
+          tokens[user.username] = TokenHelper.generateToken(user);
+        });
+        done();
+      });
+  });
 
   describe('Authenticated Users', () => {
     describe('Make a request', () => {

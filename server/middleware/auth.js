@@ -1,5 +1,5 @@
 import TokenHelper from '../utils/TokenHelper';
-import { isAdmin, isAuthor } from '../utils/verifyRoles';
+import { isAdmin, isAuthor, isSuperAdmin } from '../utils/verifyRoles';
 
 /**
  *
@@ -86,6 +86,29 @@ export default class auth {
 
     if (!isAuthor(userRole)) {
       const error = new Error('You are not an Author');
+      error.status = 401;
+      return next(error);
+    }
+    return next();
+  }
+
+  /**
+   * authorizes a user whose role is set to "superAdmin"
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @returns {next} next middleware
+   * @memberof auth
+   */
+  static authorizeSuperAdmin(req, res, next) {
+    // before code got here user is clearly authed with token
+    // obtain userRole as previously set in req object
+    const { userRole } = req;
+
+    if (!isSuperAdmin(userRole)) {
+      const error = new Error('Only a Super Admin can take this action');
       error.status = 401;
       return next(error);
     }
