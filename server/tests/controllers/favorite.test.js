@@ -9,7 +9,7 @@ chai.should();
 
 chai.use(chaiHttp);
 
-const authorLogin = {
+const userLogin = {
   email: 'su@mail.com',
   password: process.env.USER_PASSWORD
 };
@@ -19,7 +19,7 @@ let { token1 } = '';
 describe('FavoriteArticleController', () => {
   // get token for accessing the route
   it('generates a token for accessing the route', (done) => {
-    chai.request(server).post('/api/users/login').set('Accept', 'application/json').send(authorLogin)
+    chai.request(server).post('/api/users/login').set('Accept', 'application/json').send(userLogin)
       .end((err, res) => {
         token1 = res.body.user.token;
         done();

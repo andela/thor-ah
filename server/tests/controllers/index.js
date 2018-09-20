@@ -12,3 +12,4 @@ import './reportArticle.test';
 import './notifications';
 import './readingstats.test';
 import './authorRequests';
+import './adminGetUser.test';
