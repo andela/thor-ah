@@ -140,29 +140,6 @@ class UsersController {
   }
 
   /**
-   * @description Static method to get all users' profiles
-   * @param  {object} req body of the user's request
-   * @param  {object} res  body of the response message
-   * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
-   */
-  static getProfiles(req, res, next) {
-    User.findAll(
-      {
-        attributes: {
-          exclude: ['hash']
-        }
-      }
-    )
-      .then(users => res.status(200).json({
-        // add success message here.
-        status: 'success',
-        profiles: users,
-      }))
-      .catch(next);
-  }
-
-  /**
    * @description Static method to get user's profile by the username
    * @param  {object} req body of the user's request
    * @param  {object} res  body of the response message
@@ -291,38 +268,32 @@ class UsersController {
   static adminGetUsers(req, res, next) {
     const { role } = req.query;
     if (!role) {
-      User.findAll(
-        {
-          where: {
-            role: {
-              [Op.or]: ['user', 'author']
-            }
-          },
-          attributes: {
-            exclude: ['hash']
+      User.findAll({
+        where: {
+          role: {
+            [Op.or]: ['user', 'author', 'admin']
           }
+        },
+        attributes: {
+          exclude: ['hash']
         }
-      )
+      })
         .then(users => res.status(200).json({
-        // add success message here.
           message: 'All registered users returned',
           status: 'success',
           profiles: users,
         })).catch(next);
     } else {
-      User.findAll(
-        {
-          where: {
-            role
-          },
-          attributes: {
-            exclude: ['hash']
-          }
+      User.findAll({
+        where: {
+          role
+        },
+        attributes: {
+          exclude: ['hash']
         }
-      )
+      })
         .then(users => res.status(200).json({
-        // add success message here.
-          message: 'All registered users/authors returned',
+          message: `All registered ${role} returned`,
           status: 'success',
           profiles: users,
         })).catch(next);

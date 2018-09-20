@@ -1,8 +1,9 @@
 import chai from 'chai';
+import env from 'dotenv';
 import chaiHttp from 'chai-http';
 import server from '../../..';
 
-require('dotenv').config();
+env.config();
 
 chai.should();
 
@@ -44,21 +45,23 @@ describe('Admin get Users and Authors function', () => {
       .get('/api/admin/getUsers')
       .set('Authorization', `Bearer ${token1}`)
       .end((err, res) => {
+        const { error, status } = res.body;
         res.should.have.status(401);
-        res.body.error.message.should.equal('you are not an Admin');
-        res.body.status.should.equal('error');
+        error.message.should.equal('You are not an Admin');
+        status.should.equal('error');
         done();
       });
   });
 
-  it('should return 200 if all users and authors are returned', (done) => {
+  it('should return 200 if all users are returned', (done) => {
     chai.request(server)
       .get('/api/admin/getUsers')
       .set('Authorization', `Bearer ${token2}`)
       .end((err, res) => {
+        const { message, status } = res.body;
         res.should.have.status(200);
-        res.body.message.should.equal('All registered users returned');
-        res.body.status.should.equal('success');
+        message.should.equal('All registered users returned');
+        status.should.equal('success');
         done();
       });
   });
@@ -68,9 +71,10 @@ describe('Admin get Users and Authors function', () => {
       .get('/api/admin/getUsers?role=author')
       .set('Authorization', `Bearer ${token2}`)
       .end((err, res) => {
+        const { message, status } = res.body;
         res.should.have.status(200);
-        res.body.message.should.equal('All registered users/authors returned');
-        res.body.status.should.equal('success');
+        message.should.equal('All registered author returned');
+        status.should.equal('success');
         done();
       });
   });
@@ -80,9 +84,23 @@ describe('Admin get Users and Authors function', () => {
       .get('/api/admin/getUsers?role=user')
       .set('Authorization', `Bearer ${token2}`)
       .end((err, res) => {
+        const { message, status } = res.body;
         res.should.have.status(200);
-        res.body.message.should.equal('All registered users/authors returned');
-        res.body.status.should.equal('success');
+        message.should.equal('All registered user returned');
+        status.should.equal('success');
+        done();
+      });
+  });
+
+  it('should return 200 if all admins are returned', (done) => {
+    chai.request(server)
+      .get('/api/admin/getUsers?role=admin')
+      .set('Authorization', `Bearer ${token2}`)
+      .end((err, res) => {
+        const { message, status } = res.body;
+        res.should.have.status(200);
+        message.should.equal('All registered admin returned');
+        status.should.equal('success');
         done();
       });
   });

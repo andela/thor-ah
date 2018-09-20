@@ -17,8 +17,6 @@ userRoutes.post('/verify/resend-email', EmailVerificationController.resendVerifi
 
 userRoutes.post('/login', UserController.userLogin);
 
-userRoutes.get('/', authenticateUser, UserController.getProfiles);
-
 userRoutes.get('/:username', authenticateUser, UserController.getProfileByUsername);
 
 userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);

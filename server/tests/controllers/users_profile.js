@@ -27,22 +27,6 @@ const incorrectNameInput = {
 const token = `Bearer ${TokenHelper.generateToken({ id: 1 })}`;
 
 describe('Users Controllers', () => {
-  describe('getUsersProfiles', () => {
-    it('should return all users profile', (done) => {
-      chai.request(app)
-        .get('/api/users')
-        .set('Authorization', token)
-        .end((error, res) => {
-          const { profiles } = res.body;
-          expect(res).to.have.status(200);
-          profiles[0].should.have.property('firstName');
-          profiles[0].should.have.property('image');
-          profiles[0].should.have.property('email');
-          done();
-        });
-    });
-  });
-
   describe('getUserProfileByUsername', () => {
     it('should return response for a single user', (done) => {
       chai.request(app)
