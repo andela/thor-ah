@@ -62,7 +62,7 @@ export default class auth {
     const { userRole } = req;
 
     if (!isAdmin(userRole)) {
-      const error = new Error('you are not an Admin');
+      const error = new Error('You are not an Admin');
       error.status = 401;
       return next(error);
     }
@@ -85,7 +85,7 @@ export default class auth {
     const { userRole } = req;
 
     if (!isAuthor(userRole)) {
-      const error = new Error('you are not an Author');
+      const error = new Error('You are not an Author');
       error.status = 401;
       return next(error);
     }

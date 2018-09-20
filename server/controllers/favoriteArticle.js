@@ -96,7 +96,7 @@ class FavoriteArticleController {
     })
       .then((favoritedArticle) => {
         const pagination = paginateArticle(favoritedArticle, currentPage, limit);
-        res.status(200).json({
+        return res.status(200).json({
           message: 'Your favorite articles',
           pagination,
           favoritedArticles: favoritedArticle.rows,

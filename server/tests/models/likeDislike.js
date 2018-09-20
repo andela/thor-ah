@@ -19,7 +19,7 @@ describe('article model', () => {
   checkModelName(likesDislikes)('LikesDislikes');
 
   // test user model properties
-  context('article model properties', () => {
+  context('article like and dislike model properties', () => {
     [
       'reaction'
     ].forEach(checkPropertyExists(likeDislike));

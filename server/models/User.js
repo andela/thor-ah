@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.hasMany(models.Reply, {
       foreignKey: 'commenterId',
-      // as: 'replies',
     });
     User.hasMany(models.CommentLikesDislike, {
       foreignKey: 'userId',
@@ -94,9 +93,10 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.LikesDislikes, {
       foreignKey: 'userId',
     });
-
-    // User-notification relationship
     User.hasMany(models.Notification, {
+      foreignKey: 'userId',
+    });
+    User.hasMany(models.AuthorRequests, {
       foreignKey: 'userId',
     });
   };

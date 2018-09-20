@@ -98,7 +98,7 @@ describe('auth middleware', () => {
 
       const { args } = nextSpy.getCalls()[0];
       expect(nextSpy.called).to.equal(true);
-      expect(args[0].message).to.equal('you are not an Author');
+      expect(args[0].message).to.equal('You are not an Author');
     });
 
     it('should call next middleware if user is author', () => {
@@ -131,7 +131,7 @@ describe('auth middleware', () => {
 
       const { args } = nextSpy.getCalls()[0];
       expect(nextSpy.called).to.equal(true);
-      expect(args[0].message).to.equal('you are not an Admin');
+      expect(args[0].message).to.equal('You are not an Admin');
     });
 
     it('should call next middleware if user is admin', () => {

@@ -9,3 +9,4 @@ import './reportArticle.model.test';
 import './commentHistory.model.test';
 import './category.model.test';
 import './articleViewHistory.model.test';
+import './authorRequests';
