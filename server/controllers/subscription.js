@@ -6,9 +6,7 @@ import { Subscription, User } from '../models';
 
 const stripePayment = stripe(process.env.STRIPE_SECRET_KEY);
 /**
- *
- *
- * @class Subscription
+ * @class SubscriptionClass
  */
 class SubscriptionClass {
   /**

@@ -268,14 +268,14 @@ class ArticleController {
                 return res.status(401).json({
                   status: 'error',
                   error: {
-                    message: 'Please update your subscription to get more articles'
+                    message: 'Your subscription is not active, Please renew to get more articles'
                   }
                 });
               }
               return res.status(401).json({
                 status: 'error',
                 error: {
-                  message: 'Please subscribe on this platform to read more articles'
+                  message: 'Please subscribe to get more articles'
                 }
               });
             }).catch(next);
