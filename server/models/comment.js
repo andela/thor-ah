@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     isEdited: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    highlighted: {
+      type: DataTypes.TEXT,
+    },
+    cssId: {
+      type: DataTypes.STRING,
     }
   }, {
     hooks: {

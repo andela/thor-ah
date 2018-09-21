@@ -2,6 +2,7 @@ import Notification from './notifications';
 import {
   Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
+import isEmpty from '../utils/is_empty';
 
 /**
  *
@@ -9,6 +10,94 @@ import {
  * @class Comments
  */
 class CommentsController {
+  /**
+   * createComment
+   *
+   * @static
+   * @param {object} article article promise
+   * @param {string} articleBody article body to update with
+   * @param {string} highlighted highlighted text
+   * @param {string} cssId
+   * @param {object} commentObj
+   * @param {object} res
+   * @param {objec} next
+   * @returns {boolean} true if diff btwn new and current article body is expected, false otherwise
+   * @memberof CommentsController
+   */
+  static processHighlighted(article, articleBody, highlighted, cssId, commentObj, res, next) {
+    // returns true if article should be saved, else false
+    const injectionCheck = () => {
+      const closingTagLength = 7; // '</span>'.length
+      const openingTag = `<span id=“${cssId}” class=“highlighted”>`;
+      const stripped = articleBody.replace(openingTag, ''); //
+      return (stripped.length - article.body.length) === closingTagLength;
+    };
+
+    const error = {};
+
+    if (isEmpty(highlighted)) {
+      error.highlighted = 'highlighted text missing';
+    }
+
+    if (isEmpty(cssId)) {
+      error.cssId = 'cssId missing';
+    }
+
+    if (isEmpty(articleBody)) {
+      error.articleBody = 'injected article body missing';
+    } else if (!injectionCheck()) {
+      error.articleBody = 'injected article body: characters mismatch';
+    }
+
+    if (Object.keys(error).length !== 0) {
+      return res.status(400).json({
+        status: 'error',
+        error
+      });
+    }
+    article.update({ body: articleBody }).then(() => {
+      commentObj.highlighted = highlighted;
+      commentObj.cssId = cssId;
+      CommentsController.saveComment(res, next, commentObj);
+    }).catch(next);
+  }
+
+
+  /**
+   * createComment
+   *
+   * @static
+   * @param {object} res
+   * @param {object} next
+   * @param {object} comment
+   * @returns {object} jsonResponse
+   * @memberof CommentsController
+   */
+  static saveComment(res, next, comment) {
+    Comment.create(comment)
+      .then(newComment => Comment
+        .findById(newComment.id, {
+          include: [{
+            model: User,
+            as: 'commenter',
+            attributes: {
+              exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
+            }
+          }, {
+            model: Article,
+            as: 'article',
+            attributes: {
+              exclude: ['authorId', 'createdAt', 'updatedAt']
+            }
+          }],
+        }))
+      .then(newComment => res.status(201).json({
+        status: 'success',
+        comment: newComment,
+      }))
+      .catch(next);
+  }
+
   /**
    * createComment
    *
@@ -22,7 +111,13 @@ class CommentsController {
   static createComment(req, res, next) {
     const slug = req.params.article_slug;
     const { userId } = req;
-    const { comment } = req.body;
+    const {
+      comment,
+      articleBody,
+      highlighted,
+      cssId
+    } = req.body;
+
     Article.findOne({
       where: {
         slug,
@@ -34,33 +129,21 @@ class CommentsController {
           error.status = 404;
           next(error);
         }
-        // create comment
-        Comment.create({
+
+        const commentObj = {
           articleId: article.id,
           commenterId: userId,
           body: comment,
-        })
-          .then(newComment => Comment
-            .findById(newComment.id, {
-              include: [{
-                model: User,
-                as: 'commenter',
-                attributes: {
-                  exclude: ['hash', 'emailVerified', 'email', 'role', 'createdAt', 'updatedAt']
-                }
-              }, {
-                model: Article,
-                as: 'article',
-                attributes: {
-                  exclude: ['authorId', 'createdAt', 'updatedAt']
-                }
-              }],
-            }))
-          .then(newComment => res.status(201).json({
-            status: 'success',
-            comment: newComment,
-          }))
-          .catch(next);
+        };
+
+        if (highlighted || cssId || articleBody) {
+          CommentsController.processHighlighted(
+            article, articleBody, highlighted, cssId,
+            commentObj, res, next
+          );
+        } else {
+          CommentsController.saveComment(res, next, commentObj);
+        }
       })
       .catch(next);
   }
@@ -471,11 +554,14 @@ class CommentsController {
           .then((comments) => {
             const commentsResponse = comments.map((comment) => {
               const {
-                id, body, isEdited, createdAt, updatedAt, commenter, Replies, likes, dislikes
+                id, body, isEdited, createdAt, updatedAt, commenter, Replies, likes, dislikes,
+                highlighted, cssId
               } = comment;
               return {
                 id,
                 body,
+                highlighted,
+                cssId,
                 isEdited,
                 createdAt,
                 updatedAt,

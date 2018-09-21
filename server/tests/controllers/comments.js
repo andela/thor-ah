@@ -22,6 +22,36 @@ const commentUpdatePayload = {
   comment: 'updated the content of insightful comment'
 };
 
+const highlightedComment = {
+  noArticleBody: {
+    comment: 'Some insightful comment',
+    cssId: 'someVal12',
+    highlighted: 'test article'
+  },
+  noHighlightedText: {
+    comment: 'Some insightful comment',
+    cssId: 'someVal12',
+    articleBody: 'test article body'
+  },
+  noCssId: {
+    comment: 'Some insightful comment',
+    highlighted: 'test article',
+    articleBody: 'test article body'
+  },
+  mismatch: {
+    comment: 'Some insightful comment',
+    cssId: 'someVal12',
+    highlighted: 'test article',
+    articleBody: 'test article body'
+  },
+  complete: {
+    comment: 'Some insightful comment',
+    cssId: 'someVal12',
+    highlighted: 'test article',
+    articleBody: 'test <span id=“someVal12” class=“highlighted”>article </span>body'
+  }
+};
+
 describe('Comment Controller', () => {
   // drop(if exists) and create user table
   before((done) => {
@@ -118,6 +148,82 @@ describe('Comment Controller', () => {
           done();
         });
     });
+
+    // for highlighted comment
+    it('should return error if articleBody is missing', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .send(highlightedComment.noArticleBody)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(400);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error.articleBody).to.equal('injected article body missing');
+          done();
+        });
+    });
+
+    it('should return error if highlighted text is missing', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .send(highlightedComment.noHighlightedText)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(400);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error.highlighted).to.equal('highlighted text missing');
+          done();
+        });
+    });
+
+    it('should return error if cssId is missing', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .send(highlightedComment.noCssId)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(400);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error.cssId).to.equal('cssId missing');
+          done();
+        });
+    });
+
+    it('should return error if injected body mismatch', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .send(highlightedComment.mismatch)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(400);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.error.articleBody).to.equal('injected article body: characters mismatch');
+          done();
+        });
+    });
+
+    it('should create a highlighted-comment to an article', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments')
+        .set('Authorization', token)
+        .send(highlightedComment.complete)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(201);
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
+    // end of highloighted comment specific
   });
 
   describe('createCommentReply', () => {
