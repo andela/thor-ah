@@ -259,10 +259,9 @@ class ArticleController {
           })
             .then((user) => {
               if (user) {
-                const subscriptionDate = moment(user.paymentDate);
-                const setExpiration = moment();
-                const timeDifference = setExpiration.diff(subscriptionDate, 'h');
-                if (timeDifference <= 8760) {
+                const expiration = moment(user.expiryDate);
+                const currentDate = moment();
+                if (currentDate <= expiration) {
                   return ArticleController.getArticleQuery(req, res, next);
                 }
                 return res.status(401).json({

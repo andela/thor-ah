@@ -7,6 +7,7 @@ module.exports = {
         plan: 'basic',
         paymentDate: '2017-08-20 09:33:53',
         transactionKey: 'ibin update1 cc',
+        expiryDate: '2018-08-20 09:33:53',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -15,6 +16,7 @@ module.exports = {
         plan: 'basic',
         paymentDate: '2017-08-20 09:33:53',
         transactionKey: 'ibin update1 cc',
+        expiryDate: '2018-08-20 09:33:53',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -23,6 +25,7 @@ module.exports = {
         plan: 'premium',
         paymentDate: new Date(),
         transactionKey: 'ibin update1 cc',
+        expiryDate: '2019-08-20 09:33:53',
         createdAt: new Date(),
         updatedAt: new Date(),
       }

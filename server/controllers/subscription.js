@@ -6,7 +6,7 @@ import { Subscription, User } from '../models';
 
 const stripePayment = stripe(process.env.STRIPE_SECRET_KEY);
 /**
- * @class SubscriptionClass
+ * @class Subscription
  */
 class SubscriptionClass {
   /**
@@ -33,6 +33,8 @@ class SubscriptionClass {
         customer: customer.id
       }))
       .then((payment) => {
+        const oneYear = 1000 * 60 * 60 * 24 * 365;
+        const transactionDate = moment(payment.created * 1000);
         User.findOne({
           where: {
             email: payment.source.name
@@ -41,8 +43,9 @@ class SubscriptionClass {
           .then(user => Subscription.create({
             userId: user.id,
             plan: paymentPlan,
-            paymentDate: moment(payment.created * 1000),
-            transactionKey: payment.balance_transaction
+            paymentDate: transactionDate,
+            transactionKey: payment.balance_transaction,
+            expiryDate: transactionDate + oneYear
           })
             .then(() => res.render('charge')).catch(next)).catch(next);
       })

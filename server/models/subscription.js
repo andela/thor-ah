@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false
     },
+    expiryDate: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
     transactionKey: {
       type: DataTypes.STRING,
     }
