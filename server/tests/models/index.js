@@ -10,3 +10,4 @@ import './commentHistory.model.test';
 import './category.model.test';
 import './articleViewHistory.model.test';
 import './authorRequests';
+import './subcription.model.test';

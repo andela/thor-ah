@@ -10,6 +10,7 @@ import favoriteArticle from './favoriteArticle';
 import adminRoutes from './admin';
 import notificationsRoute from './notifications';
 import readingStatsRouter from './readingStatsRoute';
+import subscriptionRoutes from './subscription';
 
 
 const routes = Router();
@@ -36,5 +37,6 @@ routes.use('/article-categories', categoryRouter);
 routes.use('/admin', adminRoutes);
 routes.use('/user-reading-stats', readingStatsRouter);
 routes.use('/', favoriteArticle);
+routes.use('/subscription', subscriptionRoutes);
 
 export default routes;

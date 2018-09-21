@@ -14,3 +14,4 @@ import './readingstats.test';
 import './authorRequests';
 import './adminGetUser.test';
 import './adminDeactivate';
+import './subscription.test';

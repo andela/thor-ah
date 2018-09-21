@@ -46,6 +46,8 @@ const invalidPassword = {
   email: 'emeka1@gmail.com',
   password: 'sdfghgfdkjshfbjbsfjbdmnbdkjfgeugfuefguefge'
 };
+const wrongEmail = { email: 'xyz@mail.com', password: 'passtes' };
+
 const correctDetails = { email: 'emekag@gmail.com', password: 'emeka' };
 const incorrectDetails = { email: 'emekag@gmail.com', password: 'wrongpassword' };
 const emptyEmailField = { email: '', password: 'emeka' };
@@ -114,6 +116,16 @@ describe('Users Controllers', () => {
         .end((error, res) => {
           expect(res).to.have.status(200);
           res.body.message.should.equal('Login successful');
+          done();
+        });
+    });
+    it('should send error if user supplies the wrong email', (done) => {
+      chai.request(app)
+        .post('/api/users/login')
+        .send(wrongEmail)
+        .end((error, res) => {
+          expect(res).to.have.status(404);
+          res.body.error.email.should.equal('User not found');
           done();
         });
     });

@@ -6,14 +6,15 @@ chai.use(chaiHttp);
 
 const userPassword = process.env.USER_PASSWORD;
 const authorPassword = process.env.AUTHOR_PASSWORD;
+const adminPassword = process.env.ADMIN_PASSWORD;
 
 const user = {
   email: 'su@mail.com',
   password: userPassword
 };
 const user2 = {
-  email: 'juliet@mail.com',
-  password: userPassword
+  email: 'sa@mail.com',
+  password: adminPassword
 };
 const author = {
   email: 'author1@mail.com',

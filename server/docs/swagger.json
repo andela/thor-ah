@@ -48,6 +48,10 @@
         {
             "name": "Author Requests",
             "description": "Access all endpoints associated with users requests to be an author"
+        },
+        {
+          "name": "Article Categories",
+          "description": "Access all endpoints associated with categorizing articles"
         }
     ],
     "paths": {
@@ -1926,7 +1930,259 @@
 
             }
 
-        }
+        },
+        "/api/article-categories": {
+          "get": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "Get all article categories available",
+              "parameters": [],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "article categories available"
+                  },
+                  "403": {
+                      "description": "forbidden"
+                  }
+              }
+          },
+          "post": {
+            "tags": [
+              "Article Categories"
+            ],
+            "summary": "Create a new category",
+            "parameters": [
+                {
+                    "name": "category",
+                    "in": "body",
+                    "description": "new cateogry to be added",
+                    "schema": {
+                        "$ref": "#/definitions/article-categories"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "new category added"
+                },
+                "403": {
+                    "description": "forbidden"
+                }
+            }
+          }
+        },
+        "/api/article-categories/{categoryName}": {
+          "put": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "Update a category",
+              "parameters": [
+                  {
+                      "name": "categoryName",
+                      "in": "body",
+                      "description": "category to be updated"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "category successfully updated"
+                  },
+                  "403": {
+                      "description": "forbidden"
+                  },
+                  "404": {
+                      "description": "category does not exist"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "Delete a cateogory",
+              "parameters": [
+                  {
+                      "name": "categoryName",
+                      "in": "body",
+                      "description": "name of the category to be deleted"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "category successfully deleted"
+                  },
+                  "403": {
+                      "description": "forbidden"
+                  },
+                  "404": {
+                      "description": "category does not exist"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  }
+              }
+          }
+        },
+        "/api/article-categories/{categoryName}/articles": {
+          "get": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "add an article to a category",
+              "parameters":[],
+              "description": "get all articles from a category",
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "articles in a category"
+                  },
+                  "404": {
+                      "description": "category does not exist"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  }
+              }
+          },
+          "post": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "adds an article to a category",
+              "parameters":[
+                  {
+                      "name": "articleId",
+                      "in": "body",
+                      "description": "id of the article to be added"
+                  }
+              ],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "202": {
+                      "description": "articles added successfully to category"
+                  },
+                  "404": {
+                      "description": "article/category does not exist"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  },
+                  "403": {
+                      "description": "does not have permissiont perform the request"
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "Article Categories"
+              ],
+              "summary": "delete an article from a category",
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "parameters":[
+                  {
+                      "name": "articleId",
+                      "in": "body",
+                      "description": "id of the article to be removed from category"
+                  }
+              ],
+              "description": "delete an article from a category",
+              "responses": {
+                  "200": {
+                      "description": "articles in a category"
+                  },
+                  "404": {
+                      "description": "category does not exist"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  },
+                  "403": {
+                      "description": "does not have permissiont perform the request"
+                  }
+              }
+          }
+        },
+        "/api/user-reading-stats": {
+          "get": {
+              "tags": [
+                  "User Reading Stats"
+              ],
+              "summary": "get a user's reading stats",
+              "parameters":[],
+              "security": [
+                  {
+                      "Bearer": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "user's reading stats"
+                  },
+                  "400": {
+                      "description": "bad request"
+                  }
+              }
+          }
+        },
+        "/api/subscription/user-subscription": {
+          "get": {
+            "tags": [
+                "Admin Roles"
+            ],
+            "summary": "get users' subscription details",
+            "parameters":[],
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "ok"
+                },
+                "401": {
+                    "description": "unauthorized"
+                }
+            }
+          }
+        } 
       },
     "securityDefinitions": {
         "Bearer": {
@@ -2072,6 +2328,14 @@
                     "required": true
                 }
             }
+        },
+        "article-categories": {
+          "properties": {
+            "name": {
+                "type": "string",
+                "required": true
+            }
+          }
         }
     }
 }

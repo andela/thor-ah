@@ -1,9 +1,12 @@
+import moment from 'moment';
 import {
   Article,
   User,
   Tag,
   Comment,
-  ReportsOnArticle
+  ReportsOnArticle,
+  ArticleViewHistory,
+  Subscription
 } from '../models';
 import articleValidation from '../utils/articles';
 import paginateArticle from '../utils/articlesPaginate';
@@ -143,6 +146,9 @@ class ArticleController {
       where: {
         displayStatus: true,
       },
+      order: [
+        ['createdAt', 'DESC']
+      ],
       include: [{
         model: User,
         as: 'author',
@@ -155,7 +161,7 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'authorId'],
+      attributes: ['id', 'slug', 'title', 'description', 'createdAt', 'updatedAt', 'authorId'],
       limit,
       offset
     })
@@ -179,9 +185,10 @@ class ArticleController {
    * @param {object} res
    * @param {object} next
    * @return {json} res
-   * @description returns specific article that has the slug passes as req param (article_slug).
+   * @description a query to get a specific article by its slug.
   */
-  static getArticle(req, res, next) {
+  static getArticleQuery(req, res, next) {
+    const { userId } = req;
     return Article.findOne({
       where: {
         slug: req.params.article_slug,
@@ -212,7 +219,6 @@ class ArticleController {
         }
         // Save the view in the Article view table
         const articleId = article.id;
-        const { userId } = req;
         res.locals = { userId, articleId };
         next();
         return res.status(200).json({
@@ -224,6 +230,56 @@ class ArticleController {
         error,
         status: 'error'
       }));
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @return {json} res
+   * @description returns specific article that has the slug passed as a req param (article_slug).
+  */
+  static getArticle(req, res, next) {
+    const { userId, userRole } = req;
+    ArticleViewHistory.findAll({
+      where: { userId }
+    })
+      .then((articlesFound) => {
+        const numberOfArticlesRead = articlesFound.length;
+        if (numberOfArticlesRead < 5) {
+          return ArticleController.getArticleQuery(req, res, next);
+        }
+        if (numberOfArticlesRead >= 5 && userRole === 'user') {
+          return Subscription.findOne({
+            where: { userId },
+            order: [
+              ['paymentDate', 'DESC']
+            ]
+          })
+            .then((user) => {
+              if (user) {
+                const expiration = moment(user.expiryDate);
+                const currentDate = moment();
+                if (currentDate <= expiration) {
+                  return ArticleController.getArticleQuery(req, res, next);
+                }
+                return res.status(401).json({
+                  status: 'error',
+                  error: {
+                    message: 'Your subscription is not active, Please renew to get more articles'
+                  }
+                });
+              }
+              return res.status(401).json({
+                status: 'error',
+                error: {
+                  message: 'Please subscribe to get more articles'
+                }
+              });
+            }).catch(next);
+        }
+      }).catch(next);
   }
 
   /**
