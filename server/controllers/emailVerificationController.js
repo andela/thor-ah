@@ -9,7 +9,7 @@ dotenv.config();
 
 const secret = process.env.JWT_KEY;
 const baseURL = process.env.BASE_URL;
-const mailKey = process.env.MAIL_API_KEY;
+const mailKey = process.env.SENDGRID_API_KEY;
 
 /**
  *
