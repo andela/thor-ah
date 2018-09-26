@@ -10,7 +10,7 @@ describe('article notification utility', () => {
 
 describe('articleNotification()', () => {
   const msg = {
-    to: 'laurangift@gmail.com',
+    to: 'laurangift@gmail.co',
     from: 'notifications@authorshaven.com',
     subject: 'New Reply from Author\'s Haven!',
     html: 'This is a test'

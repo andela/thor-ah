@@ -5,7 +5,7 @@ import configAuth from './socialConfig';
 import SocialAuthController from '../controllers/socialAuth';
 
 
-// the strategies for getting the user's facebook, twitter and google id
+// the strategies for getting the user's facebook and google id
 
 // pull in our app id and secret from our social config file
 passport.use(new FacebookStrategy({

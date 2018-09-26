@@ -1,6 +1,11 @@
+import sendgrid from '@sendgrid/mail';
 import { User } from '../models';
 import TokenHelper from '../utils/TokenHelper';
+import EmailVerification from './emailVerificationController';
 
+const key = process.env.SENDGRID_API_KEY;
+
+sendgrid.setApiKey(key);
 
 /**
  * @class SocialAuthController
@@ -21,10 +26,10 @@ class SocialAuthController {
       defaults: user,
     }).spread((foundOrCreated, created) => {
       const {
-        id, email, username, firstName, lastName, image
+        id, email, username, firstName, role, lastName, image
       } = foundOrCreated.dataValues;
       done(null, {
-        email, id, username, firstName, lastName, image, created,
+        email, id, username, firstName, role, lastName, image, created,
       });
     });
   }
@@ -39,22 +44,25 @@ class SocialAuthController {
   */
   static response(req, res) {
     const user = {
-      email: req.user.email,
-      username: req.user.username,
-      lastName: req.user.lastName,
+      id: req.user.id,
+      role: req.user.role,
       firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      username: req.user.username,
+      email: req.user.email,
       image: req.user.image
     };
     user.token = TokenHelper.generateToken(user);
     if (req.user.created) {
+      EmailVerification.sendVerificationEmail(user);
       return res.status(201).send({
-        message: 'you have successfully signed up',
+        message: 'Signup was successful, Please check your email to verify your account',
         user,
         status: 'success'
       });
     }
     return res.status(200).send({
-      message: 'you are logged in',
+      message: 'You are logged in',
       user,
       status: 'success'
     });

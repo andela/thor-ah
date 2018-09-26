@@ -12,7 +12,7 @@ const newUser = {
   firstName: 'egwuenu',
   lastName: 'gift',
   username: 'lauragift',
-  email: 'laurandidi21@gmail.com',
+  email: 'laurandidi21@gmail.co',
   password: 'adek'
 };
 

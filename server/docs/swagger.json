@@ -80,6 +80,40 @@
                 }
             }
         },
+        "/api/auth/facebook":{
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "signs up a new user",
+                "description": "signs up a user using their existing Facebook account",
+                "responses": {
+                    "201": {
+                        "description": "user created successfully"
+                    },
+                    "400": {
+                        "description": "This email has already been registered"
+                    }
+                }
+            }
+        },
+        "/api/auth/google":{
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "signs up a new user",
+                "description": "signs up a user using their existing Google account",
+                "responses": {
+                    "201": {
+                        "description": "user created successfully"
+                    },
+                    "400": {
+                        "description": "This email has already been registered"
+                    }
+                }
+            }
+        },
         "/api/users/login": {
             "post": {
                 "tags": [
