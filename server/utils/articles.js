@@ -17,14 +17,14 @@ class articleValidation {
     data.title = data.title ? data.title : '';
     data.description = data.description ? data.description : '';
     data.body = data.body ? data.body : '';
-    if (!(data.title)) {
+    if (!(data.title.trim())) {
       error.title = 'Please provide article title';
     }
-    if (!(data.description)) {
-      error.description = 'Please article description';
+    if (!(data.description.trim())) {
+      error.description = 'Please provide article description';
     }
-    if (!(data.body)) {
-      error.body = 'Please supply article body';
+    if (!(data.body.trim())) {
+      error.body = 'Please provide article body';
     }
     return {
       error,
