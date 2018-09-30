@@ -66,11 +66,11 @@ describe('Users Controllers', () => {
           bio: 'A very good and prolific Author'
         })
         .end((error, res) => {
-          const { dataValues } = res.body;
+          const { user } = res.body;
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('object');
-          dataValues.should.have.property('lastName');
-          dataValues.should.have.property('image');
+          user.should.have.property('lastName');
+          user.should.have.property('image');
           done();
         });
     });
@@ -83,12 +83,12 @@ describe('Users Controllers', () => {
           role: 'author'
         })
         .end((error, res) => {
-          const { dataValues } = res.body;
+          const { user } = res.body;
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('object');
-          dataValues.should.have.property('lastName');
-          dataValues.should.have.property('image');
-          dataValues.role.should.equal('author');
+          user.should.have.property('lastName');
+          user.should.have.property('image');
+          user.role.should.equal('author');
           done();
         });
     });
@@ -167,11 +167,11 @@ describe('Users Controllers', () => {
         .set('Authorization', token)
         .send(updateContent)
         .end((error, res) => {
-          const { dataValues } = res.body;
+          const { user } = res.body;
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('object');
-          dataValues.should.have.property('lastName');
-          dataValues.should.have.property('image');
+          user.should.have.property('lastName');
+          user.should.have.property('image');
           done();
         });
     });

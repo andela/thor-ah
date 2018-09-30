@@ -125,7 +125,7 @@ describe('Users Controllers', () => {
         .send(wrongEmail)
         .end((error, res) => {
           expect(res).to.have.status(404);
-          res.body.error.email.should.equal('User not found');
+          res.body.error.message.should.equal('Incorrect email or password');
           done();
         });
     });
@@ -135,7 +135,7 @@ describe('Users Controllers', () => {
         .send(incorrectDetails)
         .end((error, res) => {
           expect(res).to.have.status(400);
-          res.body.error.password.should.equal('Incorrect Password');
+          res.body.error.message.should.equal('Incorrect email or password');
           done();
         });
     });
