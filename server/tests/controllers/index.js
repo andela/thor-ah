@@ -15,3 +15,4 @@ import './authorRequests';
 import './adminGetUser.test';
 import './adminDeactivate';
 import './subscription.test';
+import './socialAuth.test';
