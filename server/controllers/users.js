@@ -92,7 +92,7 @@ class UsersController {
    * @param  {object} req body of the user's request
    * @param  {object} res  body of the response message
    * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
+   * @returns {object} The body of the response message
    */
   static userLogin(req, res, next) {
     const { error, isValid } = UserValidation.validateLoginInput(req.body);
@@ -108,7 +108,7 @@ class UsersController {
           return res.status(404).json({
             status: 'error',
             error: {
-              email: 'User not found'
+              message: 'Incorrect email or password'
             }
           });
         }
@@ -140,7 +140,7 @@ class UsersController {
           return res.status(400).json({
             status: 'error',
             error: {
-              password: 'Incorrect Password'
+              message: 'Incorrect email or password'
             }
           });
         });
@@ -153,7 +153,7 @@ class UsersController {
    * @param  {object} req body of the user's request
    * @param  {object} res  body of the response message
    * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
+   * @returns {object} The body of the response message
    */
   static getProfileByUsername(req, res, next) {
     const { username } = req.params;
@@ -185,7 +185,7 @@ class UsersController {
    * @param  {object} req body of the user's request
    * @param  {object} res  body of the response message
    * @param  {function} next next function to be called
-   * @returns {object} The body of the resposne message
+   * @returns {object} The body of the response message
    */
   static updateUserProfile(req, res, next) {
     const { userId } = req.params;
@@ -227,8 +227,8 @@ class UsersController {
     }
 
     User.findById(userId)
-      .then((user) => {
-        if (!user) {
+      .then((foundUser) => {
+        if (!foundUser) {
           return res.status(404).json({
             status: 'error',
             error: {
@@ -246,21 +246,24 @@ class UsersController {
                 }
               });
             }
-            return user.update({
-              firstName: trimInput(firstName) || user.firstName,
-              lastName: trimInput(lastName) || user.lastName,
-              username: trimInput(username) || user.username,
-              bio: trimInput(bio) || user.bio,
-              role: role || user.role,
-              twitter: twitter || user.twitter,
-              linkedin: linkedin || user.linkedin,
-              facebook: facebook || user.facebook,
-              image: image || user.image,
+            return foundUser.update({
+              firstName: trimInput(firstName) || foundUser.firstName,
+              lastName: trimInput(lastName) || foundUser.lastName,
+              username: trimInput(username) || foundUser.username,
+              bio: trimInput(bio) || foundUser.bio,
+              role: role || foundUser.role,
+              twitter: twitter || foundUser.twitter,
+              linkedin: linkedin || foundUser.linkedin,
+              facebook: facebook || foundUser.facebook,
+              image: image || foundUser.image,
             }).then((updatedUser) => {
               const { dataValues } = updatedUser;
+              const { hash, id, ...rest } = dataValues;
               return res.status(200).json({
                 status: 'success',
-                dataValues
+                user: {
+                  ...rest
+                }
               });
             }).catch(next);
           }).catch(next);
