@@ -161,7 +161,7 @@ class ArticleController {
           attributes: [],
         },
       }],
-      attributes: ['id', 'slug', 'title', 'description', 'createdAt', 'updatedAt', 'authorId'],
+      attributes: ['id', 'slug', 'title', 'timeToRead', 'description', 'createdAt', 'updatedAt', 'authorId'],
       limit,
       offset
     })
@@ -208,7 +208,7 @@ class ArticleController {
       }, {
         model: Comment,
       }],
-      attributes: ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt']
+      attributes: ['id', 'slug', 'title', 'timeToRead', 'description', 'body', 'createdAt', 'updatedAt']
     })
       .then((article) => {
         if (!article) {
