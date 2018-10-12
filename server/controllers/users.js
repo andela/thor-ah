@@ -56,7 +56,7 @@ class UsersController {
                 // remove hash from user data values
                 const { hash, id, ...rest } = dataValues;
                 const token = TokenHelper.generateToken(createdUser);
-                EmailVerificationController.sendVerificationEmail(user);
+                EmailVerificationController.sendVerificationEmail(createdUser);
                 // return remaining user data and generated token
                 return res.status(201).json({
                   status: 'success',
