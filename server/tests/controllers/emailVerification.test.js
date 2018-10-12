@@ -12,7 +12,7 @@ const newUser = {
   firstName: 'egwuenu',
   lastName: 'gift',
   username: 'lauragift',
-  email: 'laurandidi21@gmail.com',
+  email: 'laurandidi21@gmail.co',
   password: 'adek'
 };
 
@@ -103,7 +103,7 @@ describe('Verify User\'s email address after signup', () => {
     it('Returns an error if user has already been verified', (done) => {
       chai.request(app)
         .post('/api/users/verify/resend-email')
-        .send({ email: 'laurandidi21@gmail.com' })
+        .send({ email: 'laurandidi21@gmail.co' })
         .end((err, res) => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal('error');
