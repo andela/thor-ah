@@ -6,7 +6,7 @@ const { authenticateUser, authorizeAuthor, authorizeAdmin } = auth;
 const categoryRouter = Router();
 
 // Users can get all categories
-categoryRouter.get('/', authenticateUser, CategoryController.getAllCategories);
+categoryRouter.get('/', CategoryController.getAllCategories);
 
 // Admin can create a new category
 categoryRouter.post('/', authenticateUser, authorizeAdmin, CategoryController.createCategory);
@@ -25,8 +25,7 @@ categoryRouter.post(
 
 // Users can get all articles for a category
 categoryRouter.get(
-  '/:categoryName/articles', authenticateUser,
-  CategoryController.getAllArticlesForACategory
+  '/:categoryName/articles', CategoryController.getAllArticlesForACategory
 );
 
 // Authors can remove their article(s) from a category

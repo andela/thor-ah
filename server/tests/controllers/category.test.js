@@ -100,7 +100,7 @@ describe('Categorizes articles', () => {
     it('Creates a new category for an Admin', (done) => {
       chai.request(app)
         .post('/api/article-categories')
-        .send({ name: 'Design' })
+        .send({ name: 'Somecategory' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${adminToken}`)
         .set('Content-Type', 'application/json')
@@ -109,7 +109,7 @@ describe('Categorizes articles', () => {
           expect(res).to.have.status(201);
           expect(res.body).to.have.property('status');
           expect(res.body).to.have.property('createdCategory');
-          expect(createdCategory.name).to.equal('Design');
+          expect(createdCategory.name).to.equal('Somecategory');
           done();
         });
     });
@@ -322,6 +322,26 @@ describe('Categorizes articles', () => {
         });
     });
 
+    it('Adds an author\'s article to a category', (done) => {
+      chai.request(app)
+        .post('/api/article-categories/Design/articles')
+        .send({ articleId })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${authorToken}`)
+        .set('Content-Type', 'application/json')
+        .end((req, res) => {
+          expect(res).to.have.status(202);
+          expect(res.body).to.have.property('status');
+          expect(res.body.status).to.equal('success');
+          expect(res.body).to.have.property('created');
+          expect(res.body.created).to.have.property('articleId');
+          expect(res.body.created).to.have.property('categoryId');
+          expect(res.body.created).to.have.property('updatedAt');
+          expect(res.body.created).to.have.property('createdAt');
+          done();
+        });
+    });
+
     // Author cannot add their article(s) to more than 3 categories
     it('Returns an error if author tries to add an article to more than 3 categories', (done) => {
       chai.request(app)
@@ -342,7 +362,7 @@ describe('Categorizes articles', () => {
     // Author cannot add the same article twice to the same category
     it('Returns an error if article has already been added', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Technology/articles')
+        .post('/api/article-categories/Design/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -427,7 +447,7 @@ describe('Categorizes articles', () => {
     // Author can remove his article from any category
     it('Removes author\'s article from a category', (done) => {
       chai.request(app)
-        .delete('/api/article-categories/Technology/articles')
+        .delete('/api/article-categories/Design/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -436,7 +456,7 @@ describe('Categorizes articles', () => {
           expect(res).to.have.status(202);
           expect(res).to.have.property('status');
           expect(res.body.status).to.equal('success');
-          expect(res.body.message).to.equal('Your article has been removed from Technology');
+          expect(res.body.message).to.equal('Your article has been removed from Design');
           done();
         });
     });
