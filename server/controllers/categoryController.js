@@ -1,4 +1,9 @@
-import { Category, Article, ArticleCategory } from '../models';
+import {
+  Category,
+  Article,
+  ArticleCategory,
+  User
+} from '../models';
 import sanitizeString from '../utils/sanitize';
 
 /**
@@ -258,7 +263,14 @@ class CategoryController {
         {
           model: Article,
           as: 'category',
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
+          attributes: { exclude: ['body', 'authorId', 'displayStatus', 'updatedAt'] },
+          include: [
+            {
+              model: User,
+              as: 'author',
+              attributes: ['firstName', 'lastName', 'email', 'image'],
+            },
+          ],
         },
       ],
     })
