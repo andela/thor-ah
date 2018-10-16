@@ -383,6 +383,7 @@ class CommentsController {
           }
         })
           .then((commentLike) => {
+            // check if comment has a reaction from the user
             if (commentLike) {
               if (commentLike.reaction === `${value}`) {
                 return CommentLikesDislike.destroy({
@@ -393,15 +394,27 @@ class CommentsController {
                     message: `comment ${reaction} removed`
                   }));
               }
+              // check if an opposing reaction already exists
+              // then just destroy the opposite reaction and create the new one
               if (commentLike.reaction === `${reversed}`) {
-                return res.status(400).json({
-                  status: 'error',
-                  error: {
-                    message: `You have already ${processed} this comment`,
-                  }
-                });
+                return Promise.all([
+                  CommentLikesDislike.destroy({
+                    where: { userId }
+                  }),
+                  CommentLikesDislike.create({
+                    userId,
+                    commentId: id,
+                    username: userName,
+                    reaction: `${value}`,
+                  })
+                ])
+                  .then(() => res.status(200).json({
+                    status: 'success',
+                    message: `comment ${reactedOn}`
+                  }));
               }
             }
+            // otherwise create reaction if it doesn't exist
             return CommentLikesDislike.create({
               userId,
               commentId: id,

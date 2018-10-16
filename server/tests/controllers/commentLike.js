@@ -73,17 +73,27 @@ describe('Comment Like Controller', () => {
           done();
         });
     });
-    it('should return error if user dislike an already-liked comment', (done) => {
+    it('should change reaction to dislike type if user selects an opposite reaction', (done) => {
       request(app)
         .post('/api/articles/test-article-slug12345/comments/1/dislike')
         .set('Authorization', token2)
         .send()
         .end((err, res) => {
-          const { message } = res.body.error;
           expect(res.type).to.equal('application/json');
-          expect(res.status).to.equal(400);
-          expect(res.body.status).to.equal('error');
-          expect(message).to.equal('You have already liked this comment');
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('comment disliked');
+          done();
+        });
+    });
+    it('should change reaction to like type if user selects an opposite reaction', (done) => {
+      request(app)
+        .post('/api/articles/test-article-slug12345/comments/1/like')
+        .set('Authorization', token2)
+        .send()
+        .end((err, res) => {
+          expect(res.type).to.equal('application/json');
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('comment liked');
           done();
         });
     });
