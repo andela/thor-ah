@@ -11,6 +11,9 @@ const router = Router();
 
 router.get('/search', ArticleController.search);
 router.post('/', authenticateUser, authorizeAuthor, ArticleController.create);
+router.get('/drafts', authenticateUser, authorizeAuthor, ArticleController.getAuthorsDrafts);
+router.get('/published', authenticateUser, authorizeAuthor, ArticleController.getAuthorsArticles);
+router.put('/drafts/:article_slug/publish', authenticateUser, authorizeAuthor, ArticleController.publishDraft);
 router.post('/:article_slug/comments', authenticateUser, CommentsController.createComment);
 router.post('/:article_slug/comments/:commentId', authenticateUser, CommentsController.createCommentReply);
 router.get('/:article_slug/comments/:commentId', authenticateUser, CommentsController.getCommentById);
@@ -19,7 +22,7 @@ router.post('/:article_slug/comments/:commentId/:reaction', authenticateUser, Co
 router.get('/:article_slug/comments/:commentId/reaction_status', authenticateUser, CommentsController.checkReactionStatus);
 router.get('/:article_slug/comments', authenticateUser, CommentsController.getArticleComments);
 router.put('/:article_slug/comments/:commentId', authenticateUser, CommentsController.updateComment);
-router.get('/', authenticateUser, ArticleController.getAllArticles);
+router.get('/', ArticleController.getAllArticles);
 router.get('/:articleId/reactions', authenticateUser, LikeDislike.getLikesDislikes);
 router.get('/:articleId/reactions/status', authenticateUser, LikeDislike.getReactionStatus);
 router.get('/:article_slug', authenticateUser, ArticleController.getArticle, ReadingStatsController.postArticleViewHistory);

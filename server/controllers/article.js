@@ -61,6 +61,52 @@ class ArticleController {
    * @static
    * @param {object} req
    * @param {object} res
+   * @param {object} next calls the next fn
+   * @return {json} res
+   * @description get every draft belonging to logged in author.
+   */
+  static getAuthorsDrafts(req, res, next) {
+    const authorId = req.userId;
+
+    Article.findAll({
+      where: {
+        published: false,
+        authorId
+      }
+    })
+      .then(drafts => res.status(200).json({
+        status: 'success',
+        drafts
+      })).catch(next);
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next calls the next fn
+   * @return {json} res
+   * @description get every published article belonging to logged in author.
+   */
+  static getAuthorsArticles(req, res, next) {
+    const authorId = req.userId;
+
+    Article.findAll({
+      where: {
+        published: true,
+        authorId
+      }
+    })
+      .then(drafts => res.status(200).json({
+        status: 'success',
+        drafts
+      })).catch(next);
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
    * @return {json} res
    * @description creates article.
    */
@@ -76,7 +122,7 @@ class ArticleController {
 
     // get parameters from request
     const {
-      title, description, body,
+      title, description, body, published,
     } = req.body;
 
     const tags = req.body.tags || [];
@@ -101,7 +147,7 @@ class ArticleController {
     }).then((user) => {
       // create article
       Article.create({
-        title, description, body, authorId, slug
+        title, description, body, authorId, slug, published
       })
         .then(newArticle => newArticle.addTags(tags))
         .then(() => {
@@ -250,6 +296,9 @@ class ArticleController {
         if (numberOfArticlesRead < 5) {
           return ArticleController.getArticleQuery(req, res, next);
         }
+        if (numberOfArticlesRead >= 5 && (userRole === 'author' || userRole === 'admin' || userRole === 'superAdmin')) {
+          return ArticleController.getArticleQuery(req, res, next);
+        }
         if (numberOfArticlesRead >= 5 && userRole === 'user') {
           return Subscription.findOne({
             where: { userId },
@@ -286,10 +335,11 @@ class ArticleController {
    * @static
    * @param {object} req
    * @param {object} res
+   * @param {object} publishStatus
    * @return {json} res
-   * @description returns specific article with given slug.
+   * @description method used to either update article or publish a drafted article.
   */
-  static update(req, res) {
+  static updateQuery(req, res, publishStatus) {
     return Article.findOne({
       where: {
         slug: req.params.article_slug,
@@ -320,9 +370,10 @@ class ArticleController {
 
         return article.update({
           title: req.body.title || article.title,
-          slug: ArticleController.slugify(req.body.title) || article.slug,
+          slug: req.body.title ? ArticleController.slugify(req.body.title) : article.slug,
           description: req.body.description || article.description,
-          body: req.body.body || article.body
+          body: req.body.body || article.body,
+          published: publishStatus || article.published
         })
           .then((self) => {
             const updated = self;
@@ -343,6 +394,31 @@ class ArticleController {
         status: 'error'
       }));
   }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} article
+   * @return {json} res
+   * @description updates published article or draft.
+  */
+  static update(req, res) {
+    return ArticleController.updateQuery(req, res);
+  }
+
+  /**
+   * @static
+   * @param {object} req
+   * @param {object} res
+   * @param {object} article
+   * @return {json} res
+   * @description publishes article saved as draft.
+  */
+  static publishDraft(req, res) {
+    return ArticleController.updateQuery(req, res, true);
+  }
+
 
   /**
    * @static
