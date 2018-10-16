@@ -1,5 +1,5 @@
 
-import { favoriteArticle } from '../models';
+import { favoriteArticle, Article, User } from '../models';
 import paginateArticle from '../utils/articlesPaginate';
 
 
@@ -92,14 +92,26 @@ class FavoriteArticleController {
     return favoriteArticle.findAndCountAll({
       limit,
       offset,
-      where: { userId: req.userId }
+      where: { userId: req.userId },
+      include: [
+        {
+          model: Article,
+          attributes: ['title', 'description', 'body', 'slug', 'createdAt'],
+          include: [{
+            model: User,
+            as: 'author',
+            attributes: ['firstName', 'lastName', 'username'],
+          }]
+        },
+      ],
+      attributes: { exclude: ['userId', 'articleId', 'createdAt', 'updatedAt'] },
     })
-      .then((favoritedArticle) => {
-        const pagination = paginateArticle(favoritedArticle, currentPage, limit);
+      .then((articles) => {
+        const pagination = paginateArticle(articles, currentPage, limit);
         return res.status(200).json({
           message: 'Your favorite articles',
           pagination,
-          favoritedArticles: favoritedArticle.rows,
+          articles: articles.rows,
           status: 'success'
         });
       })

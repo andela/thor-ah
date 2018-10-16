@@ -18,6 +18,13 @@ const author2Login = {
   password: process.env.AUTHOR_PASSWORD
 };
 
+const draft = {
+  title: 'Not ready',
+  body: 'This Article is not yet ready and I do not know why',
+  description: 'Not ready man',
+  published: false
+};
+
 // article for test
 const Article = {
   title: 'jbjkka2 kbviu buibi',
@@ -101,6 +108,26 @@ describe('Articles controller', () => {
           done();
         });
     });
+
+    it('should be able to save article drafts', (done) => {
+      chai.request(server)
+        .post('/api/articles')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token1}`)
+        .set('Content-Type', 'application/json')
+        .send(draft)
+        .end((err, res) => {
+          const { createdArticle } = res.body.newArticleAlert;
+          res.should.have.status(200);
+          res.body.status.should.equal('success');
+          createdArticle.should.have.property('slug');
+          createdArticle.should.have.property('title');
+          createdArticle.should.have.property('description');
+          createdArticle.published.should.equal(false);
+          done();
+        });
+    });
+
 
     it('should create and return the created article object', (done) => {
       chai.request(server)
