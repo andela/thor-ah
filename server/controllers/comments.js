@@ -379,7 +379,8 @@ class CommentsController {
         }
         return CommentLikesDislike.findOne({
           where: {
-            userId
+            userId,
+            commentId: id,
           }
         })
           .then((commentLike) => {
@@ -387,7 +388,10 @@ class CommentsController {
             if (commentLike) {
               if (commentLike.reaction === `${value}`) {
                 return CommentLikesDislike.destroy({
-                  where: { userId }
+                  where: {
+                    userId,
+                    commentId: id,
+                  }
                 })
                   .then(() => res.status(200).json({
                     status: 'success',
@@ -399,7 +403,10 @@ class CommentsController {
               if (commentLike.reaction === `${reversed}`) {
                 return Promise.all([
                   CommentLikesDislike.destroy({
-                    where: { userId }
+                    where: {
+                      userId,
+                      commentId: id,
+                    }
                   }),
                   CommentLikesDislike.create({
                     userId,
@@ -579,6 +586,8 @@ class CommentsController {
                 createdAt,
                 updatedAt,
                 commenter,
+                liked: likes.some(like => like.userId === req.userId),
+                disliked: dislikes.some(dislike => dislike.userId === req.userId),
                 replies: Replies,
                 likesCount: likes.length,
                 dislikesCount: dislikes.length,

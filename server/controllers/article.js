@@ -72,7 +72,10 @@ class ArticleController {
       where: {
         published: false,
         authorId
-      }
+      },
+      order: [
+        ['updatedAt', 'DESC']
+      ],
     })
       .then(drafts => res.status(200).json({
         status: 'success',
@@ -94,7 +97,8 @@ class ArticleController {
     Article.findAll({
       where: {
         published: true,
-        authorId
+        authorId,
+        displayStatus: true,
       }
     })
       .then(drafts => res.status(200).json({
@@ -191,6 +195,7 @@ class ArticleController {
     return Article.findAndCountAll({
       where: {
         displayStatus: true,
+        published: true,
       },
       order: [
         ['createdAt', 'DESC']
@@ -254,7 +259,7 @@ class ArticleController {
       }, {
         model: Comment,
       }],
-      attributes: ['id', 'slug', 'title', 'timeToRead', 'description', 'body', 'createdAt', 'updatedAt']
+      attributes: ['id', 'slug', 'title', 'timeToRead', 'description', 'authorId', 'published', 'body', 'createdAt', 'updatedAt']
     })
       .then((article) => {
         if (!article) {
