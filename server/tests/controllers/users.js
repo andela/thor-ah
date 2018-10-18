@@ -206,12 +206,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token
-          },
-          user: {
-            password: 'newPassword',
-          },
+          resetToken: token,
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -224,12 +220,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: '',
-          },
-          user: {
-            password: 'newPassword',
-          },
+          resetToken: '',
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -242,12 +234,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: wrongToken,
-          },
-          user: {
-            password: 'newPassword',
-          }
+          resetToken: wrongToken,
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -260,12 +248,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token,
-          },
-          user: {
-            password: '',
-          },
+          resetToken: token,
+          password: ''
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -278,12 +262,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token,
-          },
-          user: {
-            password: 'pass',
-          },
+          resetToken: token,
+          password: 'pass'
         })
         .end((err, res) => {
           res.body.should.be.an('object');

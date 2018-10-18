@@ -188,8 +188,9 @@ class UsersController {
    * @returns {object} The body of the response message
    */
   static updateUserProfile(req, res, next) {
-    const { userId } = req.params;
+    const { uid } = req.params;
     const { userRole } = req;
+    const userId = userRole === 'admin' ? uid : req.userId;
     const {
       firstName, lastName, username, bio, twitter, linkedin, facebook, image
     } = req.body;
@@ -205,7 +206,14 @@ class UsersController {
       return next(err);
     }
 
-    isValidNumber(req, res);
+    if (Number.isNaN(parseInt(userId, 10))) {
+      return res.status(400).json({
+        error: {
+          message: 'Your request ID is invalid'
+        },
+        status: 'error'
+      });
+    }
 
     /*
     * prevent user from updating another users ' profile
@@ -321,8 +329,8 @@ class UsersController {
   * @memberof Users
   */
   static resetPassword(req, res, next) {
-    const { reset } = req.body.tokens;
-    const { password } = req.body.user;
+    const { resetToken: reset, password } = req.body;
+
     if (!reset || reset.trim().length < 1) {
       res.status(400).json({
         status: 'error',
@@ -392,14 +400,14 @@ class UsersController {
         }
 
         const token = jwt.sign({ email }, process.env.JWT_KEY, { expiresIn: '2h' });
-        const resetLink = `https://thor-ah.com/password/reset/${token}`;
+        const resetLink = `${process.env.RESET_URL}?token=${token}`;
 
         const msg = `
           <div style="font-size: 17px">
             <p>Hello,</p>
             <p>There was a recent request to change the password on your account.</p>
             <p>If you requested this password change, click the reset link below to set a new password:</p>
-            <a href="${resetLink}">${resetLink}</a>
+            <a href="${resetLink}"><button style="cursor: pointer; height: 40px; width: 200px; padding: 6px 20px; color: #fff; font-size: 15px !important; border: 1px solid #C40018;background: #C40018; border-radius: 4px;">Reset password</button></a>
             <p>If you don’t want to change your password, just ignore this message.</p>
             <p>Kindly note that reset link expires in 2 hours.</p>
             <p>

@@ -62,14 +62,22 @@ class ReadingStatsController {
                     if (categoryNames.length === 0) {
                       mostReadCategory = 'Articles have not been added to any category';
                     }
+                    const allReactions = { liked: 0, disliked: 0, };
+                    reaction.forEach((reactions) => {
+                      if (reactions.reaction === '1') {
+                        allReactions.liked += 1;
+                      } else {
+                        allReactions.disliked += 1;
+                      }
+                    });
                     const names = categoryNames.map(category => category.name);
                     mostReadCategory = mode(names);
                     return res.status(200).json({
                       status: 'success',
-                      articlesRead: articles.length === 0 ? 'No articles found' : articles,
+                      articlesRead: articles,
                       numberOfArticlesRead: articleCount.length,
-                      articleReactions: reaction.length === 0 ? 'No reactions found' : reaction,
-                      mostReadCategory
+                      articleReactions: allReactions,
+                      mostReadCategory: mostReadCategory || 'None',
                     });
                   })
                   .catch(error => next(error));

@@ -40,7 +40,7 @@ class FavoriteArticleController {
       }))
       .catch(error => res.status(500).json({
         status: 'error',
-        error: { message: error.message ? error.message : 'An error occured during this operation' }
+        error: { message: error.message ? error.message : 'An error occurred during this operation' }
       }));
   }
 
@@ -96,7 +96,7 @@ class FavoriteArticleController {
       include: [
         {
           model: Article,
-          attributes: ['title', 'description', 'body', 'slug', 'createdAt'],
+          attributes: ['title', 'description', 'body', 'slug', 'createdAt', 'timeToRead'],
           include: [{
             model: User,
             as: 'author',

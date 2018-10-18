@@ -20,7 +20,7 @@ userRoutes.post('/login', UserController.userLogin);
 
 userRoutes.get('/:username', authenticateUser, UserController.getProfileByUsername);
 
-userRoutes.put('/:userId', authenticateUser, UserController.updateUserProfile);
+userRoutes.put('/:uid?', authenticateUser, UserController.updateUserProfile);
 
 userRoutes.post('/password/recover', UserController.recoverPassword);
 
