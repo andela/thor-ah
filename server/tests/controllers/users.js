@@ -168,7 +168,6 @@ describe('Users Controllers', () => {
           email: user.email,
         })
         .end((err, res) => {
-          console.log('========>', res.body);
           res.body.should.be.an('object');
           res.body.status.should.equal('success');
           res.body.message.should.equal('Please follow the instructions in the email that has been sent to your address.');
