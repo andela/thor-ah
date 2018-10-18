@@ -168,6 +168,7 @@ describe('Users Controllers', () => {
           email: user.email,
         })
         .end((err, res) => {
+          console.log('========>', res.body);
           res.body.should.be.an('object');
           res.body.status.should.equal('success');
           res.body.message.should.equal('Please follow the instructions in the email that has been sent to your address.');
@@ -206,12 +207,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token
-          },
-          user: {
-            password: 'newPassword',
-          },
+          resetToken: token,
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -224,12 +221,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: '',
-          },
-          user: {
-            password: 'newPassword',
-          },
+          resetToken: '',
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -242,12 +235,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: wrongToken,
-          },
-          user: {
-            password: 'newPassword',
-          }
+          resetToken: wrongToken,
+          password: 'newPassword'
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -260,12 +249,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token,
-          },
-          user: {
-            password: '',
-          },
+          resetToken: token,
+          password: ''
         })
         .end((err, res) => {
           res.body.should.be.an('object');
@@ -278,12 +263,8 @@ describe('Users Controllers', () => {
       chai.request(app)
         .post('/api/users/password/reset')
         .send({
-          tokens: {
-            reset: token,
-          },
-          user: {
-            password: 'pass',
-          },
+          resetToken: token,
+          password: 'pass'
         })
         .end((err, res) => {
           res.body.should.be.an('object');

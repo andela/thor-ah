@@ -125,17 +125,6 @@ describe('Users Controllers', () => {
           done();
         });
     });
-    it('should prevent user from updating other users profiles', (done) => {
-      const unauthorizedUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
-      chai.request(app)
-        .put('/api/users/1')
-        .set('Authorization', unauthorizedUserToken)
-        .send(updateContent)
-        .end((error, res) => {
-          expect(res).to.have.status(401);
-          done();
-        });
-    });
     it('should return error for user that does not exist', (done) => {
       const unexistingUserToken = `Bearer ${TokenHelper.generateToken({ id: 10 })}`;
       chai.request(app)
@@ -145,18 +134,6 @@ describe('Users Controllers', () => {
         .end((error, res) => {
           expect(res).to.have.status(404);
           res.body.error.message.should.eql('User not found');
-          expect(res.body).to.be.an('object');
-          done();
-        });
-    });
-    it('should return error for invalid ID', (done) => {
-      chai.request(app)
-        .put('/api/users/adgb')
-        .set('Authorization', token)
-        .send(updateContent)
-        .end((error, res) => {
-          expect(res).to.have.status(400);
-          res.body.error.message.should.eql('Your request ID is invalid');
           expect(res.body).to.be.an('object');
           done();
         });
