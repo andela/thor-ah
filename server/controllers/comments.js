@@ -29,8 +29,8 @@ class CommentsController {
     // returns true if article should be saved, else false
     const injectionCheck = () => {
       const closingTagLength = 7; // '</span>'.length
-      const openingTag = `<span id=“${cssId}” class=“highlighted”>`;
-      const stripped = articleBody.replace(openingTag, ''); //
+      const openingTag = `<span id="${cssId}">`;
+      const stripped = articleBody.replace(openingTag, '');
       return (stripped.length - article.body.length) === closingTagLength;
     };
 
