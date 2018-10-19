@@ -3,6 +3,7 @@ import {
   Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
 import isEmpty from '../utils/is_empty';
+import hasReaction from '../utils/hasReaction';
 
 /**
  *
@@ -586,8 +587,8 @@ class CommentsController {
                 createdAt,
                 updatedAt,
                 commenter,
-                liked: likes.some(like => like.userId === req.userId),
-                disliked: dislikes.some(dislike => dislike.userId === req.userId),
+                liked: hasReaction(likes, req.userId),
+                disliked: hasReaction(dislikes, req.userId),
                 replies: Replies,
                 likesCount: likes.length,
                 dislikesCount: dislikes.length,
