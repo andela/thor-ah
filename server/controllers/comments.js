@@ -3,6 +3,7 @@ import {
   Article, Comment, User, Reply, CommentLikesDislike, CommentHistory
 } from '../models';
 import isEmpty from '../utils/is_empty';
+import hasReaction from '../utils/hasReaction';
 
 /**
  *
@@ -28,8 +29,8 @@ class CommentsController {
     // returns true if article should be saved, else false
     const injectionCheck = () => {
       const closingTagLength = 7; // '</span>'.length
-      const openingTag = `<span id=“${cssId}” class=“highlighted”>`;
-      const stripped = articleBody.replace(openingTag, ''); //
+      const openingTag = `<span id="${cssId}">`;
+      const stripped = articleBody.replace(openingTag, '');
       return (stripped.length - article.body.length) === closingTagLength;
     };
 
@@ -379,7 +380,8 @@ class CommentsController {
         }
         return CommentLikesDislike.findOne({
           where: {
-            userId
+            userId,
+            commentId: id,
           }
         })
           .then((commentLike) => {
@@ -387,7 +389,10 @@ class CommentsController {
             if (commentLike) {
               if (commentLike.reaction === `${value}`) {
                 return CommentLikesDislike.destroy({
-                  where: { userId }
+                  where: {
+                    userId,
+                    commentId: id,
+                  }
                 })
                   .then(() => res.status(200).json({
                     status: 'success',
@@ -399,7 +404,10 @@ class CommentsController {
               if (commentLike.reaction === `${reversed}`) {
                 return Promise.all([
                   CommentLikesDislike.destroy({
-                    where: { userId }
+                    where: {
+                      userId,
+                      commentId: id,
+                    }
                   }),
                   CommentLikesDislike.create({
                     userId,
@@ -579,6 +587,8 @@ class CommentsController {
                 createdAt,
                 updatedAt,
                 commenter,
+                liked: hasReaction(likes, req.userId),
+                disliked: hasReaction(dislikes, req.userId),
                 replies: Replies,
                 likesCount: likes.length,
                 dislikesCount: dislikes.length,

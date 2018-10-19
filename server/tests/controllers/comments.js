@@ -48,7 +48,7 @@ const highlightedComment = {
     comment: 'Some insightful comment',
     cssId: 'someVal12',
     highlighted: 'test article',
-    articleBody: 'test <span id=“someVal12” class=“highlighted”>article </span>body'
+    articleBody: 'test <span id="someVal12">article </span>body'
   }
 };
 
