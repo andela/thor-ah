@@ -284,7 +284,7 @@ describe('Categorizes articles', () => {
 
     it('Adds an author\'s article to a category', (done) => {
       chai.request(app)
-        .post('/api/article-categories/Business/articles')
+        .post('/api/article-categories/Technology/articles')
         .send({ articleId })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${authorToken}`)
@@ -496,22 +496,22 @@ describe('Categorizes articles', () => {
         });
     });
 
-    // Users should be able to get the articles for a category
-    it('Returns the articles in a category', (done) => {
-      chai.request(app)
-        .get('/api/article-categories/Technology/articles')
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${userToken}`)
-        .set('Content-Type', 'application/json')
-        .end((req, res) => {
-          const { category } = res.body;
-          expect(res).to.have.status(200);
-          expect(res.body.status).to.equal('success');
-          expect(res.body).to.have.property('category');
-          expect(category).to.have.property('createdAt');
-          expect(category).to.have.property('updatedAt');
-          done();
-        });
+    describe('Users can get the articles in a category', () => {
+      // Users gets an error if there are no articles in a category
+      it('Returns an error if there are no articles in a category', (done) => {
+        chai.request(app)
+          .get('/api/article-categories/Technology/articles')
+          .set('Accept', 'application/json')
+          .set('Authorization', `Bearer ${userToken}`)
+          .set('Content-Type', 'application/json')
+          .end((req, res) => {
+            expect(res).to.have.status(404);
+            expect(res.body.status).to.equal('error');
+            expect(res.body.error).to.equal('There are no articles in this category');
+            done();
+          });
+      });
+
     });
   });
 });

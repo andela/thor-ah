@@ -2,9 +2,11 @@ import {
   Category,
   Article,
   ArticleCategory,
-  User
+  User,
+  Tag
 } from '../models';
 import sanitizeString from '../utils/sanitize';
+import paginateArticle from '../utils/articlesPaginate';
 
 /**
  *
@@ -257,20 +259,18 @@ class CategoryController {
    */
   static getAllArticlesForACategory(req, res, next) {
     const { categoryName } = req.params;
+    const { query } = req;
+    const limit = Number(query.limit) || 6;
+    const currentPage = Number(query.page) || 1;
+    const offset = (currentPage - 1) * limit;
+
     Category.findOne({
       where: { name: categoryName },
       include: [
         {
           model: Article,
-          as: 'category',
+          as: 'articles',
           attributes: { exclude: ['body', 'authorId', 'displayStatus', 'updatedAt'] },
-          include: [
-            {
-              model: User,
-              as: 'author',
-              attributes: ['firstName', 'lastName', 'email', 'image'],
-            },
-          ],
         },
       ],
     })
@@ -278,13 +278,47 @@ class CategoryController {
         if (!category) {
           return res.status(404).json({
             status: 'error',
-            error: 'There are no articles in this category'
+            error: 'Category does not exist'
           });
         }
-        return res.status(200).json({
-          status: 'success',
-          category
-        });
+        const articleIds = category.articles.map(article => article.id);
+        Article.findAndCountAll({
+          where: { id: articleIds },
+          include: [
+            {
+              model: User,
+              as: 'author',
+              attributes: ['firstName', 'lastName', 'email', 'image'],
+            },
+            {
+              model: Tag,
+              as: 'tags',
+              attributes: ['tag'],
+              through: {
+                attributes: [],
+              },
+            }
+          ],
+          attributes: ['id', 'slug', 'title', 'timeToRead', 'description', 'createdAt', 'updatedAt', 'authorId'],
+          limit,
+          offset
+        })
+          .then((articles) => {
+            if (articles.rows.length === 0) {
+              return res.status(404).json({
+                status: 'error',
+                error: 'There are no articles in this category'
+              });
+            }
+            const pagination = paginateArticle(articles, currentPage, limit);
+            return res.status(200).json({
+              status: 'success',
+              pagination,
+              categoryId: category.id,
+              categoryName: category.name,
+              articles,
+            });
+          });   
       })
       .catch(next);
   }
@@ -340,7 +374,7 @@ class CategoryController {
                     status: 'error',
                     error: 'You cannot remove an article that does not exists in this category'
                   });
-                }
+                } 
                 return articleJoin.destroy()
                   .then(() => res.status(202).json({
                     status: 'success',
