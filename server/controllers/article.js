@@ -66,9 +66,15 @@ class ArticleController {
    * @description get every draft belonging to logged in author.
    */
   static getAuthorsDrafts(req, res, next) {
+    const { query } = req;
+    const limit = Number(query.limit) || 12;
+    const currentPage = Number(req.query.page) || 1;
+    const offset = (currentPage - 1) * limit;
     const authorId = req.userId;
 
-    Article.findAll({
+    Article.findAndCountAll({
+      limit,
+      offset,
       where: {
         published: false,
         authorId
@@ -77,10 +83,15 @@ class ArticleController {
         ['updatedAt', 'DESC']
       ],
     })
-      .then(drafts => res.status(200).json({
-        status: 'success',
-        drafts
-      })).catch(next);
+      .then((drafts) => {
+        const pagination = paginateArticle(drafts, currentPage, limit);
+        return res.status(200).json({
+          pagination,
+          status: 'success',
+          drafts
+        });
+      })
+      .catch(next);
   }
 
   /**
@@ -203,7 +214,7 @@ class ArticleController {
       include: [{
         model: User,
         as: 'author',
-        attributes: ['username', 'email', 'bio', 'image']
+        attributes: ['username', 'firstName', 'lastName', 'email', 'bio', 'image']
       }, {
         model: Tag,
         as: 'tags',

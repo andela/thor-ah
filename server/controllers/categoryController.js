@@ -260,7 +260,7 @@ class CategoryController {
   static getAllArticlesForACategory(req, res, next) {
     const { categoryName } = req.params;
     const { query } = req;
-    const limit = Number(query.limit) || 6;
+    const limit = Number(query.limit) || 12;
     const currentPage = Number(query.page) || 1;
     const offset = (currentPage - 1) * limit;
 
@@ -304,21 +304,15 @@ class CategoryController {
           offset
         })
           .then((articles) => {
-            if (articles.rows.length === 0) {
-              return res.status(404).json({
-                status: 'error',
-                error: 'There are no articles in this category'
-              });
-            }
             const pagination = paginateArticle(articles, currentPage, limit);
             return res.status(200).json({
               status: 'success',
               pagination,
               categoryId: category.id,
               categoryName: category.name,
-              articles,
+              articles: articles.rows,
             });
-          });   
+          });
       })
       .catch(next);
   }
@@ -374,7 +368,7 @@ class CategoryController {
                     status: 'error',
                     error: 'You cannot remove an article that does not exists in this category'
                   });
-                } 
+                }
                 return articleJoin.destroy()
                   .then(() => res.status(202).json({
                     status: 'success',

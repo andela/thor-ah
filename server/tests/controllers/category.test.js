@@ -498,20 +498,20 @@ describe('Categorizes articles', () => {
 
     describe('Users can get the articles in a category', () => {
       // Users gets an error if there are no articles in a category
-      it('Returns an error if there are no articles in a category', (done) => {
+      it('Returns an empty array if there are no articles in a category', (done) => {
         chai.request(app)
           .get('/api/article-categories/Technology/articles')
           .set('Accept', 'application/json')
           .set('Authorization', `Bearer ${userToken}`)
           .set('Content-Type', 'application/json')
           .end((req, res) => {
-            expect(res).to.have.status(404);
-            expect(res.body.status).to.equal('error');
-            expect(res.body.error).to.equal('There are no articles in this category');
+            expect(res).to.have.status(200);
+            expect(res.body.status).to.equal('success');
+            expect(res.body).to.have.property('categoryName');
+            expect(res.body.articles.length).to.equal(0);
             done();
           });
       });
-
     });
   });
 });
