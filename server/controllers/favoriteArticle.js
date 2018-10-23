@@ -85,7 +85,7 @@ class FavoriteArticleController {
    * @returns {object} string
    */
   static list(req, res) {
-    const limit = Number(req.query.limit) || 4;
+    const limit = Number(req.query.limit) || 6;
     const currentPage = Number(req.query.page) || 1;
     const offset = (currentPage - 1) * limit;
 

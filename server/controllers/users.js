@@ -6,7 +6,6 @@ import env from 'dotenv';
 import jwt from 'jsonwebtoken';
 
 import EmailVerificationController from './emailVerificationController';
-import isValidNumber from '../utils/is_valid_number';
 import UserValidation from '../utils/validation';
 import trimInput from '../utils/trim_input';
 import TokenHelper from '../utils/TokenHelper';
