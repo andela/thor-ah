@@ -3,7 +3,7 @@ module.exports = {
     queryInterface.addColumn(
       'Comments',
       'highlighted', {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
       }
     ),
     queryInterface.addColumn(
