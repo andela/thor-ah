@@ -4,7 +4,7 @@ import emailTemplate from './services/commentTemplate';
 
 dotenv.config();
 
-const baseURL = process.env.BASE_URL;
+const appURL = process.env.APP_URL;
 
 /**
  * @description class for sending email notification
@@ -20,14 +20,14 @@ class commentNotification {
     try {
       sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-      const link = `${baseURL}/${slug}/comments`;
+      const link = `${appURL}/${slug}/comments`;
       const msg = {
         to: emails,
         from: 'notifications@authorshaven.com',
         subject: 'New Reply from Author\'s Haven!',
         html: emailTemplate.commentTemplate(link),
         asm: {
-          groupId: 28262
+          groupId: 10990
         },
       };
       return sgMail.sendMultiple(msg);

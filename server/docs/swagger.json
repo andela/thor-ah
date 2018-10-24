@@ -261,6 +261,11 @@
                         }
                     }
                 ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created"

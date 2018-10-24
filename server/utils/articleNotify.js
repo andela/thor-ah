@@ -4,7 +4,7 @@ import emailTemplate from './services/articleTemplate';
 
 dotenv.config();
 
-const baseURL = process.env.BASE_URL;
+const appURL = process.env.APP_URL;
 
 /**
  * @description class for sending email notification
@@ -21,7 +21,7 @@ class articleNotification {
     try {
       sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-      const url = `${baseURL}/${slug}`;
+      const url = `${appURL}/articles/${slug}`;
 
       const msg = {
         to: emails,
@@ -29,7 +29,7 @@ class articleNotification {
         subject: 'Latest Articles based on who you follow',
         html: emailTemplate.articleTemplate(url, name),
         asm: {
-          groupId: 28241
+          groupId: 10989
         },
       };
       return sgMail.send(msg);
