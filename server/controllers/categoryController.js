@@ -275,6 +275,7 @@ class CategoryController {
       ],
     })
       .then((category) => {
+        console.log(category)
         if (!category) {
           return res.status(404).json({
             status: 'error',
