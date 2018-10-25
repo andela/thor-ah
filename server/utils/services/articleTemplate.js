@@ -153,7 +153,7 @@ const emailTemplate = {
               height="100%"
               valign="top"
               bgcolor="">
-              <div><span style="font-family:courier,monospace;"><strong><em>Don't Miss out on these recently published articles from ${name}.</em></strong></span></div>
+              <div><span style="font-family:courier,monospace;"><strong><em>Don't Miss out on this recently published article from ${name}.</em></strong></span></div>
           </td>
         </tr>
       </table>
