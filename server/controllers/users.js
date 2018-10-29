@@ -53,7 +53,7 @@ class UsersController {
               .then((createdUser) => {
                 const { dataValues } = createdUser;
                 // remove hash from user data values
-                const { hash, id, ...rest } = dataValues;
+                const { hash, ...rest } = dataValues;
                 const token = TokenHelper.generateToken(createdUser);
                 EmailVerificationController.sendVerificationEmail(createdUser);
                 // return remaining user data and generated token
@@ -124,7 +124,7 @@ class UsersController {
           if (isMatch) {
             const { dataValues } = user;
             // remove hash from user data values
-            const { hash, id, ...rest } = dataValues;
+            const { hash, ...rest } = dataValues;
             const token = TokenHelper.generateToken(user);
             // return remaining user data and generated token
             return res.status(200).json({
